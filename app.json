@@ -1,0 +1,12 @@
+{
+  "name": "charitable",
+  "displayName": "charitable",
+  "expo": {
+    "name": "charitable",
+    "slug": "charitable",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
