@@ -5,6 +5,10 @@ const Root = createStackNavigator()
 
 export default Root; //?
 
-const SignIn = ({ navigation, route }) => {
-    return <SignIn/>
-} 
+// const SignIn = ({ navigation, route }) => {
+//     return (
+//         <View>
+//             <Text>text</Text>
+//         </View>
+//     )
+// } 

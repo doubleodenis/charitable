@@ -2,25 +2,17 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native'
-
+import Root from './navigation/RootNavigator';
+import SignIn from './screens/SignIn';
 
 export default App = () => {
   return (
     <NavigationContainer>
       <Root.Navigator>
-        <Root.Screen name="Screen1" component={Screen1} />
-        <Root.Screen name="Screen2" component={Screen2} />
-        <Root.Screen name="Screen3" component={Screen3} />
+        <Root.Screen name="SignIn" component={SignIn} />
       </Root.Navigator>
     </NavigationContainer>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
