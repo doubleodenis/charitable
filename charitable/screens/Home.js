@@ -34,7 +34,7 @@ const DATA = [
   );
 
   
-const MainScreen = () => {
+const Home = () => {
     const [selectedId, setSelectedId] = useState(null);
 
     const renderItem = ({ item }) => {
@@ -76,4 +76,4 @@ const styles = StyleSheet.create({
       },
   });
 
-export default MainScreen;
+export default Home;

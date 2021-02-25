@@ -3,18 +3,17 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const SignIn = ({ navigation }) => {
+const SignUp = () => {
     const [email, setEmail] = useState("");
+    const [confirmEmail, setConfirmEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const submit = (e) => {
         //...
     };
-
+    
     return (
         <SafeAreaView style={styles.container}>
-            {/* Brand logo here */}
-            <Text>Charitable</Text>
 
             <TextInput
                 type="email"
@@ -32,6 +31,21 @@ const SignIn = ({ navigation }) => {
             />
 
             <TextInput
+                type="email"
+                style={{
+                    width: "100%",
+                    height: 40,
+                    borderColor: "gray",
+                    borderWidth: 1,
+                }}
+                onChange={(e) => setConfirmEmail(e.target.value)}
+                value={confirmEmail}
+                autoFocus
+                keyboardType="email-address"
+                textContentType="emailAddress"
+            />
+
+            <TextInput
                 style={{
                     width: "100%",
                     height: 40,
@@ -42,19 +56,11 @@ const SignIn = ({ navigation }) => {
                 value={password}
                 textContentType="password"
             />
-            
             <Button
                 onPress={submit}
-                title="Sign In"
-                color="#841584"
-                accessibilityLabel="Press here to sign in"
-            />
-
-            <Button
-                onPress={() => navigation.push('SignUp')}
                 title="Sign Up"
                 color="#841584"
-                accessibilityLabel="Press here to sign up"
+                accessibilityLabel="Press here to sign Up"
             />
         </SafeAreaView>
     );
@@ -70,4 +76,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SignIn;
+export default SignUp;
