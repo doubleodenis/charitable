@@ -24,14 +24,14 @@ export default App = () => {
     }
     return (
         <NavigationContainer>
-            {!userToken ? (
+            {/* {!userToken ? (
                <AuthNavigator /> 
             )
             : 
             (
               <RootNavigator />
-            )}
-            
+            )} */}
+            <RootNavigator />
         </NavigationContainer>
     );
 };

@@ -1,9 +1,10 @@
+import React from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { HomeStackScreen, SettingsStackScreen, DonateStackScreen } from './StackScreens';
+import { SettingsStackScreen, DonateStackScreen, MapStackScreen } from './StackScreens';
+
 const Tabs = createBottomTabNavigator();
 
-const BottomTabNavigator = () => {
-    <NavigationContainer>
+const BottomTabNavigator = () => (
         <Tabs.Navigator
             // screenOptions={({ route }) => ({
             //     tabBarIcon: ({ focused, color, size }) => {
@@ -24,11 +25,16 @@ const BottomTabNavigator = () => {
             tabBarOptions={{
                 activeTintColor: 'tomato',
                 inactiveTintColor: 'gray',
-        }}>
-            <Tabs.Screen
+        }}
+        >
+            {/* <Tabs.Screen
                 name="Home"
                 component={HomeStackScreen}
                 options={{ title: "Home" }}
+            /> */}
+            <Tabs.Screen
+                name="Map"
+                component={MapStackScreen}
             />
             {/* Donate Button in middle, similar to a new post button */}
             <Tabs.Screen
@@ -46,18 +52,17 @@ const BottomTabNavigator = () => {
                 }}
             />
 
-            <Tabs.Screen
+            {/* <Tabs.Screen
                 name="Notifications"
                 component={NotificationsStackScreen}
                 options={{ title: "Notifications", tabBarBadge=3 }}
-            />
+            /> */}
             <Tabs.Screen
                 name="Settings"
                 component={SettingsStackScreen}
                 options={{ title: "Settings" }}
             />
         </Tabs.Navigator>
-    </NavigationContainer>;
-};
+);
 
-return BottomTabNavigator;
+export default BottomTabNavigator;
