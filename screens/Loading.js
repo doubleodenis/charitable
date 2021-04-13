@@ -8,8 +8,8 @@ const Loading = () => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.brand}>
-                <Text style={styles.name}>Charitable</Text>
                 <View style={styles.image}></View>
+                <Text style={styles.name}>Charitable</Text>
             </View>
             <ActivityIndicator size="large" color="#097a36" animating={true} />
         </SafeAreaView>

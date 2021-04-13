@@ -1,7 +1,10 @@
 import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
+import { View } from "react-native";
+
 import Home from '../screens/Home';
 import Donate from '../screens/Donate';
+import Mission from '../screens/Mission';
 import Map from '../screens/Map';
 import Settings from '../screens/Settings';
 
@@ -18,7 +21,13 @@ const DonateStack = createStackNavigator();
 const DonateStackScreen = () => (
     <DonateStack.Navigator>
         <DonateStack.Screen name="Donate" component={Donate} />
+        <DonateStack.Screen name="Mission" component={Mission} />
     </DonateStack.Navigator>
+);
+
+const DonatePlaceholder = () => (
+    <View style={{bakgroundColor: 'blue'}}>
+    </View>
 );
 
 const NotificationsStack = createStackNavigator();
@@ -40,6 +49,7 @@ const SettingsStackScreen = () => (
 export {
     HomeStackScreen,
     DonateStackScreen,
+    DonatePlaceholder,
     MapStackScreen,
     SettingsStackScreen
 }
