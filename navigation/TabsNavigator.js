@@ -44,7 +44,7 @@ const BottomTabNavigator = () => (
                 listeners={({ navigation }) => ({
                     tabPress: (e) => {
                       e.preventDefault();
-                      navigation.navigate('Donate');
+                      navigation.navigate('Search');
                     },
                 })}
             />

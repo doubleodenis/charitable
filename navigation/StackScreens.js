@@ -19,7 +19,10 @@ const HomeStackScreen = () => (
 const DonateStack = createStackNavigator();
 
 const DonateStackScreen = () => (
-    <DonateStack.Navigator>
+    <DonateStack.Navigator 
+        screenOptions={{
+            headerShown: false
+        }}>
         <DonateStack.Screen name="Donate" component={Donate} />
         <DonateStack.Screen name="Mission" component={Mission} />
     </DonateStack.Navigator>

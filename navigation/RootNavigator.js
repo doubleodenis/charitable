@@ -26,11 +26,17 @@ const RootNavigator = () => {
         mode="modal"
     >
         <Root.Screen name="Charitable" component={TabsNavigator} options={{ animationEnabled: true }} />
-        <Root.Screen 
+        {/* <Root.Screen 
             name="Donate" 
             component={Donate} 
             options={{animationEnabled: true}}
         />
+        <Root.Screen 
+            name="Mission" 
+            component={Mission} 
+            options={{animationEnabled: true}}
+        /> */}
+        <Root.Screen name="Search" component={DonateStackScreen} options={{ animationEnabled: true}} />
 
         {/* To get to this page, on button press: () => navigation.push("VendorPage", { name: '<vendor name here>' }) */}
         {/* <Root.Screen
