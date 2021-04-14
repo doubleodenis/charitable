@@ -1,19 +1,19 @@
 const styled = require('styled-components');
+import React from 'react'
+import { TouchableOpacity, Text, StyleSheet  } from "react-native";  
 
-import { TouchableOpacity, Text } from "react-native";  
-
-const DisplayButton = (text, colorHex="#841584", onPress, textColor='white') => {
+const DisplayButton = ({text, buttonStyle, textStyle, onPress}) => {
     return (
         <TouchableOpacity
-            style={{...styles.button, backgroundColor: colorHex }}
+            style={buttonStyle}
             onPress={onPress}
         >
-            <Text style={{...styles.text, color: textColor}}>{text}</Text>
+            <Text style={textStyle}>{text}</Text>
         </TouchableOpacity>
     );
 }
 
-StyleSheet.create({
+const styles = StyleSheet.create({
     button: {
         borderRadius: 5,
         width: '85%',
@@ -22,5 +22,5 @@ StyleSheet.create({
     text: {
         fontSize: 12
     }
-  });
+});
 export default DisplayButton;

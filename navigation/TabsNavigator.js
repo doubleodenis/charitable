@@ -25,7 +25,7 @@ const BottomTabNavigator = () => (
             tabBarOptions={{
                 activeTintColor: 'tomato',
                 inactiveTintColor: 'gray',
-        }}
+            }}
         >
             {/* <Tabs.Screen
                 name="Home"
@@ -40,7 +40,7 @@ const BottomTabNavigator = () => (
             <Tabs.Screen
                 name="DonatePlaceHolder"
                 component={DonatePlaceholder}
-                options={{title: 'Donate'}}
+                options={{title: 'Search'}}
                 listeners={({ navigation }) => ({
                     tabPress: (e) => {
                       e.preventDefault();

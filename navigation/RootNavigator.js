@@ -4,8 +4,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 import VendorPage from "../screens/VendorPage"
 import TabsNavigator from "./TabsNavigator";
 import { SettingsStackScreen, DonateStackScreen, MapStackScreen } from './StackScreens';
-import Donate from '../screens/Donate';
-import Mission from '../screens/Mission';
 
 //move root navigator stuff here from App.js
 const Root = createStackNavigator()
@@ -15,14 +13,9 @@ const RootNavigator = () => {
     <Root.Navigator
         screenOptions={{
             animationEnabled: false,
-            headerStyle: {
-                backgroundColor: "#f4511e",
-            },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-                fontWeight: "bold",
-            },
+            headerShown: false
         }}
+        
         mode="modal"
     >
         <Root.Screen name="Charitable" component={TabsNavigator} options={{ animationEnabled: true }} />
