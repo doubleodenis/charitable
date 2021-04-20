@@ -20,7 +20,7 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar, FlatList, Button, 
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Tag from '../components/Tag';
-import SampleIcon from "../components/svg/SampleIcon";
+import SampleIcon from "../components/icons/SampleIcon";
 
 const VendorPage = () => {
     const [orgName, setOrgName] = useState('West Charity');
@@ -31,7 +31,8 @@ const VendorPage = () => {
     const [itemsNeeded, setItemsNeeded] = useState(['Clothes', 'Food', 'Toys']);
     const [contactInfo, setContactInfo] = useState({
         email: 'wcharity@gmail.com',
-        phone: '(305)-752-453'
+        phone: '(305)-752-453',
+        website: 'https://wcharity.com'
     });
 
     function donate(e) {
