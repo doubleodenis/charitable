@@ -11,7 +11,12 @@ const ChecklistCard = ({text, items}) => {
                 <View>
                     {items.map((item, i) => (
                         <View key={`checkbox-${i}`} style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
-                            <BouncyCheckbox text={item} fillColor='#8BC178' iconStyle={{ borderRadius: 5, borderColor: '#8BC178'}} textStyle={{textDecorationLine: "none"}}/> 
+                            <BouncyCheckbox 
+                                text={item} 
+                                fillColor='#8BC178' 
+                                style={{width: '100%'}}
+                                iconStyle={{ borderRadius: 5, borderColor: '#8BC178'}} 
+                                textStyle={{textDecorationLine: "none"}}/> 
                         </View>
                     ))}
                 </View>

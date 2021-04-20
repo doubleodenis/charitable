@@ -2,6 +2,7 @@ const styled = require('styled-components');
 import React from 'react'
 import { TouchableOpacity, Text, StyleSheet  } from "react-native";  
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ExitButton = () => {
     const navigation = useNavigation();
@@ -10,7 +11,7 @@ const ExitButton = () => {
             style={styles.button}
             onPress={() => navigation.navigate('Map')}
         >
-            <Text style={styles.text}>X</Text>
+            <Icon name="times" size={30} color="#900" style={styles.text}/>
         </TouchableOpacity>
     );
 }

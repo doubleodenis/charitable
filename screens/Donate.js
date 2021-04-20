@@ -10,7 +10,6 @@ const dummyData = ['Clothes', 'Furniture', 'Electronics', 'Sanitary Products']
 const Donate = ({navigation}) => {
     return (
         <SafeAreaView style={{backgroundColor: '#FFFBF8', height: '100%', alignItems: 'center'}}>
-            <View style={styles.separator}></View>
             <ChecklistCard text= 'What are you donating?' items={dummyData}/>
             <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} text="Also search by mission statement" onPress={() => navigation.push('Mission')} />
         </SafeAreaView>
