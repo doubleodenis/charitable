@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { SettingsStackScreen, DonateStackScreen, MapStackScreen } from './StackScreens';
+import { SettingsStackScreen, MapStackScreen, DonatePlaceholder } from './StackScreens';
 
 const Tabs = createBottomTabNavigator();
 
@@ -38,18 +38,15 @@ const BottomTabNavigator = () => (
             />
             {/* Donate Button in middle, similar to a new post button */}
             <Tabs.Screen
-                name="Donate"
-                component={DonateStackScreen}
-                options={{ 
-                    title: "Donate", 
-                    tabBarOptions: ({ focused, color, size }) => {
-                        return (
-                            <div style={{ borderRadius: size, backgroundColor: 'green', padding: 2 }}>
-                                <Ionicons name={iconName} size={size} color={'white'} />
-                            </div>
-                        );
-                    } 
-                }}
+                name="DonatePlaceHolder"
+                component={DonatePlaceholder}
+                options={{title: 'Search'}}
+                listeners={({ navigation }) => ({
+                    tabPress: (e) => {
+                      e.preventDefault();
+                      navigation.navigate('Search');
+                    },
+                })}
             />
 
             {/* <Tabs.Screen

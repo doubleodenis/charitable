@@ -1,17 +1,18 @@
-import React from "react";
+import { NavigationHelpersContext } from "@react-navigation/core";
+import React, { useState } from "react";
 
 import { StyleSheet, View} from 'react-native';
 import DisplayButton from '../components/DisplayButton'
 import { SafeAreaView } from "react-native-safe-area-context";
 import ChecklistCard from "../components/ChecklistCard";
 
-const dummyData = ['Clothes', 'Furniture', 'Electronics', 'Sanitary Products']
+const dummyData = ["Women's Shelter", "Homeless Shelter", 'Adoption']
 
-const Donate = ({navigation}) => {
+const Mission = ({navigation}) => {
     return (
         <SafeAreaView style={{backgroundColor: '#FFFBF8', height: '100%', alignItems: 'center'}}>
-            <ChecklistCard text= 'What are you donating?' items={dummyData}/>
-            <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} text="Also search by mission statement" onPress={() => navigation.push('Mission')} />
+            <ChecklistCard text= 'What mission statements?' items={dummyData}/>
+            <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} text="Edit items list" onPress={() => navigation.goBack()} />
         </SafeAreaView>
     )
 }
@@ -40,4 +41,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Donate;
+export default Mission;

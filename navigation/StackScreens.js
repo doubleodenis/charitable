@@ -1,10 +1,16 @@
 import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
+import { View, StyleSheet, Text } from "react-native";
+
 import Home from '../screens/Home';
 import Donate from '../screens/Donate';
+import Mission from '../screens/Mission';
 import Map from '../screens/Map';
 import Settings from '../screens/Settings';
 import VendorPage from '../screens/VendorPage';
+import ExitButton from '../components/ExitButton'
+import DonateHeader from '../components/DonateHeader'
+import DonateFooter from '../components/DonateFooter'
 
 const HomeStack = createStackNavigator();
 
@@ -17,9 +23,35 @@ const HomeStackScreen = () => (
 const DonateStack = createStackNavigator();
 
 const DonateStackScreen = () => (
-    <DonateStack.Navigator>
-        <DonateStack.Screen name="Donate" component={Donate} />
-    </DonateStack.Navigator>
+    <>
+        <DonateStack.Navigator 
+            screenOptions={{
+                headerStyle: styles.searchHeading,
+                headerTitleStyle: styles.searchHeadingTitle,
+                headerLeft: null,
+                headerRight: (() => <ExitButton/>),
+                // header: props => <DonateHeader {...props} />,
+                headerTitle: props => <DonateHeader {...props} />
+            }}
+        >
+            <DonateStack.Screen 
+                name="Donate" 
+                options={{title: 'Search'}} 
+                component={Donate}
+            />
+            <DonateStack.Screen 
+                name="Mission" 
+                options={{title: 'Search'}} 
+                component={Mission}
+            />
+        </DonateStack.Navigator>
+        <DonateFooter/>
+    </>
+);
+
+const DonatePlaceholder = () => (
+    <View style={{backgroundColor: 'blue'}}>
+    </View>
 );
 
 const NotificationsStack = createStackNavigator();
@@ -38,9 +70,18 @@ const SettingsStackScreen = () => (
     </SettingsStack.Navigator>
 );
 
+const styles = StyleSheet.create({
+    searchHeading: {
+        backgroundColor: '#FFFBF8',
+        shadowColor: 'transparent',
+        height: 70,
+    },
+});
+
 export {
     HomeStackScreen,
     DonateStackScreen,
+    DonatePlaceholder,
     MapStackScreen,
     SettingsStackScreen
 }

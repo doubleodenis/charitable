@@ -3,22 +3,34 @@ import React from "react";
 import { createStackNavigator } from '@react-navigation/stack'
 import VendorPage from "../screens/VendorPage"
 import TabsNavigator from "./TabsNavigator";
+import { SettingsStackScreen, DonateStackScreen, MapStackScreen } from './StackScreens';
+
 //move root navigator stuff here from App.js
 const Root = createStackNavigator()
 
 const RootNavigator = () => {
     return (
     <Root.Navigator
-        // screenOptions={{
-        //     headerStyle: {
-        //         backgroundColor: "#f4511e",
-        //     },
-        //     headerTintColor: "#fff",
-        //     headerTitleStyle: {
-        //         fontWeight: "bold",
-        //     },
-        // }}
+        screenOptions={{
+            animationEnabled: false,
+            headerShown: false
+        }}
+        
+        mode="modal"
     >
+        <Root.Screen name="Charitable" component={TabsNavigator} options={{ animationEnabled: true }} />
+        {/* <Root.Screen 
+            name="Donate" 
+            component={Donate} 
+            options={{animationEnabled: true}}
+        />
+        <Root.Screen 
+            name="Mission" 
+            component={Mission} 
+            options={{animationEnabled: true}}
+        /> */}
+        <Root.Screen name="Search" component={DonateStackScreen} options={{ animationEnabled: true}} />
+
         {/* To get to this page, on button press: () => navigation.push("VendorPage", { name: '<vendor name here>' }) */}
         {/* <Root.Screen
             name="Vendor"
@@ -27,9 +39,6 @@ const RootNavigator = () => {
                 title: route.params.name,
             })}
         /> */}
-
-        <Root.Screen name="Charitable" component={TabsNavigator} options={{ animationEnabled: true }} />
-        
     </Root.Navigator>
     )
 }
