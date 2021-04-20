@@ -22,10 +22,10 @@ const BottomTabNavigator = () => (
             //         return <Ionicons name={iconName} size={size} color={color} />;
             //     }
             // })}
-            tabBarOptions={{
-                activeTintColor: 'tomato',
-                inactiveTintColor: 'gray',
-        }}
+        //     tabBarOptions={{
+        //         activeTintColor: 'tomato',
+        //         inactiveTintColor: 'gray',
+        // }}
         >
             {/* <Tabs.Screen
                 name="Home"
@@ -58,9 +58,19 @@ const BottomTabNavigator = () => (
                 options={{ title: "Notifications", tabBarBadge=3 }}
             /> */}
             <Tabs.Screen
-                name="Settings"
+                name="Charity"
                 component={SettingsStackScreen}
                 options={{ title: "Settings" }}
+                // options={{
+                //     headerTitle: props => <LogoTitle {...props} />,
+                //     headerRight: () => (
+                //       <Button
+                //         onPress={() => alert('This is a button!')}
+                //         title="Info"
+                //         color="#fff"
+                //       />
+                //     ),
+                //   }}
             />
         </Tabs.Navigator>
 );

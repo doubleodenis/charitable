@@ -4,6 +4,7 @@ import Home from '../screens/Home';
 import Donate from '../screens/Donate';
 import Map from '../screens/Map';
 import Settings from '../screens/Settings';
+import VendorPage from '../screens/VendorPage';
 
 const HomeStack = createStackNavigator();
 
@@ -32,8 +33,8 @@ const MapStackScreen = () => (
 const SettingsStack = createStackNavigator();
 
 const SettingsStackScreen = () => (
-    <SettingsStack.Navigator>
-        <SettingsStack.Screen name="Settings" component={Settings} />
+    <SettingsStack.Navigator headerMode='none'>
+        <SettingsStack.Screen name="Charity" component={VendorPage} />
     </SettingsStack.Navigator>
 );
 

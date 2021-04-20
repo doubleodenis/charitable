@@ -9,15 +9,15 @@ const Root = createStackNavigator()
 const RootNavigator = () => {
     return (
     <Root.Navigator
-        screenOptions={{
-            headerStyle: {
-                backgroundColor: "#f4511e",
-            },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-                fontWeight: "bold",
-            },
-        }}
+        // screenOptions={{
+        //     headerStyle: {
+        //         backgroundColor: "#f4511e",
+        //     },
+        //     headerTintColor: "#fff",
+        //     headerTitleStyle: {
+        //         fontWeight: "bold",
+        //     },
+        // }}
     >
         {/* To get to this page, on button press: () => navigation.push("VendorPage", { name: '<vendor name here>' }) */}
         {/* <Root.Screen
