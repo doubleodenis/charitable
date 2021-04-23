@@ -33,7 +33,6 @@ const DonateStackScreen = () => (
                 headerTitleStyle: styles.searchHeadingTitle,
                 headerLeft: null,
                 headerRight: (() => <ExitButton/>),
-                // header: props => <DonateHeader {...props} />,
                 headerTitle: props => <DonateHeader {...props} />
             }}
         >

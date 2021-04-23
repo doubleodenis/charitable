@@ -9,7 +9,7 @@ const ExitButton = () => {
     return (
         <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('Map')}
+            onPress={() => navigation.goBack()}
         >
             <Icon name="times" size={30} color="#900" style={styles.text}/>
         </TouchableOpacity>
