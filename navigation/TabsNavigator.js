@@ -22,10 +22,10 @@ const BottomTabNavigator = () => (
             //         return <Ionicons name={iconName} size={size} color={color} />;
             //     }
             // })}
-            tabBarOptions={{
-                activeTintColor: 'tomato',
-                inactiveTintColor: 'gray',
-            }}
+        //     tabBarOptions={{
+        //         activeTintColor: 'tomato',
+        //         inactiveTintColor: 'gray',
+        // }}
         >
             {/* <Tabs.Screen
                 name="Home"
@@ -55,7 +55,7 @@ const BottomTabNavigator = () => (
                 options={{ title: "Notifications", tabBarBadge=3 }}
             /> */}
             <Tabs.Screen
-                name="Settings"
+                name="Charity"
                 component={SettingsStackScreen}
                 options={{ title: "Settings" }}
             />

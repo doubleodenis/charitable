@@ -11,7 +11,6 @@ const dummyData = ["Women's Shelter", "Homeless Shelter", 'Adoption']
 const Mission = ({navigation}) => {
     return (
         <SafeAreaView style={{backgroundColor: '#FFFBF8', height: '100%', alignItems: 'center'}}>
-            <View style={styles.separator}></View>
             <ChecklistCard text= 'What mission statements?' items={dummyData}/>
             <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} text="Edit items list" onPress={() => navigation.goBack()} />
         </SafeAreaView>

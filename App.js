@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import RootNavigator from "./navigation/RootNavigator";
 import Loading from "./screens/Loading";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // https://reactnavigation.org/docs/headers#adjusting-header-styles
 
@@ -23,15 +24,17 @@ export default App = () => {
         // return <Splash /> splash screen is loading screen
     }
     return (
-        <NavigationContainer>
-            {/* {!userToken ? (
-               <AuthNavigator /> 
-            )
-            : 
-            (
-              <RootNavigator />
-            )} */}
-            <RootNavigator />
-        </NavigationContainer>
+        <SafeAreaProvider>
+            <NavigationContainer>
+                {/* {!userToken ? (
+                <AuthNavigator /> 
+                )
+                : 
+                (
+                <RootNavigator />
+                )} */}
+                <RootNavigator />
+            </NavigationContainer>
+        </SafeAreaProvider>
     );
 };
