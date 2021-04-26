@@ -13,12 +13,17 @@ const ChecklistCard = ({text, items}) => {
         setBoxHeight(e.nativeEvent.contentSize.height)
     }
 
+    useEffect(() => {
+        return () => { // componentWillUnmount
+            parseText()
+        }
+    }, [])
+
     // useEffect(() => {
-    //     console.log(checks);
+    //     console.log(checks)
     // }, [checks])
 
     useEffect(() => {
-        console.log(boxHeight, otherNumbers)
         if(boxHeight){
             let i
             let tempString = '1. '
@@ -42,6 +47,11 @@ const ChecklistCard = ({text, items}) => {
 
     const addText = (text) => {
         setText(text)
+    }
+
+    const parseText = () => {
+        let splitInput = otherText.split('\n')
+        splitInput.map((item) => updateItems(item))
     }
 
     return (
@@ -76,24 +86,25 @@ const ChecklistCard = ({text, items}) => {
                         }}
                     />
                     {checks['Other'] ?
-                        <View style={styles.textBoxContainer}>
-                            <TextInput
-                                multiline
-                                numberOfLines={1}
-                                style={styles.numbering}
-                                value={otherNumbers}
-                                editable = {false}
-                            />
-                            <TextInput
-                                onContentSizeChange={(event) => measureView(event)}
-                                multiline
-                                numberOfLines={1}
-                                style={styles.input}
-                                //onKeyPress={(e) => {addCustomItem(e.nativeEvent.key); console.log(e.height)}}
-                                onChangeText={(text) => addText(text)}
-                                value={otherText}
-                            />
-                        </View>
+                        
+                            <View style={styles.textBoxContainer}>
+                                <TextInput
+                                    multiline
+                                    numberOfLines={1}
+                                    style={styles.numbering}
+                                    value={otherNumbers}
+                                    editable = {false}
+                                />
+                                <TextInput
+                                    onContentSizeChange={(event) => measureView(event)}
+                                    multiline
+                                    numberOfLines={1}
+                                    style={styles.input}
+                                    onChangeText={(text) => addText(text)}
+                                    value={otherText}
+                                    onPressOut={()=>{console.log('gorgo'); this.blur()}}
+                                />
+                            </View>
                     :
                         null
                     }
