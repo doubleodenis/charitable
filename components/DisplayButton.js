@@ -13,14 +13,4 @@ const DisplayButton = ({text, buttonStyle, textStyle, onPress}) => {
     );
 }
 
-const styles = StyleSheet.create({
-    button: {
-        borderRadius: 5,
-        width: '85%',
-        height: 30
-    },
-    text: {
-        fontSize: 12
-    }
-});
 export default DisplayButton;

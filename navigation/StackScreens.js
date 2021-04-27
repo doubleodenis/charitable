@@ -6,14 +6,14 @@ import Home from '../screens/Home';
 import Donate from '../screens/Donate';
 import Mission from '../screens/Mission';
 import Map from '../screens/Map';
-import Settings from '../screens/Settings';
+import VendorPageSettings from '../screens/VendorPageSettings';
 import VendorPage from '../screens/VendorPage';
 import ExitButton from '../components/ExitButton'
 import DonateHeader from '../components/DonateHeader'
 import DonateFooter from '../components/DonateFooter'
-
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import HeaderConfirmButton from '../components/HeaderConfirmButton';
+import HeaderSettingsButton from '../components/HeaderSettingsButton';
 
 const HomeStack = createStackNavigator();
 
@@ -68,22 +68,26 @@ const SettingsStack = createStackNavigator();
 
 const SettingsStackScreen = () => (
     <SettingsStack.Navigator headerMode='screen'>
-        <SettingsStack.Screen name="Charity" component={VendorPage} 
+        <SettingsStack.Screen name="VendorPage" component={VendorPage} 
             options={{
-                // headerTitle: props => <LogoTitle {...props} />,
                 headerTitle: null,
                 headerLeft: () => (
                     <TouchableOpacity style={{ paddingLeft: 15, paddingVertical: 5 }} onPress={() => alert('Logging out.')}>
                         <Text style={{ fontSize: 18, color: "#9B9B9B" }}>Logout</Text> 
                     </TouchableOpacity>
                 ),
-                headerRight: () => (
-                    <TouchableOpacity style={{ paddingRight: 15 }} onPress={() => {
-                        alert('Going to settings.')
-                    }}>
-                        <Icon title="Settings" name="gear" size={30} color="#9B9B9B" />
+                headerRight: () => <HeaderSettingsButton />
+                }}
+                />
+        <SettingsStack.Screen name="VendorPageSettings" component={VendorPageSettings} 
+            options={{
+                headerTitle: null,
+                headerLeft: () => (
+                    <TouchableOpacity style={{ paddingLeft: 15, paddingVertical: 5 }} onPress={() => alert('Cancel out.')}>
+                        <Text style={{ fontSize: 18, color: "#9B9B9B" }}>Cancel</Text> 
                     </TouchableOpacity>
                 ),
+                headerRight: () => <HeaderConfirmButton /> 
                 }}/>
     </SettingsStack.Navigator>
 );
