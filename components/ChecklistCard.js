@@ -87,6 +87,7 @@ const ChecklistCard = ({text, items}) => {
                     />
                     {checks['Other'] ?
                         
+                        <View>
                             <View style={styles.textBoxContainer}>
                                 <TextInput
                                     multiline
@@ -105,6 +106,8 @@ const ChecklistCard = ({text, items}) => {
                                     onPressOut={()=>{console.log('gorgo'); this.blur()}}
                                 />
                             </View>
+                            <Text style={styles.note}>Press Return to add items to the list</Text>
+                        </View>
                     :
                         null
                     }
@@ -154,6 +157,12 @@ const styles = StyleSheet.create({
     input: {
         width: '100%',
         color: '#565656'
+    },
+    note: {
+        fontSize: 12,
+        color: '#706052',
+        marginTop: 3,
+        marginLeft: 7,
     }
 });
 export default ChecklistCard;

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, Text, View} from 'react-native';
 import DisplayButton from '../components/DisplayButton'
 import { SafeAreaView } from "react-native-safe-area-context";
 import ChecklistCard from "../components/ChecklistCard";
@@ -13,6 +13,9 @@ const Donate = ({navigation}) => {
             <SafeAreaView style={{backgroundColor: '#FFFBF8', height: '100%', alignItems: 'center'}}>
                 <ChecklistCard text= 'What are you donating?' items={dummyData}/>
                 <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} text="Also search by mission statement" onPress={() => navigation.push('Mission')} />
+                <View style={{alignItems: 'flex-start', width: '80%'}}>
+                    <Text style={styles.note}>Items will be saved</Text>
+                </View>
             </SafeAreaView>
         </TouchableWithoutFeedback>
     )
@@ -38,7 +41,12 @@ const styles = StyleSheet.create({
     btnText: {
         color: 'white',
         fontSize: 18
-
+    },
+    note: {
+        fontSize: 12,
+        color: '#706052',
+        marginTop: 3,
+        marginLeft: 7,
     }
 });
 

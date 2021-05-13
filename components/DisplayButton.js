@@ -1,16 +1,12 @@
-const styled = require('styled-components');
-import React from 'react'
-import { TouchableOpacity, Text, StyleSheet  } from "react-native";  
+import React from "react";
+import { TouchableOpacity, Text } from "react-native";
 
-const DisplayButton = ({text, buttonStyle, textStyle, onPress}) => {
+const DisplayButton = ({ text, buttonStyle, textStyle, onPress }) => {
     return (
-        <TouchableOpacity
-            style={buttonStyle}
-            onPress={onPress}
-        >
+        <TouchableOpacity style={buttonStyle} onPress={onPress}>
             <Text style={textStyle}>{text}</Text>
         </TouchableOpacity>
     );
-}
+};
 
 export default DisplayButton;

@@ -1,7 +1,7 @@
 import { NavigationHelpersContext } from "@react-navigation/core";
 import React, { useState } from "react";
 
-import { StyleSheet, View} from 'react-native';
+import { StyleSheet, View, Text} from 'react-native';
 import DisplayButton from '../components/DisplayButton'
 import { SafeAreaView } from "react-native-safe-area-context";
 import ChecklistCard from "../components/ChecklistCard";
@@ -13,6 +13,9 @@ const Mission = ({navigation}) => {
         <SafeAreaView style={{backgroundColor: '#FFFBF8', height: '100%', alignItems: 'center'}}>
             <ChecklistCard text= 'What mission statements?' items={dummyData}/>
             <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} text="Edit items list" onPress={() => navigation.goBack()} />
+            <View style={{alignItems: 'flex-start', width: '80%'}}>
+                <Text style={styles.note}>Mission statements will be saved</Text>
+            </View>
         </SafeAreaView>
     )
 }
@@ -38,6 +41,12 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18
 
+    },
+    note: {
+        fontSize: 12,
+        color: '#706052',
+        marginTop: 3,
+        marginLeft: 7,
     }
 });
 
