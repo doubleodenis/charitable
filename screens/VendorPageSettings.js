@@ -14,7 +14,7 @@
     Search through (or search bar) a list of categories and select one. This will then generate the list of charities.
 */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,7 +22,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Tag from "../components/Tag";
 import Input from "../components/PrimaryInput";
 import DisplayButton from "../components/DisplayButton";
-import { onChange } from "react-native-reanimated";
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+
+import OrganizationService from "../services/organization";
 
 const VendorPage = () => {
     const [charityName, setCharityName] = useState("");
@@ -37,6 +39,20 @@ const VendorPage = () => {
     const [contactEmail, setEmail] = useState("");
     const [contactPhone, setPhone] = useState("");
     const [contactWebsite, setWebsite] = useState("");
+    
+    const tabBarHeight = useBottomTabBarHeight();
+    console.log(tabBarHeight);
+
+    useEffect(() => {
+        OrganizationService.getOrganizations().then(res => {
+            console.log(res);
+        })
+        .catch(err => {
+            console.log(err);
+            console.log(err.response)
+        })
+    }, []);
+
     function donate(e) {
         //...
     }
@@ -54,7 +70,7 @@ const VendorPage = () => {
     }
 
     return (
-        <ScrollView style={{ flex: 1, height: "100%", margin: 0, padding: 20 }}>
+        <ScrollView style={{...styles.container}}>
             <View style={styles.card}>
                 <Text style={styles.sectionHeader}>Charity Name</Text>
                 <Text style={styles.description} numberOfLines={2}>
@@ -157,6 +173,12 @@ const VendorPage = () => {
 };
 
 const styles = StyleSheet.create({
+    container: { 
+        flex: 1,
+        height: "100%",
+        margin: 0,
+        padding: 20 
+    },
     card: {
         marginBottom: 10,
         padding: 20,

@@ -14,6 +14,7 @@ import DonateFooter from '../components/DonateFooter'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import HeaderConfirmButton from '../components/HeaderConfirmButton';
 import HeaderSettingsButton from '../components/HeaderSettingsButton';
+import CancelTextButton from '../components/CancelTextButton';
 
 const HomeStack = createStackNavigator();
 
@@ -82,11 +83,7 @@ const SettingsStackScreen = () => (
         <SettingsStack.Screen name="VendorPageSettings" component={VendorPageSettings} 
             options={{
                 headerTitle: null,
-                headerLeft: () => (
-                    <TouchableOpacity style={{ paddingLeft: 15, paddingVertical: 5 }} onPress={() => alert('Cancel out.')}>
-                        <Text style={{ fontSize: 18, color: "#9B9B9B" }}>Cancel</Text> 
-                    </TouchableOpacity>
-                ),
+                headerLeft: () => <CancelTextButton />,
                 headerRight: () => <HeaderConfirmButton /> 
                 }}/>
     </SettingsStack.Navigator>
