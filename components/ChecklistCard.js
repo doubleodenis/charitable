@@ -1,10 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react'
 import { View, Text, StyleSheet, TextInput } from "react-native";  
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import DisplayButton from './DisplayButton'
+import IconButton from './IconButton'
 
 
 const ChecklistCard = ({text, items}) => {
-    const [checks, setChecks] = useState({})
+    const [checks, setChecks] = useState(items)
     const [otherText, setText] = useState("");
     const [otherNumbers, setNumbers] = useState("1. ");
     const [boxHeight, setBoxHeight] = useState(null)
@@ -14,14 +16,14 @@ const ChecklistCard = ({text, items}) => {
     }
 
     useEffect(() => {
-        return () => { // componentWillUnmount
-            parseText()
-        }
+        // return () => { // componentWillUnmount
+        //     parseText()
+        // }
     }, [])
 
-    // useEffect(() => {
-    //     console.log(checks)
-    // }, [checks])
+    useEffect(() => {
+        console.log(checks)
+    }, [checks])
 
     useEffect(() => {
         if(boxHeight){
@@ -34,30 +36,92 @@ const ChecklistCard = ({text, items}) => {
         }
     }, [boxHeight])
 
-    const updateItems = (item) => {
-        let checksCopy = {...checks}; // possibly needs to be a deep copy
-        if(checksCopy[`${item}`]){
-            delete checksCopy[`${item}`];
-        }
-        else{
-            checksCopy[`${item}`] = true;
+    // const updateItems = (item) => {
+    //     let checksCopy = {...checks}; // possibly needs to be a deep copy
+    //     if(checksCopy[`${item}`]){
+    //         delete checksCopy[`${item}`];
+    //     }
+    //     else{
+    //         checksCopy[`${item}`] = true;
+    //     }
+    //     setChecks(checksCopy)
+    // }
+
+    const removeTag = (tag) => {
+        let checksCopy = [...checks]
+        let index = checksCopy.indexOf(tag)
+        if (index > -1) {
+            checksCopy.splice(index, 1);
         }
         setChecks(checksCopy)
     }
 
-    const addText = (text) => {
-        setText(text)
+    const addTag = (tag) => {
+        if(tag !== ''){
+            let checksCopy = [...checks]
+            checksCopy.push(tag)
+            setChecks(checksCopy)
+            setText('')
+        }
+        
     }
 
-    const parseText = () => {
-        let splitInput = otherText.split('\n')
-        splitInput.map((item) => updateItems(item))
-    }
+    // const parseText = () => {
+    //     let splitInput = otherText.split('\n')
+    //     splitInput.map((item) => updateItems(item))
+    // }
 
     return (
         <View style={styles.card}>
                 <Text style={styles.cardText}>{text}</Text>
-                <View>
+                <View style={styles.searchContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Search for items'
+                        onPressOut={()=>{console.log('gorgo'); this.blur()}}
+                    />
+                </View>
+                <View style={styles.listContainer}>
+                    <Text style={styles.listHeading}>
+                        Your List
+                    </Text>
+                    <View style={styles.list}>
+                        {checks.map((item, i) => (
+                            <View style={styles.listItem} key={`listitem-${item}${i}`}>
+                                <Text>
+                                    {item}
+                                </Text>
+                                <IconButton 
+                                    buttonStyle={styles.delete} 
+                                    onPress={() => removeTag(item)}
+                                    icon='times'
+                                    iconStyle={{color: '#D77944'}}
+                                />
+                            </View>
+                        ))}
+                    </View>
+                </View>
+                <Text style={styles.note}>Can’t find a tag that describes your items? Use the input below to add items manually</Text>
+                <View style={styles.searchContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Manually add tags'
+                        onPressOut={()=>{console.log('blurring'); this.blur()}}
+                        onChangeText={(text) => setText(text)}
+                        value={otherText}
+                        returnKeyType='done'
+                        onSubmitEditing = {()=>addTag(otherText)}
+                        blurOnSubmit={false}
+                    />
+                    <IconButton 
+                        buttonStyle={styles.delete} 
+                        onPress={() => addTag(otherText)}
+                        icon='check'
+                        iconStyle={{color: '#8BC178', fontSize: 16}}
+                    />
+                </View>
+                <Text style={styles.note}>Press Return to add items to the list</Text>
+                {/* <View>
                     {items.map((item, i) => (
                         <BouncyCheckbox 
                             key={`checkbox-${item}${i}`}
@@ -81,7 +145,7 @@ const ChecklistCard = ({text, items}) => {
                         textStyle={{textDecorationLine: "none"}}
                         isChecked={checks['Other']}
                         disableBuiltInState
-                        onPress={(isChecked: boolean = false) => {
+                        onPress={(isChecked: boolean = false) => { 
                             updateItems('Other')
                         }}
                     />
@@ -111,7 +175,7 @@ const ChecklistCard = ({text, items}) => {
                     :
                         null
                     }
-                </View>
+                </View> */}
         </View>
     );
 }
@@ -142,14 +206,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 5
     },
-    inputContainer: {
-        height: 'auto',
-        width: '95%',
-        borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: '#D77944',
-        borderRadius: 10,
-    },
     numbering: {
         width: '5%',
         color: '#565656'
@@ -163,6 +219,32 @@ const styles = StyleSheet.create({
         color: '#706052',
         marginTop: 3,
         marginLeft: 7,
+    },
+    searchContainer: {
+        width: '100%',
+        padding: 5,
+        borderStyle: 'solid',
+        borderWidth: 1,
+        borderColor: '#D77944',
+        borderRadius: 10,
+        marginTop: 5,
+        flexDirection: 'row'
+    },
+    listHeading: {
+        fontSize: 16,
+
+    },
+    listContainer: {
+        marginTop: 20
+    },
+    list: {
+        marginLeft: 10
+    },
+    listItem: {
+        flexDirection: 'row'
+    },
+    delete: {
+        marginLeft: 'auto'
     }
 });
 export default ChecklistCard;

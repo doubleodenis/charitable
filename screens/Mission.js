@@ -12,7 +12,7 @@ const Mission = ({navigation}) => {
     return (
         <SafeAreaView style={{backgroundColor: '#FFFBF8', height: '100%', alignItems: 'center'}}>
             <ChecklistCard text= 'What mission statements?' items={dummyData}/>
-            <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} text="Edit items list" onPress={() => navigation.goBack()} />
+            <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} onPress={() => navigation.goBack()}>Edit items list</DisplayButton>
             <View style={{alignItems: 'flex-start', width: '80%'}}>
                 <Text style={styles.note}>Mission statements will be saved</Text>
             </View>

@@ -12,7 +12,7 @@ const Donate = ({navigation}) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <SafeAreaView style={{backgroundColor: '#FFFBF8', height: '100%', alignItems: 'center'}}>
                 <ChecklistCard text= 'What are you donating?' items={dummyData}/>
-                <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} text="Also search by mission statement" onPress={() => navigation.push('Mission')} />
+                <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} onPress={() => navigation.push('Mission')}>Also search by mission statement</DisplayButton>
                 <View style={{alignItems: 'flex-start', width: '80%'}}>
                     <Text style={styles.note}>Items will be saved</Text>
                 </View>

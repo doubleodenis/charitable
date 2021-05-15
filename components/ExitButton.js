@@ -3,16 +3,17 @@ import React from 'react'
 import { TouchableOpacity, Text, StyleSheet  } from "react-native";  
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IconButton from './IconButton';
 
 const ExitButton = () => {
     const navigation = useNavigation();
     return (
-        <TouchableOpacity
-            style={styles.button}
+        <IconButton
+            buttonStyle={styles.button}
+            iconStyle={styles.text}
             onPress={() => navigation.goBack()}
-        >
-            <Icon name="times" size={30} color="#900" style={styles.text}/>
-        </TouchableOpacity>
+            icon='times'
+        />
     );
 }
 

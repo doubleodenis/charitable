@@ -8,7 +8,7 @@ const DonateFooter = () => {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
-            <DisplayButton buttonStyle={styles.searchBtn} textStyle={styles.btnText} text="Find Centers" onPress={() => navigation.navigate('Map')} />
+            <DisplayButton buttonStyle={styles.searchBtn} textStyle={styles.btnText} onPress={() => navigation.navigate('Map')}>Find Centers</DisplayButton>
             <View style={styles.separator}></View>
         </View>
     );
