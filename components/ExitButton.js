@@ -9,7 +9,7 @@ const ExitButton = () => {
     const navigation = useNavigation();
     return (
         <IconButton
-            buttonStyle={styles.button}
+            style={styles.button}
             iconStyle={styles.text}
             onPress={() => navigation.goBack()}
             icon='times'
