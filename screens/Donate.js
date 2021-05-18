@@ -1,23 +1,24 @@
 import React from "react";
 
-import { StyleSheet, TouchableWithoutFeedback, Keyboard, Text, View} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, View} from 'react-native';
 import DisplayButton from '../components/DisplayButton'
 import { SafeAreaView } from "react-native-safe-area-context";
 import ChecklistCard from "../components/ChecklistCard";
+import { ScrollView } from "react-native-gesture-handler";
 
-const dummyData = ['Clothes', 'Furniture', 'Electronics', 'Sanitary Products']
+const dummyData = ['Clothes', 'Furniture', 'Electronics', 'Sanitary Products', 'm' , 'm', 'm' , 'm', 'm' , 'm', 'm' , 'm', 'm' , 'm', 'm']
 
 const Donate = ({navigation}) => {
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <SafeAreaView style={{backgroundColor: '#FFFBF8', height: '100%', alignItems: 'center'}}>
-                <ChecklistCard text= 'What are you donating?' items={dummyData}/>
-                <DisplayButton buttonStyle={styles.nextBtn} textStyle={styles.btnText} onPress={() => navigation.push('Mission')}>Also search by mission statement</DisplayButton>
-                <View style={{alignItems: 'flex-start', width: '80%'}}>
-                    <Text style={styles.note}>Items will be saved</Text>
+        <View style={{backgroundColor: '#FFFBF8', height: '100%', width: '100%', flex: 1}}>
+            <ScrollView 
+                keyboardDismissMode='on-drag'
+            >
+                <View style={{alignItems: 'center', paddingVertical: 20}}>
+                    <ChecklistCard text= 'What are you donating?' items={dummyData}/>
                 </View>
-            </SafeAreaView>
-        </TouchableWithoutFeedback>
+            </ScrollView>
+        </View>
     )
 }
 
