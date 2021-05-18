@@ -12,7 +12,7 @@ const ChecklistCard = ({text, items}) => {
     return (
         <View style={styles.card}>
                 <Text style={styles.cardText}>{text}</Text>
-                <SearchBar setSearching={setSearching}/>
+                <SearchBar searching={searching} setSearching={setSearching}/>
                 {searching?
                     null
                 :
