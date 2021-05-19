@@ -1,9 +1,11 @@
 // https://www.reactnative.express/app/navigation/react_navigation
 import React from "react";
 import { createStackNavigator } from '@react-navigation/stack'
-import VendorPage from "../screens/VendorPage"
 import TabsNavigator from "./TabsNavigator";
+import AuthNavigator from "./AuthNavigator";
+
 import { SettingsStackScreen, DonateStackScreen, MapStackScreen } from './StackScreens';
+
 
 //move root navigator stuff here from App.js
 const Root = createStackNavigator()
@@ -31,6 +33,8 @@ const RootNavigator = () => {
         /> */}
         <Root.Screen name="Search" component={DonateStackScreen} options={{ animationEnabled: true}} />
 
+
+        <Root.Screen name="Auth" component={AuthNavigator} options={{ animationEnabled: true }} />
         {/* To get to this page, on button press: () => navigation.push("VendorPage", { name: '<vendor name here>' }) */}
         {/* <Root.Screen
             name="Vendor"

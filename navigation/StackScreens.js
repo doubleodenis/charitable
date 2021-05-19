@@ -15,6 +15,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import HeaderConfirmButton from '../components/HeaderConfirmButton';
 import HeaderSettingsButton from '../components/HeaderSettingsButton';
 import CancelTextButton from '../components/CancelTextButton';
+import OrganizationPage from '../screens/OrganizationPage';
+import SecureStorage from '../services/secureStorage';
 
 const HomeStack = createStackNavigator();
 
@@ -69,11 +71,16 @@ const SettingsStack = createStackNavigator();
 
 const SettingsStackScreen = () => (
     <SettingsStack.Navigator headerMode='screen'>
-        <SettingsStack.Screen name="VendorPage" component={VendorPage} 
+        <SettingsStack.Screen name="OrganizationPage" component={OrganizationPage} 
             options={{
                 headerTitle: null,
                 headerLeft: () => (
-                    <TouchableOpacity style={{ paddingLeft: 15, paddingVertical: 5 }} onPress={() => alert('Logging out.')}>
+                    <TouchableOpacity style={{ paddingLeft: 15, paddingVertical: 5 }} onPress={() => {
+                        SecureStorage.storeValue('token', '').then(res => {
+                            //navigate refresh
+                            console.log('token has been removed')
+                        })
+                    }}>
                         <Text style={{ fontSize: 18, color: "#9B9B9B" }}>Logout</Text> 
                     </TouchableOpacity>
                 ),
