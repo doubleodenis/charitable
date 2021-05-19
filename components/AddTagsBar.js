@@ -6,9 +6,9 @@ const AddTagsBar = ({manualTag, setManualTag, userList, setUserList}) => {
 
     const addTag = (tag) => {
         if(tag !== ''){
-            let checksCopy = [...userList]
-            checksCopy.push(tag)
-            setUserList(checksCopy)
+            let listCopy = [...userList]
+            listCopy.push(tag)
+            setUserList(listCopy)
             setManualTag('')
         }
     }

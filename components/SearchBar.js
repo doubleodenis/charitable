@@ -1,17 +1,67 @@
-import React, {useState, useEffect} from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";  
+import React, {useState, useEffect, useRef} from 'react'
+import { Animated, Easing, View, StyleSheet, TextInput, TouchableOpacity, Keyboard } from "react-native";  
+import DisplayButton from './DisplayButton'
 
-const SearchBar = ({setSearching}) => {
+const SearchBar = ({searching, setSearching}) => {
+    const shrinkAnim = useRef(new Animated.Value(100)).current
+    const fadeAnim = useRef(new Animated.Value(0)).current
+    const [searchQuery, setSearchQuery] = useState('')
 
+    useEffect(() => {
+        playAnim()
+    }, [searching]);
+
+    const playAnim = () => {
+        let shrinkGoal = searching ? 85 : 100
+        let fadeGoal = searching ? 1 : 0
+
+        Animated.stagger(200, [
+            Animated.timing(
+                shrinkAnim,
+                {
+                  toValue: shrinkGoal,
+                  duration: 250,
+                  useNativeDriver: false
+                }
+            ),
+            Animated.timing(
+                fadeAnim,
+                {
+                  toValue: fadeGoal,
+                  duration: 150,
+                  easing: Easing.quad,
+                  useNativeDriver: false
+                }
+            )
+        ]).start();
+    }
 
     return (
-        <TouchableOpacity style={styles.searchContainer}>
+        <View style={{flexDirection: 'row', marginTop: 25, alignItems: 'center'}}>
+        <Animated.View 
+            style={[
+                styles.searchContainer, 
+                {width: shrinkAnim.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: ['0%', '100%'],
+                })} 
+            ]}>
             <TextInput
                 style={styles.input}
                 placeholder='Search for items'
-                onFocus={() => setSearching(true)}
+                onFocus={() => {setSearching(true);}}
+                onChangeText={(text) => setSearchQuery(text)}
+                value={searchQuery}
             />
-        </TouchableOpacity>
+        </Animated.View>
+        {searching? 
+            <Animated.View style={{opacity: fadeAnim}}>
+                <DisplayButton buttonStyle={{backgroundColor: 'none'}} onPress={() => {setSearching(false); setSearchQuery(''); Keyboard.dismiss()}}>Close</DisplayButton>
+            </Animated.View>
+        :
+            null
+        }
+        </View>
     );
 }
 
@@ -21,7 +71,7 @@ const styles = StyleSheet.create({
         color: '#565656'
     },
     searchContainer: {
-        width: '100%',
+        // width: '100%',
         padding: 5,
         height: 35,
         borderStyle: 'solid',
@@ -29,7 +79,7 @@ const styles = StyleSheet.create({
         borderColor: '#D77944',
         borderRadius: 10,
         flexDirection: 'row',
-        marginTop: 25
+        marginRight: 10
     },
 });
 export default SearchBar;

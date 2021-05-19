@@ -1,18 +1,19 @@
-import React, {useState, useEffect} from 'react'
-import { View, Text, StyleSheet } from "react-native";  
+import React, {useState, useEffect,useRef} from 'react'
+import { View, Text, StyleSheet, Animated } from "react-native";  
 import AddTagsBar from './AddTagsBar';
 import DonationList from './DonationList';
 import SearchBar from './SearchBar';
 
 const ChecklistCard = ({text, items}) => {
+
     const [userList, setUserList] = useState(items)
     const [manualTag, setManualTag] = useState("");
     const [searching, setSearching] = useState(false)
 
     return (
-        <View style={styles.card}>
+        <View style={[styles.card, {height: (searching? '120%' : 'auto')}]}> 
                 <Text style={styles.cardText}>{text}</Text>
-                <SearchBar setSearching={setSearching}/>
+                <SearchBar searching={searching} setSearching={setSearching}/>
                 {searching?
                     null
                 :
