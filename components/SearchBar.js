@@ -48,7 +48,7 @@ const SearchBar = ({searching, setSearching}) => {
             ]}>
             <TextInput
                 style={styles.input}
-                placeholder='Search for items'
+                placeholder='Search for items or mission statements'
                 onFocus={() => {setSearching(true);}}
                 onChangeText={(text) => setSearchQuery(text)}
                 value={searchQuery}

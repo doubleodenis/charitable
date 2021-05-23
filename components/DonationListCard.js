@@ -1,44 +1,42 @@
 import React, {useState, useEffect,useRef} from 'react'
-import { View, Text, StyleSheet, Animated } from "react-native";  
-import AddTagsBar from './AddTagsBar';
+import { View, Text, StyleSheet, Animated, KeyboardAvoidingView } from "react-native";  
 import DonationList from './DonationList';
+import SearchList from './SearchList'
 import SearchBar from './SearchBar';
 
-const ChecklistCard = ({text, items}) => {
+const DonationListCard = ({text, items, missions, searching, setSearching}) => {
 
-    const [userList, setUserList] = useState(items)
+    const [itemList, setItemList] = useState(items)
+    const [missionList, setMissionList] = useState(missions)
     const [manualTag, setManualTag] = useState("");
-    const [searching, setSearching] = useState(false)
 
     return (
-        <View style={[styles.card, {height: (searching? '120%' : 'auto')}]}> 
+        <View style={[styles.card, {height: (searching? '100%' : 'auto'), borderBottomRightRadius: (searching? 0 : 10), borderBottomLeftRadius: (searching? 0 : 10)}]}> 
                 <Text style={styles.cardText}>{text}</Text>
                 <SearchBar searching={searching} setSearching={setSearching}/>
-                {searching?
-                    null
+                {searching ?
+                    <SearchList 
+                        itemList={itemList} 
+                        setItemList={setItemList}
+                    />
                 :
                 <>
                     <DonationList 
-                        userList={userList} 
-                        setUserList={setUserList}
-                    />
-                    <Text style={styles.note}>Can’t find a tag that describes your items? Use the input below to add items manually</Text>
-                    <AddTagsBar 
-                        manualTag={manualTag} 
-                        setManualTag={setManualTag} 
-                        userList={userList} 
-                        setUserList={setUserList}
+                        itemList={itemList} 
+                        missionList={missionList}
+                        setItemList={setItemList}
+                        setMissionList={setMissionList}
                     />
                 </>
                 }
         </View>
+        
     );
 }
 
 const styles = StyleSheet.create({
     card: {
         paddingTop: 30,
-        paddingBottom: 30,
         paddingLeft: 20,
         paddingRight: 20,
         borderRadius: 10,
@@ -61,4 +59,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ChecklistCard;
+export default DonationListCard;

@@ -4,7 +4,6 @@ import { View, StyleSheet, Text, Button } from "react-native";
 
 import Home from '../screens/Home';
 import Donate from '../screens/Donate';
-import Mission from '../screens/Mission';
 import Map from '../screens/Map';
 import VendorPageSettings from '../screens/VendorPageSettings';
 import VendorPage from '../screens/VendorPage';
@@ -43,11 +42,6 @@ const DonateStackScreen = () => (
                 name="Donate" 
                 options={{title: 'Search'}} 
                 component={Donate}
-            />
-            <DonateStack.Screen 
-                name="Mission" 
-                options={{title: 'Search'}} 
-                component={Mission}
             />
         </DonateStack.Navigator>
         <DonateFooter/>
