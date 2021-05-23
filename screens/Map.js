@@ -1,73 +1,15 @@
 import React, { useState } from "react";
-import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
+import locations from "../mock_data/locations";
 
-// Dummy Data
-const LOCATIONS = [
-    {
-        id: "loc-1",
-        name: "West Side Charity",
-        needed: ["Clothes", "Toiletries", "Food"],
-    },
-    {
-        id: "loc-2",
-        name: "House of the Charitable Mother, Rosalia",
-        needed: ["Clothes", "Toiletries", "Food", "Furniture", "Love"],
-    },
-    {
-        id: "loc-3",
-        name: "Help N' Stuff",
-        needed: ["Beds", "Pillows", "Sheets"],
-    },
-    {
-        id: "loc-4",
-        name: "Maybe Helpful, Plenty Loveful",
-    },
-    {
-        id: "loc-5",
-        name: "A Little Bit of Anything for Everybody",
-        needed: [
-            "Apples",
-            "Oranges",
-            "Tomatoes",
-            "Lettuce",
-            "Tangerine",
-            "Tangerong",
-            "Tango-Foxtrot",
-            "Dolls",
-        ],
-    },
-    {
-        id: "loc-6",
-        name: "Juicy Donations",
-        needed: ["Apples", "Oranges", "Tomatoes"],
-    },
-    {
-        id: "loc-7",
-        name: "Fairly Generous House",
-        needed: [
-            "Obtuse",
-            "Rubber Goose",
-            "Green Moose",
-            "Guava Juice",
-            "Giant Snake",
-            "Birthday Cake",
-            "Large Fries",
-            "Chocolate Shake",
-        ],
-    },
-    {
-        id: "loc-8",
-        name: "The Best Charity",
-        needed: ["Papers, Rocks, Scissors"],
-    },
-];
+const HORIZONTAL_MARGIN = 8;
 
 const Map = () => {
-    const [showList, setShowList] = useState(true);
+    const [showList, setShowList] = useState(false);
 
     const centerMap = () => {
         console.log("Map Centered!");
@@ -89,6 +31,10 @@ const Map = () => {
         );
     };
 
+    const listSpacing = () => {
+        return <View style={{ height: 8 }} />;
+    };
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1, position: "relative" }}>
@@ -106,44 +52,48 @@ const Map = () => {
                     customMapStyle={mapStyle}
                 />
                 <View style={styles.mapOverlay}>
-                    <View style={styles.buttonsContainer}>
+                    <View
+                        style={[
+                            styles.header,
+                            showList ? styles.listActiveHeader : "",
+                        ]}
+                    >
                         <DisplayButton
-                            text={showList ? "Hide List" : "View List"}
                             buttonStyle={styles.button}
                             textStyle={styles.buttonText}
                             onPress={handleShowList}
-                        />
+                        >
+                            {showList ? "Hide List" : "View List"}
+                        </DisplayButton>
                         <View style={{ flexDirection: "row" }}>
                             <DisplayButton
-                                text={"Center"}
                                 buttonStyle={[
                                     styles.button,
-                                    { marginRight: 6 },
+                                    { marginRight: 8 },
                                 ]}
                                 textStyle={styles.buttonText}
                                 onPress={centerMap}
-                            />
+                            >
+                                Center
+                            </DisplayButton>
                             <DisplayButton
-                                text={"Sort"}
                                 buttonStyle={styles.button}
                                 textStyle={styles.buttonText}
                                 onPress={sortLocations}
-                            />
+                            >
+                                Sort
+                            </DisplayButton>
                         </View>
                     </View>
                     {showList && (
-                        <View style={styles.listContainer}>
-                            <FlatList
-                                data={LOCATIONS}
-                                renderItem={renderItem}
-                                keyExtractor={(item) => item.id}
-                            />
-                        </View>
-                        // <FlatList
-                        //     data={LOCATIONS}
-                        //     renderItem={renderItem}
-                        //     keyExtractor={(item) => item.id}
-                        // />
+                        <FlatList
+                            data={locations}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.id}
+                            ListHeaderComponent={listSpacing}
+                            ItemSeparatorComponent={listSpacing}
+                            ListFooterComponent={listSpacing}
+                        />
                     )}
                 </View>
             </View>
@@ -154,14 +104,24 @@ const Map = () => {
 const styles = StyleSheet.create({
     mapOverlay: {
         flex: 1,
+        height: "100%",
         position: "absolute",
-        left: 8,
-        right: 8,
     },
-    buttonsContainer: {
+    header: {
+        width: Dimensions.get("window").width,
         justifyContent: "space-between",
         flexDirection: "row",
-        marginTop: 6,
+        paddingVertical: 8,
+        paddingHorizontal: HORIZONTAL_MARGIN,
+    },
+    listActiveHeader: {
+        backgroundColor: "#ffffff",
+        shadowColor: "black",
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 4,
+        // borderBottomLeftRadius: 8,
+        // borderBottomRightRadius: 8,
     },
     button: {
         borderRadius: 8,
@@ -176,12 +136,8 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 18,
     },
-    listContainer: {
-        flex: 1,
-        marginVertical: 4,
-    },
     cardContainer: {
-        marginVertical: 4,
+        marginHorizontal: HORIZONTAL_MARGIN,
     },
 });
 
