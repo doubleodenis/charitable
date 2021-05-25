@@ -8,16 +8,19 @@ const DonationListCard = ({text, items, missions, searching, setSearching}) => {
 
     const [itemList, setItemList] = useState(items)
     const [missionList, setMissionList] = useState(missions)
-    const [manualTag, setManualTag] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     return (
         <View style={[styles.card, {height: (searching? '100%' : 'auto'), borderBottomRightRadius: (searching? 0 : 10), borderBottomLeftRadius: (searching? 0 : 10)}]}> 
                 <Text style={styles.cardText}>{text}</Text>
-                <SearchBar searching={searching} setSearching={setSearching}/>
+                <SearchBar searching={searching} setSearching={setSearching} searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
                 {searching ?
                     <SearchList 
                         itemList={itemList} 
                         setItemList={setItemList}
+                        missionList={missionList}
+                        setMissionList={setMissionList}
+                        searchQuery={searchQuery}
                     />
                 :
                 <>

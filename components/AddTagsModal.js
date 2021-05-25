@@ -3,13 +3,11 @@ import { View, Text, StyleSheet, TextInput, Modal } from "react-native";
 import DisplayButton from './DisplayButton';
 import IconButton from './IconButton'
 
-const AddTagsModal = ({itemList, setItemList, modalVisible, setModalVisible}) => {
+const AddTagsModal = ({itemList, setItemList, missionList, setMissionList, modalVisible, setModalVisible, searchType}) => {
     const [manualTag, setManualTag] = useState('')
     
     const addTag = (tag) => {
-        
-        if(tag){
-            console.log(tag)
+        if(tag && tag.trim()){
             let listCopy = [...itemList]
             listCopy.unshift(tag)
             setItemList(listCopy)
@@ -17,39 +15,70 @@ const AddTagsModal = ({itemList, setItemList, modalVisible, setModalVisible}) =>
         }
     }
 
+    const addMission = (tag) => {
+        if(tag && tag.trim()){
+            let listCopy = [...missionList]
+            listCopy.unshift(tag)
+            setMissionList(listCopy)
+            setManualTag('')
+        }
+    }
+
     return (
         
             <Modal
-                animationType="slide"
-                transparent={false}
+                animationType='fade'
+                transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
                     setModalVisible(!modalVisible);
                 }}
             >
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (modalVisible?'rgba(0, 0, 0, 0.6)': 'none')}}>
                     <View style={styles.modalBackground}>
                         <View style={{width: '100%', alignItems: 'flex-end'}}>
                             <DisplayButton onPress={() => setModalVisible(!modalVisible)}>Cancel</DisplayButton>
                         </View>
                         <View style={styles.addTagsContainer}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Manually add tags'
-                                onChangeText={(text) => setManualTag(text)}
-                                value={manualTag}
-                                returnKeyType='done'
-                                onSubmitEditing = {()=>addTag(manualTag)}
-                                blurOnSubmit={false}
-                            />
-                            <IconButton 
-                                style={styles.checkButton} 
-                                iconStyle={styles.checkIcon}
-                                onPress={() => addTag(manualTag)}
-                                icon='check'
-                            />
+                            {searchType==='items'?
+                            <>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='Manually add an item tag to your search'
+                                    onChangeText={(text) => setManualTag(text)}
+                                    value={manualTag}
+                                    returnKeyType='done'
+                                    onSubmitEditing = {()=>addTag(manualTag)}
+                                    blurOnSubmit={false}
+                                />
+                                <IconButton 
+                                    style={styles.checkButton} 
+                                    iconStyle={styles.checkIcon}
+                                    onPress={() => addTag(manualTag)}
+                                    icon='check'
+                                />
+                            </>
+                            :
+                            <>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='Manually add a mission tag to your search'
+                                    onChangeText={(text) => setManualTag(text)}
+                                    value={manualTag}
+                                    returnKeyType='done'
+                                    onSubmitEditing = {()=>addMission(manualTag)}
+                                    blurOnSubmit={false}
+                                />
+                                <IconButton 
+                                    style={styles.checkButton} 
+                                    iconStyle={styles.checkIcon}
+                                    onPress={() => addMission(manualTag)}
+                                    icon='check'
+                                />
+                            </>
+                            }
                         </View>
-                        <Text style={styles.note}>Keep in mind that, to help your search, your custom tag will need to match with a donation center's custom tag.</Text>
+                        <Text style={styles.note}>To help your search, your custom tag will need to match with a donation center's custom tag.</Text>
                     </View>
                 </View>
             </Modal>
@@ -58,7 +87,7 @@ const AddTagsModal = ({itemList, setItemList, modalVisible, setModalVisible}) =>
 
 const styles = StyleSheet.create({
     modalBackground: {
-        width: '80%',
+        width: '90%',
         margin: 20,
         backgroundColor: "white",
         borderRadius: 20,
