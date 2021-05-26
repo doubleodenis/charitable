@@ -21,6 +21,7 @@ const DonationListCard = ({text, items, missions, searching, setSearching}) => {
                         missionList={missionList}
                         setMissionList={setMissionList}
                         searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
                     />
                 :
                 <>

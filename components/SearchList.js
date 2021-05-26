@@ -4,21 +4,25 @@ import IconButton from './IconButton'
 import DisplayButton from './DisplayButton'
 import AddTagsModal from './AddTagsModal';
 import { ScrollView } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const dummyList=['Clothes', 'Furniture', 'Electronics', 'Sanitary Products', 'Toys', 'Jeans', 'Toothbrushes', 'Garage Mats', 'Computer', 'Flowers']
 const dummyMissions=['Shelters', 'Needy', 'Underprivileged']
+const suggestedSearches=['Clothes', 'Furniture', 'Toys']
 
-const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQuery}) => {
+const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQuery, setSearchQuery}) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [searchType, setSearchType] = useState('items')
     const [itemSearch, setItemSearch] = useState([])
     const [missionSearch, setMissionSearch] = useState([])
+    const [emptySearch, setEmptySearch] = useState(true)
 
     useEffect(() => {
         let searchCopy = searchQuery + ''
         console.log(searchCopy)
         if(searchCopy.trim().length > 0)
         {
+            
             if(searchType==='items') {
                 setItemSearch(dummyList.filter(s => s.toLocaleUpperCase().includes(searchQuery.toLocaleUpperCase())))
             }
@@ -79,7 +83,27 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                     keyboardShouldPersistTaps={"handled"}
                 >
                 <View style={styles.list}>
-                    {(searchType==='items'? itemSearch : missionSearch).map((item, i) => (
+                {(searchQuery+'').trim().length === 0 ?
+                    <View style={{width: '100%', height: 300, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: '#AEAEAE', marginTop: 20, fontSize: 20, textAlign: 'center', fontWeight: '500'}}>Try searching for</Text>
+                        {suggestedSearches.map((item,i) => {
+                            return(
+                                <>
+                                    <DisplayButton
+                                        key={`${i}-${item}-suggest`}
+                                        buttonStyle={{height: 40, justifyContent: 'center'}}
+                                        textStyle={{color: '#8BC178', fontSize: 26}}
+                                        onPress={() => setSearchQuery(item)}
+                                    >
+                                        {item}
+                                    </DisplayButton>
+                                </>
+                            )
+                        })}
+                    </View>
+                :
+                    ((searchType==='items'? itemSearch : missionSearch).map((item, i) => (
+                        
                         <View style={styles.listItem} key={`listitem-${item}${i}`}>
                             <Text style={styles.listItemText}>
                                 {item}
@@ -99,15 +123,18 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                                     icon='plus'
                                 />
                             }
-                            
                         </View>
-                    ))}
+                    )))
+                }
                 </View>
-                <View style={{width: '100%', alignItems: 'center', marginBottom: 40}}>
-                    <DisplayButton textStyle={styles.note}  onPress={() => setModalVisible(true)}>
-                        Not what you're looking for? Manually add tag...
-                    </DisplayButton>
-                </View>
+                {(searchQuery+'').trim().length > 0 &&
+                    <View style={{width: '100%', alignItems: 'center', marginBottom: 40}}>
+                        <DisplayButton textStyle={styles.note}  onPress={() => setModalVisible(true)}>
+                            Not what you're looking for? Manually add tag...
+                        </DisplayButton>
+                    </View>
+                }
+                
                 <AddTagsModal 
                     modalVisible={modalVisible} 
                     setModalVisible={setModalVisible}
