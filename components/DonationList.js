@@ -2,24 +2,33 @@ import React, {useState, useEffect} from 'react'
 import { View, Text, StyleSheet } from "react-native"; 
 import IconButton from './IconButton'
 
-const DonationList = ({userList, setUserList}) => {
+const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
  
-    const removeTag = (tag) => {
-        let checksCopy = [...userList]
+    const removeItem = (tag) => {
+        let checksCopy = [...itemList]
         let index = checksCopy.indexOf(tag)
         if (index > -1) {
             checksCopy.splice(index, 1);
         }
-        setUserList(checksCopy)
+        setItemList(checksCopy)
+    }
+
+    const removeMission = (tag) => {
+        let checksCopy = [...missionList]
+        let index = checksCopy.indexOf(tag)
+        if (index > -1) {
+            checksCopy.splice(index, 1);
+        }
+        setMissionList(checksCopy)
     }
 
     return (
         <View style={styles.listContainer}>
             <Text style={styles.listHeading}>
-                Your List
+                I am donating:
             </Text>
             <View style={styles.list}>
-                {userList.map((item, i) => (
+                {itemList.map((item, i) => (
                     <View style={styles.listItem} key={`listitem-${item}${i}`}>
                         <Text style={styles.listItemText}>
                             {item}
@@ -27,7 +36,25 @@ const DonationList = ({userList, setUserList}) => {
                         <IconButton 
                             style={styles.deleteButton} 
                             iconStyle={styles.deleteIcon}
-                            onPress={() => removeTag(item)}
+                            onPress={() => removeItem(item)}
+                            icon='times'
+                        />
+                    </View>
+                ))}
+            </View>
+            <Text style={styles.listHeading}>
+                to:
+            </Text>
+            <View style={styles.list}>
+                {missionList.map((item, i) => (
+                    <View style={styles.listItem} key={`listitem-${item}${i}`}>
+                        <Text style={styles.listItemText}>
+                            {item}
+                        </Text>
+                        <IconButton 
+                            style={styles.deleteButton} 
+                            iconStyle={styles.deleteIcon}
+                            onPress={() => removeMission(item)}
                             icon='times'
                         />
                     </View>

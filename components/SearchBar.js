@@ -1,11 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { Animated, Easing, View, StyleSheet, TextInput, TouchableOpacity, Keyboard } from "react-native";  
+import { Animated, Easing, View, StyleSheet, TextInput, Keyboard } from "react-native";  
 import DisplayButton from './DisplayButton'
 
-const SearchBar = ({searching, setSearching}) => {
+const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery}) => {
     const shrinkAnim = useRef(new Animated.Value(100)).current
     const fadeAnim = useRef(new Animated.Value(0)).current
-    const [searchQuery, setSearchQuery] = useState('')
 
     useEffect(() => {
         playAnim()
@@ -48,8 +47,10 @@ const SearchBar = ({searching, setSearching}) => {
             ]}>
             <TextInput
                 style={styles.input}
-                placeholder='Search for items'
+                placeholder={searching? 'Search' : 'Search for items or mission statements'}
                 onFocus={() => {setSearching(true);}}
+                returnKeyType='search'
+                onSubmitEditing = {()=>Keyboard.dismiss()}
                 onChangeText={(text) => setSearchQuery(text)}
                 value={searchQuery}
             />
@@ -71,7 +72,6 @@ const styles = StyleSheet.create({
         color: '#565656'
     },
     searchContainer: {
-        // width: '100%',
         padding: 5,
         height: 35,
         borderStyle: 'solid',

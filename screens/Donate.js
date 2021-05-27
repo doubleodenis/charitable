@@ -1,21 +1,27 @@
-import React from "react";
+import React, {useState} from "react";
 
-import { StyleSheet, TouchableWithoutFeedback, Keyboard, View} from 'react-native';
+import { StyleSheet, TouchableWithoutFeedback, Keyboard, View, KeyboardAvoidingView} from 'react-native';
 import DisplayButton from '../components/DisplayButton'
 import { SafeAreaView } from "react-native-safe-area-context";
-import ChecklistCard from "../components/ChecklistCard";
+import DonationListCard from "../components/DonationListCard";
 import { ScrollView } from "react-native-gesture-handler";
 
-const dummyData = ['Clothes', 'Furniture', 'Electronics', 'Sanitary Products', 'm' , 'm', 'm' , 'm', 'm' , 'm', 'm' , 'm', 'm' , 'm', 'm']
+const dummyData = ['Furniture']
+const dummyMissions = ["Women's Shelters", 'Kids in need', 'Homeless Shelters']
 
 const Donate = ({navigation}) => {
+    const [searching, setSearching] = useState(false)
+
     return (
         <View style={{backgroundColor: '#FFFBF8', height: '100%', width: '100%', flex: 1}}>
             <ScrollView 
                 keyboardDismissMode='on-drag'
+                scrollEnabled={!searching}
+                keyboardShouldPersistTaps={"handled"}
+                contentContainerStyle={{height: (searching? '100%' : 'auto')}}
             >
-                <View style={{alignItems: 'center', paddingVertical: 20}}>
-                    <ChecklistCard text= 'What are you donating?' items={dummyData}/>
+                <View style={{alignItems: 'center', paddingTop: 20}}>
+                    <DonationListCard text= 'What are you donating?' items={dummyData} missions={dummyMissions} searching={searching} setSearching={setSearching}/>
                 </View>
             </ScrollView>
         </View>
