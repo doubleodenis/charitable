@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from "react";
 
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    Button,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    Keyboard,
+    Platform,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthService from "../services/auth";
-import { useNavigation } from '@react-navigation/native';
-import SecureStorage from '../services/secureStorage';
-
+import { useNavigation } from "@react-navigation/native";
+import SecureStorage from "../services/secureStorage";
+import PrimaryInput from "../components/PrimaryInput";
+import DisplayButton from "../components/DisplayButton";
+import Link from '../components/Link'
 
 const SignIn = () => {
     const [email, setEmail] = useState("");
@@ -13,74 +25,77 @@ const SignIn = () => {
 
     let navigation = useNavigation();
 
-
     useEffect(() => {
         //check if already logged in, if so, navigate to organization page
-        SecureStorage.getValue('token').then(res => {
-            navigation.goBack();
-        })
-    }, [])
+        // SecureStorage.getValue('token').then(res => {
+        //     navigation.goBack();
+        // })
+    }, []);
 
     function login() {
         const data = {
             email,
-            password
-        }
+            password,
+        };
 
-        AuthService.login(data).then(res => {
-            SecureStorage.storeValue('token', res.data.token).then(done => {
-                //navigate back
-                navigation.goBack();
+        AuthService.login(data)
+            .then((res) => {
+                SecureStorage.storeValue("token", res.data.token)
+                    .then((done) => {
+                        //navigate back
+                        navigation.goBack();
+                    })
+                    .catch((err) => console.log("err", err));
             })
-            .catch(err => console.log('err', err))
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             {/* Brand logo here */}
-            <Text>Charitable</Text>
 
-            <TextInput
-                type="email"
-                style={{
-                    width: "100%",
-                    height: 40,
-                    borderColor: "gray",
-                    borderWidth: 1,
-                }}
-                onChangeText={(text) => setEmail(text)}
-                value={email}
-                autoFocus
-                keyboardType="email-address"
-                textContentType="emailAddress"
-            />
+            <View>
+                <Text style={styles.header}>Charitable</Text>
+            </View>
 
-            <TextInput
-                style={{
-                    width: "100%",
-                    height: 40,
-                    borderColor: "gray",
-                    borderWidth: 1,
-                }}
-                onChangeText={(text) => setPassword(text)}
-                value={password}
-                textContentType="password"
-                autoCompleteType="password"
-                secureTextEntry
-            />
-            
-            <Button
-                onPress={login}
-                title="Sign In"
-                color="#841584"
-                accessibilityLabel="Press here to sign in"
-            />
+            <KeyboardAvoidingView
+                behavior={Platform.OS == "ios" ? "padding" : "height"}
+                style={{ width: '100%', justifyContent: 'flex-start' }}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.form}>
+                        <PrimaryInput
+                            placeholder="Email"
+                            type="email"
+                            onChangeText={(text) => setEmail(text)}
+                            value={email}
+                            keyboardType="email-address"
+                            textContentType="emailAddress"
+                        />
 
-        </SafeAreaView>
+                        <PrimaryInput
+                            placeholder="Password"
+                            onChangeText={(text) => setPassword(text)}
+                            value={password}
+                            textContentType="password"
+                            autoCompleteType="password"
+                            secureTextEntry
+                        />
+
+                        <DisplayButton
+                            onPress={login}
+                            buttonStyle={styles.displayButton}
+                            textStyle={styles.buttonText}
+                        >
+                            Sign In
+                        </DisplayButton>
+                        <Link style={{textAlign: 'center', alignItems: 'center'}} navigateTo={'Sign Up'}>Or sign up here</Link>
+                    </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </View>
     );
 };
 
@@ -90,7 +105,42 @@ const styles = StyleSheet.create({
         display: "flex",
         backgroundColor: "#fff",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "space-around",
+        padding: "8%"
+    },
+    header: {
+        fontSize: 32,
+        fontWeight: "600",
+        marginBottom: 5,
+        color: "#311700",
+    },
+    form: {
+        display: "flex",
+        justifyContent: "space-evenly",
+        alignContent: 'center',
+        // flexDirection: 'column',
+        // alignItems: 'center',
+        textAlign: 'center',
+        height: 250,
+    },
+    displayButton: {
+        backgroundColor: "#D77944",
+        marginVertical: 5,
+        // justifyContent: 'center',
+        // textAlign: 'center',
+        borderRadius: 8,
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        shadowColor: "black",
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 4,
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "300",
+        textAlign: "center",
     },
 });
 

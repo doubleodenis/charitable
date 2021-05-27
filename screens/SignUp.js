@@ -1,68 +1,84 @@
 import React, { useState } from "react";
 
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    Button,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    Keyboard,
+    Platform,
+} from "react-native";
+
+import SecureStorage from "../services/secureStorage";
+import PrimaryInput from "../components/PrimaryInput";
+import DisplayButton from "../components/DisplayButton";
+import Link from '../components/Link'
 
 const SignUp = () => {
     const [email, setEmail] = useState("");
-    const [confirmEmail, setConfirmEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    const submit = (e) => {
+    const [confirmPassword, setConfirmPassword] = useState("");
+    
+    const signUp = (e) => {
         //...
     };
     
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
 
-            <TextInput
-                type="email"
-                style={{
-                    width: "100%",
-                    height: 40,
-                    borderColor: "gray",
-                    borderWidth: 1,
-                }}
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                autoFocus
-                keyboardType="email-address"
-                textContentType="emailAddress"
-            />
+            <View>
+                <Text style={styles.header}>Sign Up for Charitable</Text>
+            </View>
 
-            <TextInput
-                type="email"
-                style={{
-                    width: "100%",
-                    height: 40,
-                    borderColor: "gray",
-                    borderWidth: 1,
-                }}
-                onChange={(e) => setConfirmEmail(e.target.value)}
-                value={confirmEmail}
-                autoFocus
-                keyboardType="email-address"
-                textContentType="emailAddress"
-            />
+            <KeyboardAvoidingView
+                    behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    style={{ width: '100%', justifyContent: 'flex-start' }}
+                >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.form}>
+                        <PrimaryInput
+                            type="email"
+                            placeholder="Email"
+                            onChangeText={(text) => setEmail(text)}
+                            value={email}
+                            keyboardType="email-address"
+                            textContentType="emailAddress"
+                        />
 
-            <TextInput
-                style={{
-                    width: "100%",
-                    height: 40,
-                    borderColor: "gray",
-                    borderWidth: 1,
-                }}
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                textContentType="password"
-            />
-            <Button
-                onPress={submit}
-                title="Sign Up"
-                color="#841584"
-                accessibilityLabel="Press here to sign Up"
-            />
-        </SafeAreaView>
+                        <PrimaryInput
+                            placeholder="Password"
+                            onChangeText={(text) => setPassword(text)}
+                            value={password}
+                            textContentType="password"
+                            autoCompleteType="password"
+                            secureTextEntry
+                        />
+                        <PrimaryInput
+                            placeholder="Confirm Password"
+                            onChangeText={(text) => setConfirmPassword(text)}
+                            value={password}
+                            textContentType="password"
+                            autoCompleteType="password"
+                            secureTextEntry
+                        />
+
+                        <DisplayButton
+                            onPress={signUp}
+                            buttonStyle={styles.displayButton}
+                            textStyle={styles.buttonText}
+                        >
+                            Sign Up
+                        </DisplayButton>
+                        <Link style={{textAlign: 'center', alignItems: 'center'}} navigateTo={'Sign In'}>Or sign in here</Link>
+                    </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+            
+            
+        </View>
     );
 };
 
@@ -72,7 +88,38 @@ const styles = StyleSheet.create({
         display: "flex",
         backgroundColor: "#fff",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "space-around",
+        padding: "8%"
+    },
+    header: {
+        fontSize: 32,
+        fontWeight: "600",
+        marginBottom: 5,
+        color: "#311700",
+    },
+    form: {
+        display: "flex",
+        justifyContent: "space-evenly",
+        alignContent: 'center',
+        textAlign: 'center',
+        height: 250,
+    },
+    displayButton: {
+        backgroundColor: "#D77944",
+        marginVertical: 5,
+        borderRadius: 8,
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        shadowColor: "black",
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 4,
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 18,
+        fontWeight: "300",
+        textAlign: "center",
     },
 });
 
