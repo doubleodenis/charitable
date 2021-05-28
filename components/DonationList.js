@@ -4,6 +4,8 @@ import IconButton from './IconButton'
 
 const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
  
+
+
     const removeItem = (tag) => {
         let checksCopy = [...itemList]
         let index = checksCopy.indexOf(tag)
@@ -24,42 +26,53 @@ const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
 
     return (
         <View style={styles.listContainer}>
-            <Text style={styles.listHeading}>
-                I am donating:
-            </Text>
-            <View style={styles.list}>
-                {itemList.map((item, i) => (
-                    <View style={styles.listItem} key={`listitem-${item}${i}`}>
-                        <Text style={styles.listItemText}>
-                            {item}
-                        </Text>
-                        <IconButton 
-                            style={styles.deleteButton} 
-                            iconStyle={styles.deleteIcon}
-                            onPress={() => removeItem(item)}
-                            icon='times'
-                        />
-                    </View>
-                ))}
-            </View>
-            <Text style={styles.listHeading}>
-                to:
-            </Text>
-            <View style={styles.list}>
-                {missionList.map((item, i) => (
-                    <View style={styles.listItem} key={`listitem-${item}${i}`}>
-                        <Text style={styles.listItemText}>
-                            {item}
-                        </Text>
-                        <IconButton 
-                            style={styles.deleteButton} 
-                            iconStyle={styles.deleteIcon}
-                            onPress={() => removeMission(item)}
-                            icon='times'
-                        />
-                    </View>
-                ))}
-            </View>
+            {itemList.length > 0 &&
+            <>
+                <Text style={styles.listHeading}>
+                    I am donating:
+                </Text>
+                <View style={styles.list}>
+                    {itemList.map((item, i) => (
+                        <View style={styles.listItem} key={`listitem-${item}${i}`}>
+                            <Text style={styles.listItemText}>
+                                {item}
+                            </Text>
+                            <IconButton 
+                                style={styles.deleteButton} 
+                                iconStyle={styles.deleteIcon}
+                                onPress={() => removeItem(item)}
+                                icon='times'
+                            />
+                        </View>
+                    ))}
+                </View>
+            </>
+            }
+            {missionList.length > 0 &&
+            <>
+                <Text style={styles.listHeading}>
+                    {itemList.length > 0 ? 'to:' : 'I am donating to:'}
+                </Text>
+                <View style={styles.list}>
+                    {missionList.map((item, i) => (
+                        <View style={styles.listItem} key={`listitem-${item}${i}`}>
+                            <Text style={styles.listItemText}>
+                                {item}
+                            </Text>
+                            <IconButton 
+                                style={styles.deleteButton} 
+                                iconStyle={styles.deleteIcon}
+                                onPress={() => removeMission(item)}
+                                icon='times'
+                            />
+                        </View>
+                    ))}
+                </View>
+            </>
+            }
+            {(!(missionList.length > 0) && (!itemList.length > 0)) && 
+                <Text>Search for Tags</Text>
+            }
         </View>
     );
 }

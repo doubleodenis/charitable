@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react'
 import { Animated, Easing, View, StyleSheet, TextInput, Keyboard } from "react-native";  
 import DisplayButton from './DisplayButton'
+import IconButton from './IconButton'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery}) => {
     const shrinkAnim = useRef(new Animated.Value(100)).current
@@ -45,15 +47,24 @@ const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery}) => {
                     outputRange: ['0%', '100%'],
                 })} 
             ]}>
+            <Icon name='search' style={styles.searchIcon}></Icon>
             <TextInput
                 style={styles.input}
-                placeholder={searching? 'Search' : 'Search for items or mission statements'}
+                placeholder={searching? 'Search' : 'Search for items or missions'}
                 onFocus={() => {setSearching(true);}}
                 returnKeyType='search'
                 onSubmitEditing = {()=>Keyboard.dismiss()}
                 onChangeText={(text) => setSearchQuery(text)}
                 value={searchQuery}
             />
+            {searchQuery.trim().length > 0 &&
+                <IconButton 
+                    style={styles.clearButton} 
+                    iconStyle={styles.clearIcon}
+                    onPress={() => setSearchQuery('')}
+                    icon='times-circle'
+                />
+            }
         </Animated.View>
         {searching? 
             <Animated.View style={{opacity: fadeAnim}}>
@@ -79,7 +90,24 @@ const styles = StyleSheet.create({
         borderColor: '#D77944',
         borderRadius: 10,
         flexDirection: 'row',
-        marginRight: 10
+        marginRight: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
+    clearButton: {
+        marginLeft: 'auto',
+        height: 30,
+        width: 25
+    },
+    clearIcon:{
+        fontSize: 20,
+        color: '#AEAEAE',
+    },
+    searchIcon: {
+        fontSize: 14,
+        color: '#AEAEAE',
+        marginRight: 5,
+        marginLeft: 3
+    }
 });
 export default SearchBar;

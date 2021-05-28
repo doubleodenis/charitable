@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const dummyList=['Clothes', 'Furniture', 'Electronics', 'Sanitary Products', 'Toys', 'Jeans', 'Toothbrushes', 'Garage Mats', 'Computer', 'Flowers']
 const dummyMissions=['Shelters', 'Needy', 'Underprivileged']
 const suggestedSearches=['Clothes', 'Furniture', 'Toys']
+const suggestedMissions=['Homeless Shelters', 'Orphanages', 'Wellness']
 
 const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQuery, setSearchQuery}) => {
     const [modalVisible, setModalVisible] = useState(false)
@@ -19,10 +20,8 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
 
     useEffect(() => {
         let searchCopy = searchQuery + ''
-        console.log(searchCopy)
         if(searchCopy.trim().length > 0)
         {
-            
             if(searchType==='items') {
                 setItemSearch(dummyList.filter(s => s.toLocaleUpperCase().includes(searchQuery.toLocaleUpperCase())))
             }
@@ -64,7 +63,6 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
     }
 
     return (
-        
             <View style={styles.listContainer}>
                 <View style={styles.tabNav}>
                     <DisplayButton 
@@ -84,47 +82,53 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                 >
                 <View style={styles.list}>
                 {(searchQuery+'').trim().length === 0 ?
-                    <View style={{width: '100%', height: 300, justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{color: '#AEAEAE', marginTop: 20, fontSize: 20, textAlign: 'center', fontWeight: '500'}}>Try searching for</Text>
-                        {suggestedSearches.map((item,i) => {
+                    <View style={{width: '100%', height: 210, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: '#AEAEAE', marginTop: 20, marginBottom: 10 ,fontSize: 20, textAlign: 'center', fontWeight: '500'}}>Try searching for</Text>
+                        {(searchType==='items'? suggestedSearches : suggestedMissions).map((item,i) => {
                             return(
-                                <>
+                                <View key={`${i}-${item}-suggest`}>
                                     <DisplayButton
-                                        key={`${i}-${item}-suggest`}
                                         buttonStyle={{height: 40, justifyContent: 'center'}}
-                                        textStyle={{color: '#8BC178', fontSize: 26}}
+                                        textStyle={{color: '#8BC178', fontSize: 20}}
                                         onPress={() => setSearchQuery(item)}
                                     >
                                         {item}
                                     </DisplayButton>
-                                </>
+                                </View>
                             )
                         })}
                     </View>
                 :
-                    ((searchType==='items'? itemSearch : missionSearch).map((item, i) => (
-                        
-                        <View style={styles.listItem} key={`listitem-${item}${i}`}>
-                            <Text style={styles.listItemText}>
-                                {item}
-                            </Text>
-                            {(searchType==='items'? itemList : missionList).find(element => element === item )?
-                                <IconButton 
-                                    style={styles.deleteButton} 
-                                    iconStyle={styles.checkIcon}
-                                    onPress={() => removeTag(item)}
-                                    icon='check'
-                                />
-                            :
-                                <IconButton 
-                                    style={styles.deleteButton} 
-                                    iconStyle={styles.deleteIcon}
-                                    onPress={() => addTag(item)}
-                                    icon='plus'
-                                />
-                            }
-                        </View>
-                    )))
+                    (
+                        (searchType==='items'? itemSearch : missionSearch).length === 0 ?
+                            <View style={{justifyContent: 'center', alignItems: 'center', height: 90}}>
+                                <Text style={{fontSize: 16}}>No results :(</Text>
+                            </View>
+                            
+                        :
+                        (searchType==='items'? itemSearch : missionSearch).map((item, i) => (
+                            <View style={styles.listItem} key={`searchitem-${item}${i}`}>
+                                <Text style={styles.listItemText}>
+                                    {item}
+                                </Text>
+                                {(searchType==='items'? itemList : missionList).find(element => element === item )?
+                                    <IconButton 
+                                        style={styles.deleteButton} 
+                                        iconStyle={styles.checkIcon}
+                                        onPress={() => removeTag(item)}
+                                        icon='check'
+                                    />
+                                :
+                                    <IconButton 
+                                        style={styles.deleteButton} 
+                                        iconStyle={styles.deleteIcon}
+                                        onPress={() => addTag(item)}
+                                        icon='plus'
+                                    />
+                                }
+                            </View>
+                        ))
+                    )
                 }
                 </View>
                 {(searchQuery+'').trim().length > 0 &&
@@ -160,7 +164,7 @@ const styles = StyleSheet.create({
     },
     list: {
         marginLeft: 10,
-        paddingBottom: 25,
+        paddingBottom: 10,
     },
     listItem: {
         flexDirection: 'row',
