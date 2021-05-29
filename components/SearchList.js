@@ -4,12 +4,12 @@ import IconButton from './IconButton'
 import DisplayButton from './DisplayButton'
 import AddTagsModal from './AddTagsModal';
 import { ScrollView } from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {items, centers} from '../mock_data/tagslist'
 
 const dummyList=['Clothes', 'Furniture', 'Electronics', 'Sanitary Products', 'Toys', 'Jeans', 'Toothbrushes', 'Garage Mats', 'Computer', 'Flowers']
-const dummyMissions=['Shelters', 'Needy', 'Underprivileged']
+const dummyMissions=['Shelters', 'Needy', 'Underprivileged', 'Homeless Shelters', 'Orphanages', 'Wellness Centers']
 const suggestedSearches=['Clothes', 'Furniture', 'Toys']
-const suggestedMissions=['Homeless Shelters', 'Orphanages', 'Wellness']
+const suggestedMissions=['Homeless Shelters', 'Orphanages', 'Wellness Centers']
 
 const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQuery, setSearchQuery}) => {
     const [modalVisible, setModalVisible] = useState(false)
@@ -20,13 +20,18 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
 
     useEffect(() => {
         let searchCopy = searchQuery + ''
+        let tempTags = []
         if(searchCopy.trim().length > 0)
         {
             if(searchType==='items') {
-                setItemSearch(dummyList.filter(s => s.toLocaleUpperCase().includes(searchQuery.toLocaleUpperCase())))
+                tempTags = items.filter(item => item.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()) || item.keywords.filter(k => k.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase())).length > 0)
+                //tempTags.concat(items.filter(item => item.keywords.filter(k => k.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase())).length > 0))
+                setItemSearch(tempTags)
             }
-            else
-                setMissionSearch(dummyMissions.filter(s => s.toLocaleUpperCase().includes(searchQuery.toLocaleUpperCase())))
+            else {
+                tempTags = items.filter(s => s.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()))
+                setMissionSearch(tempTags)
+            }
         }
     }, [searchQuery]);
 
@@ -104,30 +109,32 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                             <View style={{justifyContent: 'center', alignItems: 'center', height: 90}}>
                                 <Text style={{fontSize: 16}}>No results :(</Text>
                             </View>
-                            
                         :
-                        (searchType==='items'? itemSearch : missionSearch).map((item, i) => (
-                            <View style={styles.listItem} key={`searchitem-${item}${i}`}>
-                                <Text style={styles.listItemText}>
-                                    {item}
-                                </Text>
-                                {(searchType==='items'? itemList : missionList).find(element => element === item )?
-                                    <IconButton 
-                                        style={styles.deleteButton} 
-                                        iconStyle={styles.checkIcon}
-                                        onPress={() => removeTag(item)}
-                                        icon='check'
-                                    />
-                                :
-                                    <IconButton 
-                                        style={styles.deleteButton} 
-                                        iconStyle={styles.deleteIcon}
-                                        onPress={() => addTag(item)}
-                                        icon='plus'
-                                    />
-                                }
-                            </View>
-                        ))
+                        (searchType==='items'? itemSearch : missionSearch).map((itemObject, i) => {
+                            let item = itemObject.name
+                            return(
+                                <View style={styles.listItem} key={`searchitem-${item}${i}`}>
+                                    <Text style={styles.listItemText}>
+                                        {item}
+                                    </Text>
+                                    {(searchType==='items'? itemList : missionList).find(element => element === item )?
+                                        <IconButton 
+                                            style={styles.deleteButton} 
+                                            iconStyle={styles.checkIcon}
+                                            onPress={() => removeTag(item)}
+                                            icon='check'
+                                        />
+                                    :
+                                        <IconButton 
+                                            style={styles.deleteButton} 
+                                            iconStyle={styles.deleteIcon}
+                                            onPress={() => addTag(item)}
+                                            icon='plus'
+                                        />
+                                    }
+                                </View>
+                            )
+                        })
                     )
                 }
                 </View>
