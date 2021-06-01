@@ -4,8 +4,6 @@ import IconButton from './IconButton'
 
 const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
  
-
-
     const removeItem = (tag) => {
         let checksCopy = [...itemList]
         let index = checksCopy.indexOf(tag)
@@ -71,7 +69,9 @@ const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
             </>
             }
             {(!(missionList.length > 0) && (!itemList.length > 0)) && 
-                <Text>Search for Tags</Text>
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={styles.emptyList}>Adding tags to your search will allow Charitable to find nearby locations that accept your donations :)</Text>
+                </View>
             }
         </View>
     );
@@ -106,5 +106,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#D77944',
     },
+    emptyList: {
+        marginBottom: 30,
+        fontSize: 16,
+        color: '#706052'
+    }
 });
 export default DonationList;

@@ -19,17 +19,20 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
     const [emptySearch, setEmptySearch] = useState(true)
 
     useEffect(() => {
-        let searchCopy = searchQuery + ''
+        setSearchQuery('')
+    }, [searchType]);
+
+    useEffect(() => {
+        let searchCopy = searchQuery.trim() + ''
         let tempTags = []
         if(searchCopy.trim().length > 0)
         {
             if(searchType==='items') {
                 tempTags = items.filter(item => item.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()) || item.keywords.filter(k => k.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase())).length > 0)
-                //tempTags.concat(items.filter(item => item.keywords.filter(k => k.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase())).length > 0))
                 setItemSearch(tempTags)
             }
             else {
-                tempTags = items.filter(s => s.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()))
+                tempTags = centers.filter(s => s.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()))
                 setMissionSearch(tempTags)
             }
         }
@@ -106,8 +109,14 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                 :
                     (
                         (searchType==='items'? itemSearch : missionSearch).length === 0 ?
-                            <View style={{justifyContent: 'center', alignItems: 'center', height: 90}}>
-                                <Text style={{fontSize: 16}}>No results :(</Text>
+                            <View style={{justifyContent: 'center', alignItems: 'center', height: 150}}>
+                                <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>No results for {searchQuery}</Text>
+                                <View style={{alignItems: 'center', justifyContent: 'center' , flexDirection: 'row'}}>
+                                    <Text style={{fontSize: 16}}>Check your input or </Text>
+                                    <DisplayButton textStyle={styles.inlineNote} buttonStyle={{}} onPress={() => setModalVisible(true)}>
+                                        manually add tag
+                                    </DisplayButton>
+                                    </View>
                             </View>
                         :
                         (searchType==='items'? itemSearch : missionSearch).map((itemObject, i) => {
@@ -138,7 +147,7 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                     )
                 }
                 </View>
-                {(searchQuery+'').trim().length > 0 &&
+                {((searchQuery+'').trim().length > 0 && (searchType==='items'? itemSearch : missionSearch).length !== 0) &&
                     <View style={{width: '100%', alignItems: 'center', marginBottom: 40}}>
                         <DisplayButton textStyle={styles.note}  onPress={() => setModalVisible(true)}>
                             Not what you're looking for? Manually add tag...
@@ -201,6 +210,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         textDecorationLine: 'underline'
     },
+    inlineNote: {
+        fontSize: 16,
+        color: '#8BC178',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textDecorationLine: 'underline',
+
+    },
+
     tabNav: {
         flexDirection: 'row',
         justifyContent: 'space-around'

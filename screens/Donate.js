@@ -6,8 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DonationListCard from "../components/DonationListCard";
 import { ScrollView } from "react-native-gesture-handler";
 
-const dummyData = ['Furniture']
-const dummyMissions = ["Women's Shelters", 'Kids in need', 'Homeless Shelters']
+const dummyData = []
+const dummyMissions = []
 
 const Donate = ({navigation}) => {
     const [searching, setSearching] = useState(false)
