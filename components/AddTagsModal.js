@@ -104,7 +104,7 @@ const AddTagsModal = ({itemList, setItemList, missionList, setMissionList, modal
                                 </>
                                 }
                             </View>
-                            <DisplayButton onPress={() => closeModal()}>Cancel</DisplayButton>
+                            <DisplayButton onPress={() => closeModal()}>Close</DisplayButton>
                         </View>
                         <View style={{width: '100%', justifyContent: 'flex-start', marginTop: 3, height: 14}}>
                             {added?
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     },
     addTagsContainer: {
         height: 35,
-        width: '82%',
+        width: '85%',
         padding: 5,
         borderStyle: 'solid',
         borderWidth: 1,

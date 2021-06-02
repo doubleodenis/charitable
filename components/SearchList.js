@@ -19,10 +19,6 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
     const [emptySearch, setEmptySearch] = useState(true)
 
     useEffect(() => {
-        setSearchQuery('')
-    }, [searchType]);
-
-    useEffect(() => {
         let searchCopy = searchQuery.trim() + ''
         let tempTags = []
         if(searchCopy.trim().length > 0)
