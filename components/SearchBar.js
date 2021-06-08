@@ -56,6 +56,7 @@ const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery}) => {
                 onSubmitEditing = {()=>Keyboard.dismiss()}
                 onChangeText={(text) => setSearchQuery(text)}
                 value={searchQuery}
+                autoCorrect={false}
             />
             {searchQuery.trim().length > 0 &&
                 <IconButton 
@@ -79,8 +80,10 @@ const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery}) => {
 
 const styles = StyleSheet.create({
     input: {
-        width: '100%',
-        color: '#565656'
+        width: '80%',
+        color: '#565656',
+        lineHeight: 18,
+        paddingVertical: 0,
     },
     searchContainer: {
         padding: 5,

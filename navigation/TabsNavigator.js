@@ -1,46 +1,49 @@
 import React from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SettingsStackScreen, MapStackScreen, DonatePlaceholder } from './StackScreens';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Tabs = createBottomTabNavigator();
 
 const BottomTabNavigator = () => (
         <Tabs.Navigator
-            // screenOptions={({ route }) => ({
-            //     tabBarIcon: ({ focused, color, size }) => {
-            //         let iconName;
-        
-            //         if (route.name === 'Home') {
-            //             iconName = focused
-            //             ? 'ios-information-circle'
-            //             : 'ios-information-circle-outline';
-            //         } else if (route.name === 'Settings') {
-            //             iconName = focused ? 'ios-list-box' : 'ios-list';
-            //         }
-        
-            //         // You can return any component that you like here!
-            //         return <Ionicons name={iconName} size={size} color={color} />;
-            //     }
-            // })}
-        //     tabBarOptions={{
-        //         activeTintColor: 'tomato',
-        //         inactiveTintColor: 'gray',
-        // }}
+            tabBarOptions={{
+                showLabel: false,
+                style: {
+                    backgroundColor: '#FFFBF8',
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    position: 'absolute',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: -3 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 3,  
+                    elevation: 5,
+                    height: 60
+                },
+                activeTintColor: '#D77944',
+                inactiveTintColor: '#9B9B9B'
+            }}
         >
-            {/* <Tabs.Screen
-                name="Home"
-                component={HomeStackScreen}
-                options={{ title: "Home" }}
-            /> */}
+           
             <Tabs.Screen
                 name="Map"
                 component={MapStackScreen}
+                options={{ 
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="map" style={{fontSize: 30, color: color}}/>
+                    ), 
+                }}
             />
             {/* Donate Button in middle, similar to a new post button */}
             <Tabs.Screen
                 name="DonatePlaceHolder"
                 component={DonatePlaceholder}
-                options={{title: 'Search'}}
+                options={{
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="search" style={{fontSize: 30, color: color}}/>
+                      ),
+                }}
                 listeners={({ navigation }) => ({
                     tabPress: (e) => {
                       e.preventDefault();
@@ -49,15 +52,14 @@ const BottomTabNavigator = () => (
                 })}
             />
 
-            {/* <Tabs.Screen
-                name="Notifications"
-                component={NotificationsStackScreen}
-                options={{ title: "Notifications", tabBarBadge=3 }}
-            /> */}
             <Tabs.Screen
                 name="Charity"
                 component={SettingsStackScreen}
-                options={{ title: "Settings" }}
+                options={{ 
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="cog" style={{fontSize: 30, color: color}}/>
+                    ), 
+                }}
             />
         </Tabs.Navigator>
 );

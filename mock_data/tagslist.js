@@ -151,11 +151,6 @@ const items = [
         keywords: ['Hygiene', 'Bathroom Products', 'Sanitary Products']
     },
     {
-        id: "ite-31",
-        name: "Deodorant",
-        keywords: ['Hygiene', 'Bathroom Products', 'Sanitary Products']
-    },
-    {
         id: "ite-32",
         name: "Toilet Paper",
         keywords: ['Hygiene', 'Bathroom Products', 'Sanitary Products']

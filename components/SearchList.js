@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View, Text, StyleSheet } from "react-native"; 
+import { View, Text, StyleSheet, Keyboard, Platform } from "react-native"; 
 import IconButton from './IconButton'
 import DisplayButton from './DisplayButton'
 import AddTagsModal from './AddTagsModal';
@@ -17,6 +17,8 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
     const [itemSearch, setItemSearch] = useState([])
     const [missionSearch, setMissionSearch] = useState([])
     const [emptySearch, setEmptySearch] = useState(true)
+    const keyboardDismissProp = Platform.OS === "ios" ? { keyboardDismissMode: "on-drag" } : { onScrollBeginDrag: Keyboard.dismiss };
+
 
     useEffect(() => {
         let searchCopy = searchQuery.trim() + ''
@@ -81,8 +83,9 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                     >Missions</DisplayButton>
                 </View>
                 <ScrollView
-                    keyboardDismissMode='on-drag'
                     keyboardShouldPersistTaps={"handled"}
+                    keyboardDismissMode= {keyboardDismissProp.keyboardDismissMode}
+                    onScrollBeginDrag= {keyboardDismissProp.onScrollBeginDrag}
                 >
                 <View style={styles.list}>
                 {(searchQuery+'').trim().length === 0 ?

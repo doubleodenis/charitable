@@ -3,7 +3,6 @@ import { View, Text, StyleSheet } from "react-native";
 import IconButton from './IconButton'
 
 const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
- 
     const removeItem = (tag) => {
         let checksCopy = [...itemList]
         let index = checksCopy.indexOf(tag)

@@ -32,8 +32,7 @@ const DonateStackScreen = () => (
         <DonateStack.Navigator 
             screenOptions={{
                 headerStyle: styles.searchHeading,
-                headerTitleStyle: styles.searchHeadingTitle,
-                headerLeft: null,
+                headerLeft: (() => <View/>),
                 headerRight: (() => <ExitButton/>),
                 headerTitle: props => <DonateHeader {...props} />
             }}
@@ -94,7 +93,15 @@ const styles = StyleSheet.create({
     searchHeading: {
         backgroundColor: '#FFFBF8',
         shadowColor: 'transparent',
-        height: 70,
+        elevation: 0,
+        ...Platform.select({
+            ios: {
+                height: 70,
+            },
+            android: {
+              height: 60,
+            },
+        }),
     },
 });
 

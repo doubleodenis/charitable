@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View, Text, StyleSheet, TextInput, Modal, KeyboardAvoidingView } from "react-native";  
+import { View, Text, StyleSheet, TextInput, Modal, KeyboardAvoidingView, Keyboard } from "react-native";  
 import DisplayButton from './DisplayButton';
 import IconButton from './IconButton'
 
@@ -144,11 +144,20 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        marginBottom: 165
+        ...Platform.select({
+            ios: {
+                marginBottom: 165,
+            },
+            android: {
+                marginBottom: 0,
+            },
+        }),
     },
     input: {
-        width: '100%',
-        color: '#565656'
+        width: '90%',
+        color: '#565656',
+        lineHeight: 18,
+        paddingVertical: 0,
     },
     addTagsContainer: {
         height: 35,
