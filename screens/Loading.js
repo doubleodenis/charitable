@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 
-import { StyleSheet, Text, View, TextInput, Button, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, TextInput, Button, ActivityIndicator, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import logo from "../assets/Charitable_Logo.png"
+
 
 const Loading = () => {
    
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.brand}>
-                <View style={styles.image}></View>
+                <Image source={logo} style={styles.image}/>
                 <Text style={styles.name}>Charitable</Text>
+            <View style={{marginTop: 30}}>
+                <ActivityIndicator size="large" color="#AEAEAE" animating={true}/>
             </View>
-            <ActivityIndicator size="large" color="#097a36" animating={true} />
+            
+            </View>
         </SafeAreaView>
     );
 };
@@ -20,13 +25,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         display: "flex",
-        backgroundColor: "#FFBC74", //Main color?
+        backgroundColor: "#FFFBF8", //Main color?
         alignItems: "center",
         justifyContent: "space-around",
     },
     name: {
-        color: "#097a36",
-        fontSize: 28,
+        color: "#D77944",
+        fontSize: 36,
         fontWeight: "300"
     },
     brand: {
@@ -36,10 +41,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     image: {
-        marginTop: 25,
-        height: 100,
-        width: 100,
-        backgroundColor:"#098A3C",
+        height: 145,
+        width: 120
     }
 });
 

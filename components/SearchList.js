@@ -86,6 +86,8 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                     keyboardShouldPersistTaps={"handled"}
                     keyboardDismissMode= {keyboardDismissProp.keyboardDismissMode}
                     onScrollBeginDrag= {keyboardDismissProp.onScrollBeginDrag}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
                 >
                 <View style={styles.list}>
                 {(searchQuery+'').trim().length === 0 ?
