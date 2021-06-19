@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
@@ -10,9 +11,31 @@ import DisplayButton from "../components/DisplayButton";
 const HORIZONTAL_MARGIN = 8;
 
 const Map = () => {
+    const [location, setLocation] = useState(null);
     const [showList, setShowList] = useState(false);
 
     const tabBarHeight = useBottomTabBarHeight();
+
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestPermissionsAsync();
+
+            if (status !== "granted") {
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+        })();
+    }, []);
+
+    // TESTING
+    useEffect(() => {
+        if (location) {
+            console.log("Location: ", location);
+            console.log("Latitude: ", location.coords.latitude);
+        }
+    }, [location]);
 
     const centerMap = () => {
         console.log("Map Centered!");
@@ -49,11 +72,36 @@ const Map = () => {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}
+                    region={
+                        location && {
+                            latitude: location.coords.latitude,
+                            longitude: location.coords.longitude,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }
+                    }
                     showsUserLocation={true} // TODO
                     rotateEnabled={false}
                     showsCompass={false}
                     customMapStyle={mapStyle}
-                />
+                >
+                    {locations &&
+                        locations.map((place, i) => {
+                            return (
+                                place.location && (
+                                    <Marker
+                                        key={place.name + i}
+                                        coordinate={{
+                                            latitude: place.location.latitude,
+                                            longitude: place.location.longitude,
+                                        }}
+                                        title={place.name}
+                                        pinColor={place.verified && "#2d57cc"}
+                                    />
+                                )
+                            );
+                        })}
+                </MapView>
                 <View style={styles.mapOverlay}>
                     <View
                         style={[
@@ -136,8 +184,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 4,
         elevation: 4,
-        // borderBottomLeftRadius: 8,
-        // borderBottomRightRadius: 8,
     },
     button: {
         borderRadius: 8,
