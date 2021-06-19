@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import MapView, { Marker } from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
@@ -10,6 +11,8 @@ const HORIZONTAL_MARGIN = 8;
 
 const Map = () => {
     const [showList, setShowList] = useState(false);
+
+    const tabBarHeight = useBottomTabBarHeight();
 
     const centerMap = () => {
         console.log("Map Centered!");
@@ -97,6 +100,9 @@ const Map = () => {
                     </View>
                     {showList && (
                         <FlatList
+                            contentContainerStyle={{
+                                paddingBottom: tabBarHeight,
+                            }}
                             data={locations}
                             renderItem={renderItem}
                             keyExtractor={(item) => item.id}
