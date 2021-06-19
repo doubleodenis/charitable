@@ -3,12 +3,14 @@ import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import * as Location from "expo-location";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
-// import locations from "../mock_data/locations";
+import locations from "../mock_data/locations";
 
 const HORIZONTAL_MARGIN = 8;
+const LAT_DELTA = 0.0922;
+const LNG_DELTA = 0.0421;
 
 const Map = () => {
     const [location, setLocation] = useState(null);
@@ -24,8 +26,14 @@ const Map = () => {
                 return;
             }
 
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
+            let currentPosition = await Location.getCurrentPositionAsync({});
+
+            setLocation({
+                latitude: currentPosition.coords.latitude,
+                longitude: currentPosition.coords.longitude,
+                latitudeDelta: LAT_DELTA,
+                longitudeDelta: LNG_DELTA,
+            });
         })();
     }, []);
 
@@ -33,12 +41,14 @@ const Map = () => {
     useEffect(() => {
         if (location) {
             console.log("Location: ", location);
-            console.log("Latitude: ", location.coords.latitude);
+            console.log("Latitude: ", location.latitude);
         }
     }, [location]);
 
     const centerMap = () => {
         console.log("Map Centered!");
+
+        setLocation({ ...location });
     };
 
     const sortLocations = () => {
@@ -66,23 +76,12 @@ const Map = () => {
             <View style={{ flex: 1, position: "relative" }}>
                 <MapView
                     style={{ flex: 1 }}
-                    initialRegion={{
-                        latitude: 37.78825,
-                        longitude: -122.4324,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
-                    region={
-                        location && {
-                            latitude: location.coords.latitude,
-                            longitude: location.coords.longitude,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }
-                    }
+                    region={location}
                     showsUserLocation={true} // TODO
                     rotateEnabled={false}
                     showsCompass={false}
+                    showsMyLocationButton={false}
+                    provider={PROVIDER_GOOGLE}
                     customMapStyle={mapStyle}
                 >
                     {locations &&
