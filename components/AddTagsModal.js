@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react'
-import { View, Text, StyleSheet, TextInput, Modal, KeyboardAvoidingView, Keyboard } from "react-native";  
+import { View, Text, StyleSheet, TextInput, Modal} from "react-native";  
 import DisplayButton from './DisplayButton';
 import IconButton from './IconButton'
 
-const AddTagsModal = ({itemList, setItemList, missionList, setMissionList, modalVisible, setModalVisible, searchType}) => {
+const AddTagsModal = ({isUser, itemList, setItemList, missionList, setMissionList, modalVisible, setModalVisible, searchType}) => {
     const [manualTag, setManualTag] = useState('')
     const [added, setAdded] = useState(false)
     const [invalid, setInvalid] = useState(false)
@@ -48,83 +48,87 @@ const AddTagsModal = ({itemList, setItemList, missionList, setMissionList, modal
     }
 
     return (
-        
-            <Modal
-                animationType='fade'
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (modalVisible?'rgba(0, 0, 0, 0.6)': 'none')}}>
-                    <View style={styles.modalBackground}>
-                        <View style={{width: '100%', alignItems: 'flex-start'}}>
-                            <Text style={{fontSize: 18, fontWeight: '500'}}>{searchType==='items'? 'Add Item Tag' : 'Add Mission Tag'}</Text>
-                        </View>
-                        <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 24}}>
-                            <View style={styles.addTagsContainer}>
-                                {searchType==='items'?
-                                <>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder='Manually add an item tag'
-                                        onChangeText={(text) => setManualTag(text)}
-                                        value={manualTag}
-                                        returnKeyType='done'
-                                        onSubmitEditing = {()=>addTag(manualTag)}
-                                        autoFocus={true}
-                                        blurOnSubmit={false}
-                                    />
-                                    <IconButton 
-                                        style={styles.checkButton} 
-                                        iconStyle={styles.checkIcon}
-                                        onPress={() => addTag(manualTag)}
-                                        icon='check'
-                                    />
-                                </>
-                                :
-                                <>
-                                    <TextInput
-                                        style={styles.input}
-                                        placeholder='Manually add a mission tag'
-                                        onChangeText={(text) => setManualTag(text)}
-                                        value={manualTag}
-                                        returnKeyType='done'
-                                        onSubmitEditing = {()=>addMission(manualTag)}
-                                        autoFocus={true}
-                                        blurOnSubmit={false}
-                                    />
-                                    <IconButton 
-                                        style={styles.checkButton} 
-                                        iconStyle={styles.checkIcon}
-                                        onPress={() => addMission(manualTag)}
-                                        icon='check'
-                                    />
-                                </>
-                                }
-                            </View>
-                            <DisplayButton onPress={() => closeModal()}>Close</DisplayButton>
-                        </View>
-                        <View style={{width: '100%', justifyContent: 'flex-start', marginTop: 3, height: 14}}>
-                            {added?
-                                <Text style={styles.addedNote}>"{addedTag}" has been added to search tags!</Text>
+        <Modal
+            animationType='fade'
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+                setModalVisible(!modalVisible);
+            }}
+        >
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: (modalVisible?'rgba(0, 0, 0, 0.6)': 'none')}}>
+                <View style={styles.modalBackground}>
+                    <View style={{width: '100%', alignItems: 'flex-start'}}>
+                        <Text style={{fontSize: 18, fontWeight: '500'}}>
+                            {searchType==='items'? 'Add Item Tag' : 'Add Mission Tag'}
+                        </Text>
+                    </View>
+                    <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 24}}>
+                        <View style={styles.addTagsContainer}>
+                            {searchType==='items'?
+                            <>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='Manually add an item tag'
+                                    onChangeText={(text) => setManualTag(text)}
+                                    value={manualTag}
+                                    returnKeyType='done'
+                                    onSubmitEditing = {()=>addTag(manualTag)}
+                                    autoFocus={true}
+                                    blurOnSubmit={false}
+                                />
+                                <IconButton 
+                                    style={styles.checkButton} 
+                                    iconStyle={styles.checkIcon}
+                                    onPress={() => addTag(manualTag)}
+                                    icon='check'
+                                />
+                            </>
                             :
-                                (invalid?
-                                    <Text style={[styles.addedNote, {color: '#D77944'}]}>Invalid tag, please check your input</Text>
-                                :
-                                    null
-                                )
+                            <>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder='Manually add a mission tag'
+                                    onChangeText={(text) => setManualTag(text)}
+                                    value={manualTag}
+                                    returnKeyType='done'
+                                    onSubmitEditing = {()=>addMission(manualTag)}
+                                    autoFocus={true}
+                                    blurOnSubmit={false}
+                                />
+                                <IconButton 
+                                    style={styles.checkButton} 
+                                    iconStyle={styles.checkIcon}
+                                    onPress={() => addMission(manualTag)}
+                                    icon='check'
+                                />
+                            </>
                             }
-                            
                         </View>
-                        <View style={{width: '100%', alignItems: 'flex-start'}}>
-                            <Text style={styles.note}>To help your search, your custom tag will need to match with a donation center's custom tag.</Text>
-                        </View>
-                        
+                        <DisplayButton onPress={() => closeModal()}>Close</DisplayButton>
+                    </View>
+                    <View style={{width: '100%', justifyContent: 'flex-start', marginTop: 3, height: 14}}>
+                        {added?
+                            <Text style={styles.addedNote}>"{addedTag}" has been added to search tags!</Text>
+                        :
+                            (invalid?
+                                <Text style={[styles.addedNote, {color: '#D77944'}]}>Invalid tag, please check your input</Text>
+                            :
+                                null
+                            )
+                        }
+                    </View>
+                    <View style={{width: '100%', alignItems: 'flex-start'}}>
+                        <Text style={styles.note}>
+                            {isUser
+                                ? "To help your search, your custom tag will need to match with a donation center's tag."
+                                : "Note: users have to manually match your custom tags in their search to find you. We recommend using tags found through our search feature."
+                            }
+                        </Text>
                     </View>
                 </View>
-            </Modal>
+            </View>
+        </Modal>
     );
 }
 
