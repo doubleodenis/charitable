@@ -2,30 +2,32 @@ import React from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SettingsStackScreen, MapStackScreen, DonatePlaceholder } from './StackScreens';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tabs = createBottomTabNavigator();
 
-const BottomTabNavigator = () => (
+const BottomTabNavigator = () => {
+    const insets = useSafeAreaInsets();
+    return (
         <Tabs.Navigator
-            tabBarOptions={{
-                showLabel: false,
-                style: {
-                    backgroundColor: '#FFFBF8',
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
-                    position: 'absolute',
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: -3 },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 3,  
-                    elevation: 5,
-                    height: 60
-                },
-                activeTintColor: '#D77944',
-                inactiveTintColor: '#9B9B9B'
-            }}
-        >
-           
+        tabBarOptions={{
+            showLabel: false,
+            style: {
+                backgroundColor: '#FFFBF8',
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                position: 'absolute',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: -3 },
+                shadowOpacity: 0.2,
+                shadowRadius: 3,  
+                elevation: 5,
+                height: 60 + insets.bottom
+            },
+            activeTintColor: '#D77944',
+            inactiveTintColor: '#9B9B9B'
+        }}
+    >
             <Tabs.Screen
                 name="Map"
                 component={MapStackScreen}
@@ -62,6 +64,7 @@ const BottomTabNavigator = () => (
                 }}
             />
         </Tabs.Navigator>
-);
+)
+            }
 
 export default BottomTabNavigator;

@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
-import locations from "../mock_data/locations";
+// import locations from "../mock_data/locations";
 
 const HORIZONTAL_MARGIN = 8;
 
