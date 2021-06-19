@@ -15,7 +15,21 @@ import HeaderConfirmButton from '../components/HeaderConfirmButton';
 import HeaderSettingsButton from '../components/HeaderSettingsButton';
 import CancelTextButton from '../components/CancelTextButton';
 import OrganizationPage from '../screens/OrganizationPage';
+import Settings from '../screens/Settings';
+
 import SecureStorage from '../services/secureStorage';
+import TextButton from '../components/TextButton';
+import ConfirmButton from '../components/ConfirmButton';
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+var loggedIn = false;
+SecureStorage.getValue('token').then(res => {
+    loggedIn = true;
+})
+.catch(err => {
+    loggedIn = false;
+});
 
 const HomeStack = createStackNavigator();
 
@@ -27,25 +41,36 @@ const HomeStackScreen = () => (
 
 const DonateStack = createStackNavigator();
 
-const DonateStackScreen = () => (
-    <>
-        <DonateStack.Navigator 
-            screenOptions={{
-                headerStyle: styles.searchHeading,
-                headerLeft: (() => <View/>),
-                headerRight: (() => <ExitButton/>),
-                headerTitle: props => <DonateHeader {...props} />
-            }}
-        >
-            <DonateStack.Screen 
-                name="Donate" 
-                options={{title: 'Search'}} 
-                component={Donate}
-            />
-        </DonateStack.Navigator>
-        <DonateFooter/>
-    </>
-);
+const DonateStackScreen = () => {
+    const insets = useSafeAreaInsets();
+    return (
+        <>
+            <DonateStack.Navigator 
+                screenOptions={{
+                    headerStyle: [styles.searchHeading, {...Platform.select({
+                        ios: {
+                            // height is connected to height in DonateHeader.js
+                            height: 60 + insets.top,
+                        },
+                        android: {
+                            height: 60,
+                        },
+                    })}],
+                    headerLeft: (() => <View/>),
+                    headerRight: (() => <ExitButton/>),
+                    headerTitle: props => <DonateHeader {...props} />
+                }}
+            >
+                <DonateStack.Screen 
+                    name="Donate" 
+                    options={{title: 'Search'}} 
+                    component={Donate}
+                />
+            </DonateStack.Navigator>
+            <DonateFooter/>
+        </>
+    );
+}
 
 const DonatePlaceholder = () => (
     <View style={{backgroundColor: 'blue'}}>
@@ -64,6 +89,22 @@ const SettingsStack = createStackNavigator();
 
 const SettingsStackScreen = () => (
     <SettingsStack.Navigator headerMode='screen'>
+        <SettingsStack.Screen name="Settings" component={Settings} 
+            options={{
+                headerTitle: null,
+                headerLeft: () => (
+                    <TextButton style={{ paddingLeft: 15, paddingVertical: 5 }} onPress={() => {
+                        SecureStorage.storeValue('token', '').then(res => {
+                            //navigate refresh
+                            console.log('token has been removed')
+                        })
+                    }}>
+                        <Text style={{ fontSize: 18, color: "#9B9B9B" }}>Logout</Text> 
+                    </TextButton>
+                ),
+                headerRight: loggedIn ? () => <ConfirmButton navigateTo="Sign In">Sign In</ConfirmButton> : () => <ConfirmButton navigateTo="OrganizationPage">View Profile</ConfirmButton>
+            }}
+        />
         <SettingsStack.Screen name="OrganizationPage" component={OrganizationPage} 
             options={{
                 headerTitle: null,
@@ -94,14 +135,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFBF8',
         shadowColor: 'transparent',
         elevation: 0,
-        ...Platform.select({
-            ios: {
-                height: 70,
-            },
-            android: {
-              height: 60,
-            },
-        }),
     },
 });
 

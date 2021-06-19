@@ -1,30 +1,41 @@
 const styled = require('styled-components');
 import React from 'react'
 import { View, Text, StyleSheet, Platform  } from "react-native";  
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {Dimensions} from 'react-native';
+
 
 const DonateHeader = () => {
+    const insets = useSafeAreaInsets();
+    const screenWidth = Dimensions.get('window').width;
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, 
+            {...Platform.select({
+                ios: {
+                    // height is connected to height is StackScreens.js
+                    width: screenWidth*0.9, 
+                    height: '100%',
+                },
+                android: {
+                    width: screenWidth *0.9, 
+                    height: 60,
+                },
+            })}
+        ]}>
             <Text style={styles.textStyle}>Search</Text>
-            <View style={styles.separator}></View>
+            {/* <View style={styles.separator}></View> */}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%', 
-        ...Platform.select({
-            ios: {
-                height: '100%',
-            },
-            android: {
-              height: 60,
-            },
-        }),
+        
         justifyContent: 'center', 
         alignItems: 'center', 
-        textAlign: 'center'
+        textAlign: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#9B9B9B'
     },
     textStyle: {
         color: '#9B9B9B',

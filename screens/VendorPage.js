@@ -20,7 +20,7 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar, FlatList, Button, 
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Tag from '../components/Tag';
-import SampleIcon from "../components/icons/SampleIcon";
+import logo from "../assets/Charitable_Logo.png"
 
 const VendorPage = () => {
     const [orgName, setOrgName] = useState('West Charity');
@@ -56,7 +56,7 @@ const VendorPage = () => {
           <View style={styles.container}>
               
             <View style={styles.imageContainer}>
-                <SampleIcon />
+                <Image source={logo} style={styles.image}/>
             </View>
             
             <View style={styles.contentContainer}>

@@ -6,7 +6,7 @@ import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
-import locations from "../mock_data/locations";
+// import locations from "../mock_data/locations";
 
 const HORIZONTAL_MARGIN = 8;
 
