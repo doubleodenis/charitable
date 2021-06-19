@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import RootNavigator from "./navigation/RootNavigator";
 import Loading from "./screens/Loading";
@@ -24,6 +24,8 @@ export default App = () => {
         // return <Splash /> splash screen is loading screen
     }
     return (
+        <>
+        <StatusBar  barStyle="light-content" translucent={true} />
         <SafeAreaProvider>
             <NavigationContainer>
                 {/* {!userToken ? (
@@ -36,5 +38,6 @@ export default App = () => {
                 <RootNavigator />
             </NavigationContainer>
         </SafeAreaProvider>
+        </>
     );
 };

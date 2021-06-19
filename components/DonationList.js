@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { View, Text, StyleSheet } from "react-native"; 
 import IconButton from './IconButton'
 
-const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
+const DonationList = ({isUser, itemList, missionList, setItemList, setMissionList}) => {
     const removeItem = (tag) => {
         let checksCopy = [...itemList]
         let index = checksCopy.indexOf(tag)
@@ -26,7 +26,7 @@ const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
             {itemList.length > 0 &&
             <>
                 <Text style={styles.listHeading}>
-                    I am donating:
+                    {isUser? 'I am donating:' : 'We are accepting:'}
                 </Text>
                 <View style={styles.list}>
                     {itemList.map((item, i) => (
@@ -48,7 +48,7 @@ const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
             {missionList.length > 0 &&
             <>
                 <Text style={styles.listHeading}>
-                    {itemList.length > 0 ? 'to:' : 'I am donating to:'}
+                    {isUser? (itemList.length > 0 ? 'to:' : 'I am donating to:') : (itemList.length > 0 ? 'and we are a:' : 'We are a:')}
                 </Text>
                 <View style={styles.list}>
                     {missionList.map((item, i) => (
@@ -69,7 +69,12 @@ const DonationList = ({itemList, missionList, setItemList, setMissionList}) => {
             }
             {(!(missionList.length > 0) && (!itemList.length > 0)) && 
                 <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={styles.emptyList}>Adding tags to your search will allow Charitable to find nearby locations that accept your donations :)</Text>
+                    <Text style={styles.emptyList}>
+                        {isUser
+                            ? 'Adding tags to your search will allow Charitable to find nearby locations that accept your donations :)'
+                            : 'Adding tags to your donation center will allow users with proper donations to find you :)'
+                        }
+                    </Text>
                 </View>
             }
         </View>

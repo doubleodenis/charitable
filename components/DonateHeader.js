@@ -10,20 +10,19 @@ const DonateHeader = () => {
     const screenWidth = Dimensions.get('window').width;
     return (
         <View style={[styles.container, 
-            {...Platform.select({
-                ios: {
-                    // height is connected to height is StackScreens.js
-                    width: screenWidth*0.9, 
-                    height: '100%',
-                },
-                android: {
-                    width: screenWidth *0.9, 
-                    height: 60,
-                },
-            })}
+            {
+                width: screenWidth*0.9,
+                ...Platform.select({
+                    ios: {
+                        // ios height is based on height in StackScreens.js
+                        height: '100%',
+                    },
+                    android: {
+                        height: 60,
+                    },
+                })}
         ]}>
             <Text style={styles.textStyle}>Search</Text>
-            {/* <View style={styles.separator}></View> */}
         </View>
     );
 }
