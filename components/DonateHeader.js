@@ -12,10 +12,9 @@ const DonateHeader = () => {
         <View style={[styles.container, 
             {...Platform.select({
                 ios: {
+                    // height is connected to height is StackScreens.js
                     width: screenWidth*0.9, 
-                    height: 40 + insets.top,
-                    //paddingBottom: 10,
-                    //paddingTop: insets.top
+                    height: '100%',
                 },
                 android: {
                     width: screenWidth *0.9, 
