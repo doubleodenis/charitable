@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
 import locations from "../mock_data/locations";
@@ -59,7 +59,11 @@ const Map = () => {
                         ]}
                     >
                         <DisplayButton
-                            buttonStyle={styles.button}
+                            buttonStyle={
+                                showList
+                                    ? styles.listActiveButton
+                                    : styles.button
+                            }
                             textStyle={styles.buttonText}
                             onPress={handleShowList}
                         >
@@ -68,7 +72,9 @@ const Map = () => {
                         <View style={{ flexDirection: "row" }}>
                             <DisplayButton
                                 buttonStyle={[
-                                    styles.button,
+                                    showList
+                                        ? styles.listActiveButton
+                                        : styles.button,
                                     { marginRight: 8 },
                                 ]}
                                 textStyle={styles.buttonText}
@@ -77,7 +83,11 @@ const Map = () => {
                                 Center
                             </DisplayButton>
                             <DisplayButton
-                                buttonStyle={styles.button}
+                                buttonStyle={
+                                    showList
+                                        ? styles.listActiveButton
+                                        : styles.button
+                                }
                                 textStyle={styles.buttonText}
                                 onPress={sortLocations}
                             >
@@ -132,6 +142,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 4,
         elevation: 4,
+    },
+    listActiveButton: {
+        borderWidth: 1,
+        borderColor: "#E4E4E4",
+        borderRadius: 8,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
     },
     buttonText: {
         fontSize: 18,
