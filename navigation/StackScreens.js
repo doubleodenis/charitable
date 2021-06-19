@@ -15,7 +15,19 @@ import HeaderConfirmButton from '../components/HeaderConfirmButton';
 import HeaderSettingsButton from '../components/HeaderSettingsButton';
 import CancelTextButton from '../components/CancelTextButton';
 import OrganizationPage from '../screens/OrganizationPage';
+import Settings from '../screens/Settings';
+
 import SecureStorage from '../services/secureStorage';
+import TextButton from '../components/TextButton';
+import ConfirmButton from '../components/ConfirmButton';
+
+var loggedIn = false;
+SecureStorage.getValue('token').then(res => {
+    loggedIn = true;
+})
+.catch(err => {
+    loggedIn = false;
+});
 
 const HomeStack = createStackNavigator();
 
@@ -64,6 +76,22 @@ const SettingsStack = createStackNavigator();
 
 const SettingsStackScreen = () => (
     <SettingsStack.Navigator headerMode='screen'>
+        <SettingsStack.Screen name="Settings" component={Settings} 
+            options={{
+                headerTitle: null,
+                headerLeft: () => (
+                    <TextButton style={{ paddingLeft: 15, paddingVertical: 5 }} onPress={() => {
+                        SecureStorage.storeValue('token', '').then(res => {
+                            //navigate refresh
+                            console.log('token has been removed')
+                        })
+                    }}>
+                        <Text style={{ fontSize: 18, color: "#9B9B9B" }}>Logout</Text> 
+                    </TextButton>
+                ),
+                headerRight: loggedIn ? () => <ConfirmButton navigateTo="Sign In">Sign In</ConfirmButton> : () => <ConfirmButton navigateTo="OrganizationPage">View Profile</ConfirmButton>
+            }}
+        />
         <SettingsStack.Screen name="OrganizationPage" component={OrganizationPage} 
             options={{
                 headerTitle: null,
