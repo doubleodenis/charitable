@@ -6,17 +6,14 @@ import AddTagsModal from './AddTagsModal';
 import { ScrollView } from 'react-native-gesture-handler';
 import {items, centers} from '../mock_data/tagslist'
 
-const dummyList=['Clothes', 'Furniture', 'Electronics', 'Sanitary Products', 'Toys', 'Jeans', 'Toothbrushes', 'Garage Mats', 'Computer', 'Flowers']
-const dummyMissions=['Shelters', 'Needy', 'Underprivileged', 'Homeless Shelters', 'Orphanages', 'Wellness Centers']
 const suggestedSearches=['Clothes', 'Furniture', 'Toys']
 const suggestedMissions=['Homeless Shelters', 'Orphanages', 'Wellness Centers']
 
-const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQuery, setSearchQuery}) => {
+const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList, searchQuery, setSearchQuery}) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [searchType, setSearchType] = useState('items')
     const [itemSearch, setItemSearch] = useState([])
     const [missionSearch, setMissionSearch] = useState([])
-    const [emptySearch, setEmptySearch] = useState(true)
     const keyboardDismissProp = Platform.OS === "ios" ? { keyboardDismissMode: "on-drag" } : { onScrollBeginDrag: Keyboard.dismiss };
 
 
@@ -157,6 +154,7 @@ const SearchList = ({itemList, setItemList, missionList, setMissionList, searchQ
                 }
                 
                 <AddTagsModal 
+                    isUser={isUser}
                     modalVisible={modalVisible} 
                     setModalVisible={setModalVisible}
                     itemList={itemList}

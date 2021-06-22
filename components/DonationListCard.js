@@ -4,7 +4,7 @@ import DonationList from './DonationList';
 import SearchList from './SearchList'
 import SearchBar from './SearchBar';
 
-const DonationListCard = ({text, items, missions, searching, setSearching}) => {
+const DonationListCard = ({isUser, items, missions, searching, setSearching}) => {
 
     const [itemList, setItemList] = useState(items)
     const [missionList, setMissionList] = useState(missions)
@@ -12,10 +12,11 @@ const DonationListCard = ({text, items, missions, searching, setSearching}) => {
 
     return (
         <View style={[styles.card, {height: (searching? '100%' : 'auto'), borderBottomRightRadius: (searching? 0 : 10), borderBottomLeftRadius: (searching? 0 : 10)}]}> 
-                <Text style={styles.cardText}>{text}</Text>
+                <Text style={styles.cardText}>{isUser? 'What are you donating?' : 'What are you accepting?'}</Text>
                 <SearchBar searching={searching} setSearching={setSearching} searchQuery={searchQuery.trim()} setSearchQuery={setSearchQuery}/>
                 {searching ?
                     <SearchList 
+                        isUser={isUser}
                         itemList={itemList} 
                         setItemList={setItemList}
                         missionList={missionList}
@@ -26,6 +27,7 @@ const DonationListCard = ({text, items, missions, searching, setSearching}) => {
                 :
                 <>
                     <DonationList 
+                        isUser={isUser}
                         itemList={itemList} 
                         missionList={missionList}
                         setItemList={setItemList}
