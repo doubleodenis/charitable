@@ -76,7 +76,7 @@ const Map = () => {
             <View style={{ flex: 1, position: "relative" }}>
                 <MapView
                     style={{ flex: 1 }}
-                    region={location}
+                    initialRegion={location}
                     showsUserLocation={true} // TODO
                     rotateEnabled={false}
                     showsCompass={false}
@@ -120,29 +120,32 @@ const Map = () => {
                             {showList ? "Hide List" : "View List"}
                         </DisplayButton>
                         <View style={{ flexDirection: "row" }}>
-                            <DisplayButton
-                                buttonStyle={[
-                                    showList
-                                        ? styles.listActiveButton
-                                        : styles.button,
-                                    { marginRight: 8 },
-                                ]}
-                                textStyle={styles.buttonText}
-                                onPress={centerMap}
-                            >
-                                Center
-                            </DisplayButton>
-                            <DisplayButton
-                                buttonStyle={
-                                    showList
-                                        ? styles.listActiveButton
-                                        : styles.button
-                                }
-                                textStyle={styles.buttonText}
-                                onPress={sortLocations}
-                            >
-                                Sort
-                            </DisplayButton>
+                            {showList ? (
+                                <DisplayButton
+                                    buttonStyle={
+                                        showList
+                                            ? styles.listActiveButton
+                                            : styles.button
+                                    }
+                                    textStyle={styles.buttonText}
+                                    onPress={sortLocations}
+                                >
+                                    Sort
+                                </DisplayButton>
+                            ) : (
+                                <DisplayButton
+                                    buttonStyle={[
+                                        showList
+                                            ? styles.listActiveButton
+                                            : styles.button,
+                                        { marginRight: 8 },
+                                    ]}
+                                    textStyle={styles.buttonText}
+                                    onPress={centerMap}
+                                >
+                                    Center
+                                </DisplayButton>
+                            )}
                         </View>
                     </View>
                     {showList && (
