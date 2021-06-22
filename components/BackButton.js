@@ -10,10 +10,10 @@ import { useNavigation } from '@react-navigation/native';
  const BackButton = () => {
     let navigation = useNavigation();
     return  (
-        <TouchableOpacity style={{ paddingRight: 15 }} onPress={() => {
+        <TouchableOpacity style={{ padding: 10, marginLeft: 15 }} onPress={() => {
             navigation.goBack();
         }}>
-            <Icon title="Settings" name="chevron-left" size={30} color="#9B9B9B" />
+            <Icon title="back" name="chevron-left" size={20} color="#9B9B9B" />
         </TouchableOpacity>
     )
 }

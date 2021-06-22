@@ -130,12 +130,15 @@ const styles = StyleSheet.create({
       title: {
         fontSize: 32,
       },
-      imageContainer: {
-          width: '100%',
-          marginVertical: 10
-        //   height: 150,
+      imageContainer: {       
+        flex: 1,
+        maxHeight: 200,
+        alignItems: 'center',
+        marginVertical: 10
       },
-      orgImage: {
+      image: {
+        height: 145,
+        width: 120,
         resizeMode: 'cover',
       },
       orgHeader: {

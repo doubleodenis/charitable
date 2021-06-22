@@ -16,87 +16,104 @@
 
 import React, { useState, useEffect } from "react";
 
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar, FlatList, Button, Image } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    StatusBar,
+    FlatList,
+    Button,
+    Image,
+} from "react-native";
 
-import { useNavigation } from '@react-navigation/native';
-import SecureStorage from '../services/secureStorage';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import SecureStorage from "../services/secureStorage";
 import DisplayButton from "../components/DisplayButton";
+import ConfirmButton from "../components/ConfirmButton";
+
 import root from "../styles";
 import Icon from "react-native-vector-icons/FontAwesome";
+
 const Settings = () => {
     const [organization, setOrganization] = useState("");
     const [password, setPassword] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
+
     let navigation = useNavigation();
-
-    useEffect(() => {
-        //check if already logged in, if so, navigate to organization page
-        SecureStorage.getValue('token').then(res => {
-            setLoggedIn(true);
-        })
-        .catch(err => {
-          setLoggedIn(false);
-        })
-    }, []);
-
 
     return (
         <View style={styles.container}>
             {/* Brand logo here */}
 
-            {
-                loggedIn &&
-                (
-                    <View>
-                        <View>Avatar</View>
-                        <View style={{ width: '80%'}}>
-                            <View style={styles.orgHeader}>West Charity</View>
-                            <View>Description</View>
-                        </View>
+            {loggedIn && (
+                <View>
+                    <View>Avatar</View>
+                    <View style={{ width: "80%" }}>
+                        <View style={styles.orgHeader}>West Charity</View>
+                        <View>Description</View>
                     </View>
-                )
-            }
+                </View>
+            )}
             <View>
-                    
                 <SettingsButton useIcon>General</SettingsButton>
-                
+
                 <SettingsButton useIcon>Notifications</SettingsButton>
-                
+
                 <SettingsButton useIcon>Help</SettingsButton>
-                
+
                 <SettingsButton>Tell a Friend</SettingsButton>
-                
+
                 <SettingsButton>Rate us on the App Store</SettingsButton>
-
             </View>
 
-            <View style={{ marginTop: 25, borderTopWidth: 1, borderTopColor: 'lightgray', paddingVertical: 25 }}>
-              <RegisterSection />
+            <View
+                style={{
+                    marginTop: 25,
+                    borderTopWidth: 1,
+                    borderTopColor: "lightgray",
+                    paddingVertical: 25,
+                }}
+            >
+                <RegisterSection />
             </View>
-          </View>
+        </View>
     );
 };
 
-const SettingsButton = ({ useIcon=false, navigateTo, children }) => {
+const SettingsButton = ({ useIcon = false, navigateTo, children }) => {
     return (
         <TouchableOpacity style={styles.settingsButton}>
             <Text style={styles.boldStandardText}>{children}</Text>
-            { useIcon && <Icon name="chevron-right" style={root.textPrimaryColor}/> }
+            {useIcon && (
+                <Icon name="chevron-right" style={root.textPrimaryColor} />
+            )}
         </TouchableOpacity>
-    )
-}
+    );
+};
 
 const RegisterSection = ({}) => {
-  return (
-    <View style={styles.registerSection}>
-      <View style={styles.registerTextSection}>
-        <Text style={{...styles.boldText, textAlign: 'center'}}>Are you an organization that would like to register with charitable?</Text>
-        <Text style={{...styles.description, textAlign: 'center'}}>Setting up your organization information allows people in your area to see the donation items you need!</Text>  
-      </View>
-      <DisplayButton buttonStyle={root.barButton} textStyle={root.barButtonText}>Click here to get started</DisplayButton>
-    </View>
-  )
-}
+    return (
+        <View style={styles.registerSection}>
+            <View style={styles.registerTextSection}>
+                <Text style={{ ...styles.boldText, textAlign: "center" }}>
+                    Are you an organization that would like to register with
+                    charitable?
+                </Text>
+                <Text style={{ ...styles.description, textAlign: "center" }}>
+                    Setting up your organization information allows people in
+                    your area to see the donation items you need!
+                </Text>
+            </View>
+            <DisplayButton
+                buttonStyle={root.barButton}
+                textStyle={root.barButtonText}
+            >
+                Click here to get started
+            </DisplayButton>
+        </View>
+    );
+};
 const styles = StyleSheet.create({
     container: {
         // flex: 1,
@@ -107,77 +124,77 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         // borderRadius: 15,
         //Box shadow
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.25,
-        shadowRadius: 8,  
-        elevation: 5
-      },
-      registerSection: {
-        display: 'flex', 
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        height: 225
-      },
-      registerTextSection: {
-        paddingHorizontal: 16,
-        display: 'flex',
-        justifyContent: 'space-between',
-        height: 150
-      },
-      orgHeader: {
-        fontSize: 32,
-        textAlign: 'center',
-        color: "#8BC178",
-        marginBottom: 10
+        shadowRadius: 8,
+        elevation: 5,
     },
-      settingsButton: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        height: 45,
-        width: '100%'
-      },
-      boldStandardText: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: "#706052"
-      },
-      boldText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: "#706052"
-      },
-      section: {
-        textAlign: 'left',
-        justifyContent: 'flex-start',
-        marginBottom: 20
-      },
-      title: {
+    registerSection: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: 225,
+    },
+    registerTextSection: {
+        paddingHorizontal: 16,
+        display: "flex",
+        justifyContent: "space-between",
+        height: 150,
+    },
+    orgHeader: {
         fontSize: 32,
-      },
-      imageContainer: {
-          width: '100%',
-          marginVertical: 10
-        //   height: 150,
-      },
-      orgImage: {
-        resizeMode: 'cover',
-      },
-      
-      sectionHeader: {
-        fontSize: 18,
-        marginBottom: 5
-      },
-      textButton: {
+        textAlign: "center",
         color: "#8BC178",
-        fontSize: 14
-      },
-      description: {
-          fontSize: 16,
-          color: "#706052",
-          lineHeight: 20
-      },
-  });
+        marginBottom: 10,
+    },
+    settingsButton: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        height: 45,
+        width: "100%",
+    },
+    boldStandardText: {
+        fontSize: 18,
+        fontWeight: "600",
+        color: "#706052",
+    },
+    boldText: {
+        fontSize: 18,
+        fontWeight: "bold",
+        color: "#706052",
+    },
+    section: {
+        textAlign: "left",
+        justifyContent: "flex-start",
+        marginBottom: 20,
+    },
+    title: {
+        fontSize: 32,
+    },
+    imageContainer: {
+        width: "100%",
+        marginVertical: 10,
+        //   height: 150,
+    },
+    orgImage: {
+        resizeMode: "cover",
+    },
+
+    sectionHeader: {
+        fontSize: 18,
+        marginBottom: 5,
+    },
+    textButton: {
+        color: "#8BC178",
+        fontSize: 14,
+    },
+    description: {
+        fontSize: 16,
+        color: "#706052",
+        lineHeight: 20,
+    },
+});
 
 export default Settings;

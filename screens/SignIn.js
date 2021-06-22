@@ -11,7 +11,6 @@ import {
     Keyboard,
     Platform,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import AuthService from "../services/auth";
 import { useNavigation } from "@react-navigation/native";
 import SecureStorage from "../services/secureStorage";
@@ -19,17 +18,24 @@ import PrimaryInput from "../components/PrimaryInput";
 import DisplayButton from "../components/DisplayButton";
 import Link from '../components/Link'
 
+import AuthConsumer, { AuthContext } from '../contexts/AuthContext';
+
 const SignIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     let navigation = useNavigation();
-
+    
+    let ctx = React.useContext(AuthContext);
+    
     useEffect(() => {
         //check if already logged in, if so, navigate to organization page
-        // SecureStorage.getValue('token').then(res => {
-        //     navigation.goBack();
-        // })
+        SecureStorage.getValue('token').then(res => {
+            navigation.goBack();
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }, []);
 
     function login() {
@@ -38,18 +44,12 @@ const SignIn = () => {
             password,
         };
 
-        AuthService.login(data)
-            .then((res) => {
-                SecureStorage.storeValue("token", res.data.token)
-                    .then((done) => {
-                        //navigate back
-                        navigation.goBack();
-                    })
-                    .catch((err) => console.log("err", err));
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        ctx.signIn(data).then(res => {
+            navigation.goBack();
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
 
     return (
@@ -83,7 +83,7 @@ const SignIn = () => {
                             autoCompleteType="password"
                             secureTextEntry
                         />
-
+                        
                         <DisplayButton
                             onPress={login}
                             buttonStyle={styles.displayButton}
@@ -91,6 +91,7 @@ const SignIn = () => {
                         >
                             Sign In
                         </DisplayButton>
+                       
                         <Link style={{textAlign: 'center', alignItems: 'center'}} navigateTo={'Sign Up'}>Or sign up here</Link>
                     </View>
                 </TouchableWithoutFeedback>

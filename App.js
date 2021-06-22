@@ -6,12 +6,14 @@ import RootNavigator from "./navigation/RootNavigator";
 import Loading from "./screens/Loading";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { AuthProvider } from './contexts/AuthContext';
+
 // https://reactnavigation.org/docs/headers#adjusting-header-styles
 
 
 export default App = () => {
     const [isLoading, setLoading] = useState(true);
-    const [userToken, setUserToken] = useState('test');
+    const [userToken, setUserToken] = useState("test");
 
     useEffect(() => {
         setTimeout(() => {
@@ -24,17 +26,12 @@ export default App = () => {
         // return <Splash /> splash screen is loading screen
     }
     return (
-        <SafeAreaProvider>
-            <NavigationContainer>
-                {/* {!userToken ? (
-                <AuthNavigator /> 
-                )
-                : 
-                (
-                <RootNavigator />
-                )} */}
-                <RootNavigator />
-            </NavigationContainer>
-        </SafeAreaProvider>
+        <AuthProvider>
+            <SafeAreaProvider>
+                <NavigationContainer>       
+                    <RootNavigator />
+                </NavigationContainer>
+            </SafeAreaProvider>
+        </AuthProvider>
     );
 };
