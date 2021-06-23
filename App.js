@@ -7,13 +7,13 @@ import Loading from "./screens/Loading";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { AuthProvider } from './contexts/AuthContext';
+import secureStorage from "./services/secureStorage";
 
 // https://reactnavigation.org/docs/headers#adjusting-header-styles
 
 
 export default App = () => {
     const [isLoading, setLoading] = useState(true);
-    const [userToken, setUserToken] = useState("test");
 
     useEffect(() => {
         setTimeout(() => {

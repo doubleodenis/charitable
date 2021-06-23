@@ -3,6 +3,7 @@ import React from "react";
 
 import SecureStorage from "../services/secureStorage";
 import AuthService from "../services/auth";
+import secureStorage from "../services/secureStorage";
 
 const AuthContext = React.createContext();
 
@@ -39,27 +40,23 @@ const AuthProvider = ({ children }) => {
     React.useEffect(() => {
         // Fetch the token from storage then navigate to our appropriate place
         const bootstrapAsync = async () => {
-            let userToken;
+            // After restoring token, we may need to validate it in production apps
 
-            try {
-                userToken = await SecureStore.getItemAsync("userToken");
-            } catch (e) {
-                // Restoring token failed
-            }
-            SecureStorage.getValue("token")
+            // This will switch to the App screen or Auth screen and this loading
+            // screen will be unmounted and thrown away.
+           
+            secureStorage.getValue("token")
                 .then((res) => {
-                    userToken = res;
+                    
+                    dispatch({ type: "RESTORE_TOKEN", token: res });
+                    
+                console.log('restoring token', res);
                 })
                 .catch((err) => {
                     // loggedIn = false;
                     console.log(err);
                 });
-
-            // After restoring token, we may need to validate it in production apps
-
-            // This will switch to the App screen or Auth screen and this loading
-            // screen will be unmounted and thrown away.
-            dispatch({ type: "RESTORE_TOKEN", token: userToken });
+ 
         };
 
         bootstrapAsync();

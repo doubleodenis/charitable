@@ -8,15 +8,21 @@ const api = axios.create({
     // headers: {'X-Custom-Header': 'foobar'}
 });
 
-const getOrganizationByAccountId = (accountId) => {
-    return api.get(`/?accountId=${accountId}`).then(res => res.data);
+const getCurrentOrganization = (token) => {
+    return api.get(`/current`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(res => res.data);
 }
 
 const getOrganizations = () => {
     return api.get('/', {}).then(res => res.data);
 }
 
-export default {
+const OrganizationApi = {
     getOrganizations,
-    getOrganizationByAccountId
+    getCurrentOrganization
 }
+
+export default OrganizationApi;

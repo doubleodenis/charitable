@@ -34,30 +34,47 @@ import ConfirmButton from "../components/ConfirmButton";
 
 import root from "../styles";
 import Icon from "react-native-vector-icons/FontAwesome";
+import logo from "../assets/Charitable_Logo.png"
+import OrganizationApi from "../services/organization";
 
 const Settings = ({ context }) => {
-    const [organization, setOrganization] = useState("");
-    const [password, setPassword] = useState("");
+    const [organization, setOrganization] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
-
-    let navigation = useNavigation();
-   
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         SecureStorage.getValue("token")
-    //         .then((res) => { 
-    //             //Apparently I can't set this in an unmounted component (dont know how to fix)
-    //             setLoggedIn(true);
-    //         }).catch(err => {
-    //             setLoggedIn(false);
-    //         })
-    //     }, [loggedIn])
-    // )
     
+    let navigation = useNavigation();
+
+    function getOrganization() {
+        OrganizationApi.getCurrentOrganization(context.state.userToken).then(res => {
+            console.log('org', res);
+            
+            setOrganization(res.data)
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            console.log(context.state)
+              if(context?.state.userToken && !loggedIn) {
+                setLoggedIn(true);
+
+                getOrganization();
+            }
+            else {
+                setLoggedIn(false);
+            }
+          return undefined;
+        }, [])
+      );
+
     //Listens to changes to the auth context 
     useEffect(() => {
-        if(context.state.userToken) {
+        if(context?.state.userToken && !loggedIn) {
             setLoggedIn(true);
+
+            getOrganization();
         }
         else {
             setLoggedIn(false);
@@ -68,9 +85,11 @@ const Settings = ({ context }) => {
         <View style={styles.container}>
             {/* Brand logo here */}
 
-            {loggedIn && (
+            {loggedIn && organization && (
                 <View>
-                    <View><Text>Avatar</Text></View>
+                    <View style={{}}>
+                        <Image style={{ width: 50, height: 50 }} source={logo} style={styles.image}/>
+                    </View>
                     <View style={{ width: "80%" }}>
                         <View style={styles.orgHeader}><Text>West Charity</Text></View>
                         <View><Text>Description</Text></View>
@@ -104,6 +123,21 @@ const Settings = ({ context }) => {
                     </View>
                 ) : null
             }
+
+            {
+                loggedIn && !organization ? (
+                    <View
+                    style={{
+                        marginTop: 25,
+                        borderTopWidth: 1,
+                        borderTopColor: "lightgray",
+                        paddingVertical: 25,
+                    }}
+                    >
+                        <AddOrganizationSection navigation={navigation} />
+                    </View>
+                ) : null
+            }       
            
         </View>
     );
@@ -141,6 +175,34 @@ const RegisterSection = ({ navigation }) => {
                 buttonStyle={root.barButton}
                 textStyle={root.barButtonText}
                 onPress={goToSignUp}
+            >
+                Click here to get started
+            </DisplayButton>
+        </View>
+    );
+};
+
+const AddOrganizationSection = ({ navigation }) => {
+    
+    function goToCreateOrg() {
+        navigation.navigate('CreateOrganization');
+    }
+
+    return (
+        <View style={styles.registerSection}>
+            <View style={styles.registerTextSection}>
+                <Text style={{ ...styles.boldText, textAlign: "center" }}>
+                    Haven't set up your organization yet?
+                </Text>
+                <Text style={{ ...styles.description, textAlign: "center" }}>
+                    Setting up your organization information allows people in
+                    your area to see the donation items you need!
+                </Text>
+            </View>
+            <DisplayButton
+                buttonStyle={root.barButton}
+                textStyle={root.barButtonText}
+                onPress={goToCreateOrg}
             >
                 Click here to get started
             </DisplayButton>
