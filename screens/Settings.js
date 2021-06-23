@@ -35,12 +35,34 @@ import ConfirmButton from "../components/ConfirmButton";
 import root from "../styles";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const Settings = () => {
+const Settings = ({ context }) => {
     const [organization, setOrganization] = useState("");
     const [password, setPassword] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
 
     let navigation = useNavigation();
+   
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         SecureStorage.getValue("token")
+    //         .then((res) => { 
+    //             //Apparently I can't set this in an unmounted component (dont know how to fix)
+    //             setLoggedIn(true);
+    //         }).catch(err => {
+    //             setLoggedIn(false);
+    //         })
+    //     }, [loggedIn])
+    // )
+    
+    //Listens to changes to the auth context 
+    useEffect(() => {
+        if(context.state.userToken) {
+            setLoggedIn(true);
+        }
+        else {
+            setLoggedIn(false);
+        }
+    }, [context])
 
     return (
         <View style={styles.container}>
@@ -48,13 +70,14 @@ const Settings = () => {
 
             {loggedIn && (
                 <View>
-                    <View>Avatar</View>
+                    <View><Text>Avatar</Text></View>
                     <View style={{ width: "80%" }}>
-                        <View style={styles.orgHeader}>West Charity</View>
-                        <View>Description</View>
+                        <View style={styles.orgHeader}><Text>West Charity</Text></View>
+                        <View><Text>Description</Text></View>
                     </View>
                 </View>
             )}
+
             <View>
                 <SettingsButton useIcon>General</SettingsButton>
 
@@ -67,16 +90,21 @@ const Settings = () => {
                 <SettingsButton>Rate us on the App Store</SettingsButton>
             </View>
 
-            <View
-                style={{
-                    marginTop: 25,
-                    borderTopWidth: 1,
-                    borderTopColor: "lightgray",
-                    paddingVertical: 25,
-                }}
-            >
-                <RegisterSection />
-            </View>
+            {
+                !loggedIn ? (
+                    <View
+                    style={{
+                        marginTop: 25,
+                        borderTopWidth: 1,
+                        borderTopColor: "lightgray",
+                        paddingVertical: 25,
+                    }}
+                    >
+                        <RegisterSection navigation={navigation} />
+                    </View>
+                ) : null
+            }
+           
         </View>
     );
 };
@@ -92,7 +120,11 @@ const SettingsButton = ({ useIcon = false, navigateTo, children }) => {
     );
 };
 
-const RegisterSection = ({}) => {
+const RegisterSection = ({ navigation }) => {
+    
+    function goToSignUp() {
+        navigation.navigate('Auth', { screen: 'Sign Up' });
+    }
     return (
         <View style={styles.registerSection}>
             <View style={styles.registerTextSection}>
@@ -108,6 +140,7 @@ const RegisterSection = ({}) => {
             <DisplayButton
                 buttonStyle={root.barButton}
                 textStyle={root.barButtonText}
+                onPress={goToSignUp}
             >
                 Click here to get started
             </DisplayButton>

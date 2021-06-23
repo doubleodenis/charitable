@@ -23,7 +23,7 @@ import ConfirmButton from "../components/ConfirmButton";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import AuthConsumer from "../contexts/AuthContext";
+import AuthConsumer, { AuthContext } from "../contexts/AuthContext";
 import BackButton from "../components/BackButton";
 
 const HomeStack = createStackNavigator();
@@ -87,8 +87,11 @@ const MapStackScreen = () => (
 const SettingsStack = createStackNavigator();
 
 const SettingsStackScreen = () => {
+    
+    let context = React.useContext(AuthContext);
+
     return (
-                <SettingsStack.Navigator headerMode="screen">
+            <SettingsStack.Navigator headerMode="screen">
                     <SettingsStack.Screen
                         name="Settings"
                         listeners={({ navigation }) => ({
@@ -108,8 +111,7 @@ const SettingsStackScreen = () => {
                                                     onPress={() => {
                                                         //TODO: Signing out... loading circle
                                                         //FUTURE: Modal = Are you sure you want to logout?
-                                                        SecureStorage.storeValue("token", "" ).then((res) => {
-                                                            console.log("token has been removed");
+                                                        context.signOut().then((res) => {
                                                             
                                                             navigation.setOptions({
                                                                 headerLeft: null,
@@ -119,6 +121,7 @@ const SettingsStackScreen = () => {
                                                                     </ConfirmButton>
                                                                 ),
                                                             });
+
                                                         });
                                                     }}
                                                 >
@@ -135,7 +138,7 @@ const SettingsStackScreen = () => {
                                                     Sign In
                                                 </ConfirmButton>
                                             ),
-                                            headerLeft: () => <View></View>
+                                            headerLeft: null
                                         });
                                 });
                             },
@@ -144,9 +147,11 @@ const SettingsStackScreen = () => {
                             headerTitle: null
                         }}
                     >
-                        {(props) => 
-                            <Settings {...props} />
-                        }
+                        {(props) => (
+                            <AuthConsumer>
+                                {ctx => <Settings context={ctx} {...props} /> }
+                            </AuthConsumer>
+                        )}
                     </SettingsStack.Screen>
                     <SettingsStack.Screen name="OrganizationPage" component={OrganizationPage} 
                     options={{

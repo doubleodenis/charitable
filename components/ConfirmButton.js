@@ -12,7 +12,7 @@ const ConfirmButton = ({ children, navigateTo }) => {
         else {
             //This option is if you need the advanced option of moving to a different stack
             // https://stackoverflow.com/questions/49826920/how-to-navigate-between-different-nested-stacks-in-react-navigation
-            navigation.navigate(navigateTo[0], navigateTo[1]);
+            navigation.navigate(navigateTo[0], { screen: navigateTo[1] })
         }
     }
 

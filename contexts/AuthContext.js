@@ -68,8 +68,9 @@ const AuthProvider = ({ children }) => {
           };
     }, []);
 
-    const authContext = React.useMemo(
-        () => ({
+    const authContext = 
+        // React.useMemo(() => (
+            {
             state: state,
             signIn: async (data) => {
                 // In a production app, we need to send some data (usually username, password) to server and get a token
@@ -79,7 +80,6 @@ const AuthProvider = ({ children }) => {
 
                 return AuthService.login(data)
                     .then((res) => {
-                        console.log(res);
                         SecureStorage.storeValue("token", res.data.token)
                             .then((done) => {
 
@@ -95,7 +95,7 @@ const AuthProvider = ({ children }) => {
                     });
             },
             signOut: () => {
-                SecureStorage.storeValue("token", "").then((res) => {
+                return SecureStorage.storeValue("token", "").then((res) => {
                     //navigate refresh
                     dispatch({ type: "SIGN_OUT" });
                 });
@@ -108,9 +108,9 @@ const AuthProvider = ({ children }) => {
 
                 dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
             },
-        }),
-        []
-    );
+            }
+        // ), [state]);
+
     return (
         <AuthContext.Provider value={authContext}>
             {children}
