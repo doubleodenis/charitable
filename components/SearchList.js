@@ -5,6 +5,7 @@ import DisplayButton from './DisplayButton'
 import AddTagsModal from './AddTagsModal';
 import { ScrollView } from 'react-native-gesture-handler';
 import {items, centers} from '../mock_data/tagslist'
+import {searchItem} from '../services/item.js'
 
 const suggestedSearches=['Clothes', 'Furniture', 'Toys']
 const suggestedMissions=['Homeless Shelters', 'Orphanages', 'Wellness Centers']
@@ -20,11 +21,18 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
     useEffect(() => {
         let searchCopy = searchQuery.trim() + ''
         let tempTags = []
-        if(searchCopy.trim().length > 0)
+        if(searchCopy.trim().length > 1)
         {
             if(searchType==='items') {
-                tempTags = items.filter(item => item.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()) || item.keywords.filter(k => k.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase())).length > 0)
-                setItemSearch(tempTags)
+                searchItem(searchCopy)
+                .then((data) => {
+                    setItemSearch(data.items)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+                // tempTags = items.filter(item => item.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()) || item.keywords.filter(k => k.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase())).length > 0)
+                // setItemSearch(tempTags)
             }
             else {
                 tempTags = centers.filter(s => s.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()))
@@ -118,7 +126,7 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                             </View>
                         :
                         (searchType==='items'? itemSearch : missionSearch).map((itemObject, i) => {
-                            let item = itemObject.name
+                            let item = itemObject.tag
                             return(
                                 <View style={styles.listItem} key={`searchitem-${item}${i}`}>
                                     <Text style={styles.listItemText}>
