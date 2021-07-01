@@ -6,6 +6,7 @@ import AddTagsModal from './AddTagsModal';
 import { ScrollView } from 'react-native-gesture-handler';
 import {items, centers} from '../mock_data/tagslist'
 import {searchItem} from '../services/item.js'
+import {searchMission} from '../services/mission.js'
 
 const suggestedSearches=['Clothes', 'Furniture', 'Toys']
 const suggestedMissions=['Homeless Shelters', 'Orphanages', 'Wellness Centers']
@@ -35,8 +36,13 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                 // setItemSearch(tempTags)
             }
             else {
-                tempTags = centers.filter(s => s.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()))
-                setMissionSearch(tempTags)
+                searchMission(searchCopy)
+                .then((data) => {
+                    setMissionSearch(data.missions)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             }
         }
     }, [searchQuery]);
