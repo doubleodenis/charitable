@@ -88,6 +88,7 @@ const AuthProvider = ({ children }) => {
                             .catch((err) => console.log("err", err));
                     })
                     .catch((err) => {
+                        return err;
                         console.log("login", err);
                     });
             },

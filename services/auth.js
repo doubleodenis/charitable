@@ -9,8 +9,6 @@ const host = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpt
   : `api.example.com`;
   
 console.log('api', host)
-// let domain = "192.168.1.136"; //localhost
-let domain = "192.168.100.121"; //marcels
 
 const api = axios.create({
     baseURL: `http://${host}/api/auth`,
@@ -20,9 +18,6 @@ const api = axios.create({
 });
 api.interceptors.response.use(response => response.data,
     (error) => {
-    //   const fallbackValue = [
-    //     {userId: "Not authorized",id: "aerw15311sq",
-    //      title: "Please try     again",completed: false}];
     console.log('error', error)
        return Promise.reject(error.data);}
     );

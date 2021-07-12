@@ -21,10 +21,8 @@ import {
     Text,
     View,
     TouchableOpacity,
-    StatusBar,
-    FlatList,
-    Button,
     Image,
+    Switch
 } from "react-native";
 
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -36,11 +34,19 @@ import root from "../styles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import logo from "../assets/Charitable_Logo.png"
 import OrganizationApi from "../services/organization";
+import Accordion from "../components/Accordion";
 
 const Settings = ({ context }) => {
     const [organization, setOrganization] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [isEnabled, setIsEnabled] = useState(false);
     
+    //Toggles
+    const [darkMode, setDarkMode] = useState(false);
+    const [pushNotifs, setPushNotifs] = useState(false);
+    
+    const toggleSwitch = (setter) => setter(previousState => !previousState);
+
     let navigation = useNavigation();
 
     function getOrganization() {
@@ -98,13 +104,38 @@ const Settings = ({ context }) => {
             )}
 
             <View>
-                <SettingsButton useIcon>General</SettingsButton>
+                {/* <SettingsButton useIcon>General</SettingsButton> */}
+                <Accordion title="General">
+                    <View style={{ width: 'inherit', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Text style={{  ...styles.boldStandardText, fontSize: 16 }}>Dark Mode</Text>
+                        <Switch
+                            trackColor={{ false: '#efefef', true: 'lightgreen' }}
+                            thumbColor={'white'}
+                            ios_backgroundColor="#efefef"
+                            onValueChange={() => toggleSwitch(setDarkMode)}
+                            value={darkMode}
+                        />
+                    </View>
+                </Accordion>
 
-                <SettingsButton useIcon>Notifications</SettingsButton>
+                <Accordion title="Notifications">
+                    <View style={{ width: 'inherit', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Text style={{  ...styles.boldStandardText, fontSize: 16 }}>Push Notifications</Text>
+                            <Switch
+                                trackColor={{ false: '#efefef', true: 'lightgreen' }}
+                                thumbColor={'white'}
+                                ios_backgroundColor="#efefef"
+                                onValueChange={() => toggleSwitch(setPushNotifs)}
+                                value={pushNotifs}
+                            />
+                    </View>
+                </Accordion>
 
-                <SettingsButton useIcon>Help</SettingsButton>
+                <Accordion title="Help">
+                    <View><Text>Test</Text></View>
+                </Accordion>
 
-                <SettingsButton>Tell a Friend</SettingsButton>
+                {/* <SettingsButton>Tell a Friend</SettingsButton> */}
 
                 <SettingsButton>Rate us on the App Store</SettingsButton>
             </View>
