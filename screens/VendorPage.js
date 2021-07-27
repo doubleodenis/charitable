@@ -14,7 +14,7 @@
     Search through (or search bar) a list of categories and select one. This will then generate the list of charities.
 */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar, FlatList, Button, Image } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,22 +22,58 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Tag from '../components/Tag';
 import logo from "../assets/Charitable_Logo.png"
 
-const VendorPage = () => {
-    const [orgName, setOrgName] = useState('West Charity');
-    const [description, setDesc] = useState('A charity for people with big dreams and no toys.');
-    const [locations, setLocations] = useState(['12345 Merigold Lane, Miami, FL 44556']);
-    
-    const [missionTags, setMissionTags] = useState(['Women', 'Kids']);
-    const [itemsNeeded, setItemsNeeded] = useState(['Clothes', 'Food', 'Toys']);
-    const [contactInfo, setContactInfo] = useState({
-        email: 'wcharity@gmail.com',
-        phone: '(305)-752-453',
-        website: 'https://wcharity.com'
-    });
+import { useNavigation } from '@react-navigation/native';
 
-    function donate(e) {
-        //...
-    } 
+import { showMessage, hideMessage } from "react-native-flash-message";
+
+import SecureStorage from "../services/secureStorage";
+
+const VendorPage = () => {
+    let navigation = useNavigation();
+    // const [name, setName] = useState('West Charity');
+    // const [nameErr, setNameErr] = useState(false);
+    
+    // const [desc, setDesc] = useState('A charity for people with big dreams and no toys.');
+    // const [descErr, setDescErr] = useState(false);
+    
+    // const [locations, setLocations] = useState(['12345 Merigold Lane, Miami, FL 44556']);
+    // const [locationsErr, setLocationsErr] = useState(false);
+    
+    // const [tags, setTags] = useState(['Women', 'Kids']);
+    // const [tagsErr, setTagsErr] = useState(false);
+    
+    // const [itemsNeeded, setItemsNeeded] = useState(['Clothes', 'Food', 'Toys']);
+    
+    // const [contactInfo, setContactInfo] = useState({
+    //     email: 'wcharity@gmail.com',
+    //     phone: '(305)-752-453',
+    //     website: 'https://wcharity.com'
+    // });
+
+    const [organization, setOrganization] = useState(null);
+
+    useEffect(() => {
+        OrganizationService.getCurrentOrganization().then(res => {
+            console.log('vendor page', res);
+            if(!res.data) {
+                navigation.navigate('Settings');
+            }
+            else {
+                setOrganization(res.data);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            console.log(err.response)
+
+            //Show error message
+            showMessage({
+                message: err.message,
+                type: "danger",
+            });
+
+        })
+    }, [])
 
     function displayLocations() {
         return locations.map((l, idx) => (
@@ -60,7 +96,7 @@ const VendorPage = () => {
             </View>
             
             <View style={styles.contentContainer}>
-                <Text style={styles.orgHeader}>{orgName}</Text>
+                <Text style={styles.orgHeader}>{organization.name}</Text>
                 
                 <View nativeID="locations-section" style={styles.section}>
                     <View style={{ flexDirection: 'row' }}>
@@ -73,26 +109,26 @@ const VendorPage = () => {
 
                 <View style={styles.section}>
                     <Text style={styles.sectionHeader}>Who We Are</Text>
-                    <Text style={styles.description} numberOfLines={5}>{description}</Text>
+                    <Text style={styles.description} numberOfLines={5}>{organization.description}</Text>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.sectionHeader}>Mission Tags</Text>
-                    <View style={{ flexDirection: 'row' }}>{displayTags(missionTags)}</View>
+                    <View style={{ flexDirection: 'row' }}>{displayTags(organization.missionCategories)}</View>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.sectionHeader}>What We Need</Text>
-                    <View style={{ flexDirection: 'row'}}>{displayTags(itemsNeeded)}</View>
+                    <View style={{ flexDirection: 'row'}}>{displayTags(organization.itemsNeeded)}</View>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.sectionHeader}>How To Reach Us</Text>
                     <View>
                         <Text style={styles.description}>
-                            Email: {contactInfo.email}{'\n'}
-                            Phone: {contactInfo.phone}{'\n'}                
-                            Website: {contactInfo.website}
+                            Email: {organization.contactInfo.email}{'\n'}
+                            Phone: {organization.contactInfo.phone}{'\n'}                
+                            Website: {organization.contactInfo.website}
                         </Text>
                     </View>
                 </View>

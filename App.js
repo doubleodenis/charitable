@@ -9,8 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from './contexts/AuthContext';
 import secureStorage from "./services/secureStorage";
 
-// https://reactnavigation.org/docs/headers#adjusting-header-styles
-
+import FlashMessage from "react-native-flash-message";
 
 export default App = () => {
     const [isLoading, setLoading] = useState(true);
@@ -35,6 +34,7 @@ export default App = () => {
                     </NavigationContainer>
                 </SafeAreaProvider>
             </AuthProvider>
+            <FlashMessage position="top" /> 
         </>
     );
 };

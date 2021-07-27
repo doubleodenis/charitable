@@ -69,14 +69,15 @@ const AuthProvider = ({ children }) => {
         // React.useMemo(() => (
             {
             state: state,
-            signIn: async (data) => {
+            signIn: async (data) => new Promise((resolve, reject) => {
                 // In a production app, we need to send some data (usually username, password) to server and get a token
                 // We will also need to handle errors if sign in failed
                 // After getting token, we need to persist the token using `SecureStore`
                 // In the example, we'll use a dummy token
 
-                return AuthService.login(data)
+                AuthService.login(data)
                     .then((res) => {
+                        console.log('res', res);
                         SecureStorage.storeValue("token", res.data.token)
                             .then((done) => {
 
@@ -84,14 +85,20 @@ const AuthProvider = ({ children }) => {
                                     type: "SIGN_IN",
                                     token: res.data.token,
                                 });
+
+                                resolve(res);
                             })
-                            .catch((err) => console.log("err", err));
+                            .catch((err) => {
+                                console.log("err", err)
+                                reject(err);
+                            });
+                        
                     })
                     .catch((err) => {
-                        return err;
                         console.log("login", err);
+                        reject(err);
                     });
-            },
+            }),
             signOut: () => {
                 return SecureStorage.storeValue("token", "").then((res) => {
                     //navigate refresh
@@ -104,7 +111,26 @@ const AuthProvider = ({ children }) => {
                 // After getting token, we need to persist the token using `SecureStore`
                 // In the example, we'll use a dummy token
 
-                dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
+                return AuthService.register(data)
+                    .then((res) => {
+                        SecureStorage.storeValue("token", res.data.token)
+                            .then((done) => {
+
+                                dispatch({
+                                    type: "SIGN_IN",
+                                    token: res.data.token,
+                                });
+                            })
+                            .catch((err) => {
+                                return err;
+                                console.log("err", err)
+                            });
+                    })
+                    .catch((err) => {
+                        return err;
+                    });
+
+                // dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
             },
             }
         // ), [state]);

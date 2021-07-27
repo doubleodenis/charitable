@@ -8,6 +8,13 @@ const api = axios.create({
     // headers: {'X-Custom-Header': 'foobar'}
 });
 
+api.interceptors.response.use(
+    response => response.data,
+    (error) => {
+        return Promise.reject(error.response.data);
+    }
+);
+
 const getCurrentOrganization = (token) => {
     return api.get(`/current`, {
         headers: {

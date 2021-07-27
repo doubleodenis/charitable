@@ -20,9 +20,14 @@ import Link from '../components/Link'
 
 import AuthConsumer, { AuthContext } from '../contexts/AuthContext';
 
+import { showMessage, hideMessage } from "react-native-flash-message";
+
 const SignIn = () => {
     const [email, setEmail] = useState("");
+    const [emailErr, setEmailErr] = useState(false);
+
     const [password, setPassword] = useState("");
+    const [passwordErr, setPasswordErr] = useState(false);
 
     let navigation = useNavigation();
     
@@ -45,10 +50,32 @@ const SignIn = () => {
         };
 
         ctx.signIn(data).then(res => {
+            showMessage({
+                message: "Successfully logged in",
+                type: "success",
+                duration: 5000
+            });
             navigation.goBack();
         })
         .catch(err => {
-            console.log(err);
+            console.log('sign in err', err);
+
+            //Show error message
+            showMessage({
+                message: err.message,
+                type: "danger",
+                duration: 5000
+            });
+
+            err.data.forEach(e => {
+                if(e.param == "email") {
+                    setEmailErr(true);
+                }
+                else if(e.param == "password") {
+                    setPasswordErr(true);
+                }
+            })
+            //TODO: set the fields error field
         })
     }
 
@@ -73,8 +100,8 @@ const SignIn = () => {
                             value={email}
                             keyboardType="email-address"
                             textContentType="emailAddress"
+                            error={emailErr}
                         />
-
                         <PrimaryInput
                             placeholder="Password"
                             onChangeText={(text) => setPassword(text)}
@@ -82,6 +109,7 @@ const SignIn = () => {
                             textContentType="password"
                             autoCompleteType="password"
                             secureTextEntry
+                            error={passwordErr}
                         />
                         
                         <DisplayButton

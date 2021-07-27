@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Text } from 'react-native';
 
-const PrimaryInput = ({onChangeText, value, label=null, placeholder='', style, ...inputProps}) => {
+const PrimaryInput = ({onChangeText, value, label=null, placeholder='', style, error, ...inputProps}) => {
     const [borderColor, setBorderColor] = useState('#D77944');
-    
+    const colors = {
+        focused: '#974C20',
+        original: '#D77944',
+        error: 'red'
+    }
     function onFocus(e) {
-        setBorderColor('#974C20')
+        setBorderColor(colors.focused);
     }
     function onBlur(e) {
-        setBorderColor('#D77944')
+        setBorderColor(colors.original)
     }
+
+    useEffect(() => {
+        if(error) {
+            setBorderColor(colors.error);
+        }
+        else {
+            setBorderColor(colors.original);
+        }
+    }, [error]);
+
     return (
         <View>
             {label && <Text style={styles.label}>{label}</Text>}

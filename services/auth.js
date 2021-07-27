@@ -16,18 +16,20 @@ const api = axios.create({
     timeout: 5000,
     // headers: {'X-Custom-Header': 'foobar'}
 });
+
 api.interceptors.response.use(response => response.data,
     (error) => {
-    console.log('error', error)
-       return Promise.reject(error.data);}
-    );
+        let data = JSON.stringify(error)
+        console.log(error.response.data)
+        return Promise.reject(error.response.data);
+    });
 
 const login = (data) => {
     return api.post('/login', data);
 }
 
 const register = (data) => {
-    return api.post('/register', data).then(res => res.data);
+    return api.post('/register', data);
 }
 
 export default {

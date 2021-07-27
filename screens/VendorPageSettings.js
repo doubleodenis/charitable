@@ -25,17 +25,26 @@ import DisplayButton from "../components/DisplayButton";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import OrganizationService from "../services/organization";
+import { showMessage, hideMessage } from "react-native-flash-message";
+
+import SecureStorage from "../services/secureStorage";
 
 const VendorPage = () => {
     const [charityName, setCharityName] = useState("");
+    const [nameErr, setNameErr] = useState(false);
+    
     const [description, setDesc] = useState("");
-    const [locations, setLocations] = useState([
-        "12345 Merigold Lane, Miami, FL 44556",
-    ]);
-
+    const [descErr, setDescErr] = useState(false);
+    
+    const [location, setLocation] = useState('12345 Merigold Lane, Miami, FL 44556');
+    const [locationsErr, setLocationsErr] = useState(false);
+    
     const [missionTags, setMissionTags] = useState(["Women", "Kids"]);
+    const [tagsErr, setTagsErr] = useState(false);
+    
     const [itemsNeeded, setItemsNeeded] = useState(["Clothes", "Food", "Toys"]);
-
+    const [itemsErr, setItemsErr] = useState(false);
+    
     const [contactEmail, setEmail] = useState("");
     const [contactPhone, setPhone] = useState("");
     const [contactWebsite, setWebsite] = useState("");
@@ -44,18 +53,38 @@ const VendorPage = () => {
     console.log(tabBarHeight);
 
     useEffect(() => {
-        OrganizationService.getOrganizations().then(res => {
-            console.log(res);
+        SecureStorage.getValue('token').then(token => {
+
+            OrganizationService.getCurrentOrganization(token).then(res => {
+                //Fill the organization information out if it exists
+                if(res) {
+                    setCharityName(res.name);
+                    setDesc(res.description);
+                    setLocation(res.location);
+                    setMissionTags(res.missionCategories);
+                    setItemsNeeded(res.acceptedItems);
+                    setEmail(res.contactInfo.email);
+                    setPhone(res.contactInfo.phone);
+                    setWebsite(res.contactInfo.website);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                console.log(err.response)
+    
+                //Show error message
+                showMessage({
+                    message: err.message,
+                    type: "danger",
+                });
+            })
+
         })
         .catch(err => {
-            console.log(err);
-            console.log(err.response)
+            console.log(err)
         })
+        
     }, []);
-
-    function donate(e) {
-        //...
-    }
 
     function displayLocations() {
         return locations.map((l, idx) => (
@@ -81,6 +110,7 @@ const VendorPage = () => {
                     value={charityName}
                     placeholder="Charitable"
                     onChangeText={setCharityName}
+                    error={nameErr}
                 />
             </View>
 
@@ -94,9 +124,10 @@ const VendorPage = () => {
                     <DisplayButton
                         buttonStyle={styles.displayButton}
                         textStyle={styles.buttonText}
-                        text="Add or Remove Locations"
                         onPress={() => console.log("btn click")}
-                    />
+                    >
+                        Edit Locations    
+                    </DisplayButton>
                 </View>
             </View>
 
@@ -113,6 +144,7 @@ const VendorPage = () => {
                     numberOfLines={5}
                     onChangeText={setDesc}
                     style={{ height: 60 }}
+                    error={descErr}
                 />
             </View>
 

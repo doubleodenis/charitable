@@ -36,6 +36,8 @@ import logo from "../assets/Charitable_Logo.png"
 import OrganizationApi from "../services/organization";
 import Accordion from "../components/Accordion";
 
+import { showMessage, hideMessage } from "react-native-flash-message";
+
 const Settings = ({ context }) => {
     const [organization, setOrganization] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
@@ -106,7 +108,7 @@ const Settings = ({ context }) => {
             <View>
                 {/* <SettingsButton useIcon>General</SettingsButton> */}
                 <Accordion title="General">
-                    <View style={{ width: 'inherit', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Text style={{  ...styles.boldStandardText, fontSize: 16 }}>Dark Mode</Text>
                         <Switch
                             trackColor={{ false: '#efefef', true: 'lightgreen' }}
@@ -119,7 +121,7 @@ const Settings = ({ context }) => {
                 </Accordion>
 
                 <Accordion title="Notifications">
-                    <View style={{ width: 'inherit', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={{  ...styles.boldStandardText, fontSize: 16 }}>Push Notifications</Text>
                             <Switch
                                 trackColor={{ false: '#efefef', true: 'lightgreen' }}
@@ -188,6 +190,7 @@ const SettingsButton = ({ useIcon = false, navigateTo, children }) => {
 const RegisterSection = ({ navigation }) => {
     
     function goToSignUp() {
+        console.log('going')
         navigation.navigate('Auth', { screen: 'Sign Up' });
     }
     return (
@@ -216,7 +219,7 @@ const RegisterSection = ({ navigation }) => {
 const AddOrganizationSection = ({ navigation }) => {
     
     function goToCreateOrg() {
-        navigation.navigate('CreateOrganization');
+        navigation.navigate('VendorPageSettings');
     }
 
     return (

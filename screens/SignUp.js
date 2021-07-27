@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
     StyleSheet,
@@ -12,19 +12,84 @@ import {
     Platform,
 } from "react-native";
 
+import { useNavigation } from "@react-navigation/native";
 import SecureStorage from "../services/secureStorage";
 import PrimaryInput from "../components/PrimaryInput";
 import DisplayButton from "../components/DisplayButton";
 import Link from '../components/Link'
 
+import AuthConsumer, { AuthContext } from '../contexts/AuthContext';
+
+import { showMessage, hideMessage } from "react-native-flash-message";
+
 const SignUp = () => {
     const [email, setEmail] = useState("");
+    const [emailErr, setEmailErr] = useState(false);
+
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [passwordErr, setPasswordErr] = useState(false);
     
-    const signUp = (e) => {
-        //...
-    };
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [confirmPasswordErr, setConfirmPasswordErr] = useState(false);
+    
+    let navigation = useNavigation();
+    let ctx = React.useContext(AuthContext);
+
+    useEffect(() => {
+        //check if already logged in, if so, navigate to organization page
+        SecureStorage.getValue('token').then(res => {
+            navigation.goBack();
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }, []);
+
+     function signUp() {
+        const data = {
+            email,
+            password,
+        };
+
+        if(password != confirmPassword) {
+            //Return error message validation
+            setConfirmPasswordErr(true);
+
+            showMessage({
+                message: "Passwords do not match.",
+                type: "danger",
+            });
+
+            return;
+        }
+
+        ctx.signUp(data).then(res => {
+            showMessage({
+                message: "Successfully signed up",
+                type: "success",
+                duration: 5000
+            });
+            navigation.goBack();
+        })
+        .catch(err => {
+            console.log('signup', err);
+
+            //Show error message
+            showMessage({
+                message: err.message,
+                type: "danger",
+            });
+
+            err.data.forEach(e => {
+                if(e.param == "email") {
+                    setEmailErr(true);
+                }
+                else if(e.param == "password") {
+                    setPasswordErr(true);
+                }
+            })
+        })
+    }
     
     return (
         <View style={styles.container}>
@@ -46,6 +111,7 @@ const SignUp = () => {
                             value={email}
                             keyboardType="email-address"
                             textContentType="emailAddress"
+                            error={emailErr}
                         />
 
                         <PrimaryInput
@@ -55,14 +121,16 @@ const SignUp = () => {
                             textContentType="password"
                             autoCompleteType="password"
                             secureTextEntry
+                            error={passwordErr}
                         />
                         <PrimaryInput
                             placeholder="Confirm Password"
                             onChangeText={(text) => setConfirmPassword(text)}
-                            value={password}
+                            value={confirmPassword}
                             textContentType="password"
                             autoCompleteType="password"
                             secureTextEntry
+                            error={confirmPasswordErr}
                         />
 
                         <DisplayButton
