@@ -1,5 +1,7 @@
 import React, { Fragment } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import FoundationIcon from "react-native-vector-icons/Foundation";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 
 const INTER_TAG_MARGIN = 6;
 
@@ -11,7 +13,45 @@ const LocationCard = ({ name, tags }) => {
                 { paddingBottom: tags ? 10 - INTER_TAG_MARGIN : 10 },
             ]}
         >
-            <Text style={styles.header}>{name}</Text>
+            <View style={styles.header}>
+                <View
+                    style={{ flexDirection: "row", flex: 1, marginRight: 18 }}
+                >
+                    <Text
+                        style={styles.headerText}
+                        numberOfLines={1}
+                        ellipsizeMode={"tail"}
+                    >
+                        {name}
+                    </Text>
+                    <FontAwesomeIcon
+                        name="check-circle"
+                        style={{
+                            fontSize: 26,
+                            color: "#141414",
+                            marginLeft: 8,
+                        }}
+                    />
+                </View>
+                <View style={styles.iconContainer}>
+                    <FontAwesomeIcon
+                        name="heart"
+                        style={{
+                            fontSize: 26,
+                            color: "#141414",
+                            marginRight: 8,
+                        }}
+                    />
+                    <FoundationIcon
+                        name="info"
+                        style={{
+                            fontSize: 32,
+                            color: "#141414",
+                            bottom: 3,
+                        }}
+                    />
+                </View>
+            </View>
             {tags ? (
                 <View style={styles.tagContainer}>
                     {tags.map((tag, i) => (
@@ -48,7 +88,15 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     header: {
+        justifyContent: "space-between",
+        flexDirection: "row",
+    },
+    headerText: {
         fontSize: 18,
+    },
+    iconContainer: {
+        marginLeft: 20,
+        flexDirection: "row",
     },
     tagContainer: {
         marginTop: 4,
