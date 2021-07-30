@@ -9,8 +9,10 @@ import DisplayButton from "../components/DisplayButton";
 import locations from "../mock_data/locations";
 
 const HORIZONTAL_MARGIN = 8;
-const LAT_DELTA = 0.0922;
+const LAT_DELTA = 0.0922; // Not sure what this dictates but I believe it's the initial map zoom
 const LNG_DELTA = 0.0421;
+const MARKER_VERIFIED_COLOR = "#258fe6"; // Neutral colors don't work
+const MARKER_UNVERIFIED_COLOR = "#f52f4c"; // Neutral colors don't work
 
 const Map = () => {
     const [location, setLocation] = useState(null);
@@ -62,7 +64,11 @@ const Map = () => {
     const renderItem = ({ item }) => {
         return (
             <View style={styles.cardContainer}>
-                <LocationCard name={item.name} tags={item.needed} />
+                <LocationCard
+                    name={item.name}
+                    tags={item.needed}
+                    verified={item.verified}
+                />
             </View>
         );
     };
@@ -95,7 +101,11 @@ const Map = () => {
                                             longitude: place.location.longitude,
                                         }}
                                         title={place.name}
-                                        pinColor={place.verified && "#2d57cc"}
+                                        pinColor={
+                                            place.verified
+                                                ? MARKER_VERIFIED_COLOR
+                                                : MARKER_UNVERIFIED_COLOR
+                                        }
                                     />
                                 )
                             );
@@ -138,7 +148,6 @@ const Map = () => {
                                         showList
                                             ? styles.listActiveButton
                                             : styles.button,
-                                        { marginRight: 8 },
                                     ]}
                                     textStyle={styles.buttonText}
                                     onPress={centerMap}

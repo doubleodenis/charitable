@@ -102,6 +102,16 @@ const locations = [
         },
         needed: ["Able Bodies", "Blood", "Sweat", "Tears"],
     },
+    {
+        id: "loc-11",
+        name: "The Charity of Generous Do-Gooders who Wish to do Good, Benefit the World, Propogate the Giving Spirit, and Spread Joy",
+        verified: true,
+        location: {
+            latitude: 25.9,
+            longitude: -80.6,
+        },
+        needed: ["Shorter Name"],
+    },
 ];
 
 export default locations;

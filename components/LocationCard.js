@@ -4,8 +4,9 @@ import FoundationIcon from "react-native-vector-icons/Foundation";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 
 const INTER_TAG_MARGIN = 6;
+const DEFUALT_ICON_COLOR = "#696969";
 
-const LocationCard = ({ name, tags }) => {
+const LocationCard = ({ name, tags, verified }) => {
     return (
         <View
             style={[
@@ -15,7 +16,12 @@ const LocationCard = ({ name, tags }) => {
         >
             <View style={styles.header}>
                 <View
-                    style={{ flexDirection: "row", flex: 1, marginRight: 18 }}
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        flex: 1,
+                        marginRight: verified ? 18 : 4,
+                    }}
                 >
                     <Text
                         style={styles.headerText}
@@ -24,21 +30,23 @@ const LocationCard = ({ name, tags }) => {
                     >
                         {name}
                     </Text>
-                    <FontAwesomeIcon
-                        name="check-circle"
-                        style={{
-                            fontSize: 26,
-                            color: "#141414",
-                            marginLeft: 8,
-                        }}
-                    />
+                    {verified && (
+                        <FontAwesomeIcon
+                            name="check-circle"
+                            style={{
+                                fontSize: 26,
+                                color: DEFUALT_ICON_COLOR,
+                                marginLeft: 8,
+                            }}
+                        />
+                    )}
                 </View>
                 <View style={styles.iconContainer}>
                     <FontAwesomeIcon
                         name="heart"
                         style={{
                             fontSize: 26,
-                            color: "#141414",
+                            color: DEFUALT_ICON_COLOR,
                             marginRight: 8,
                         }}
                     />
@@ -46,8 +54,7 @@ const LocationCard = ({ name, tags }) => {
                         name="info"
                         style={{
                             fontSize: 32,
-                            color: "#141414",
-                            bottom: 3,
+                            color: DEFUALT_ICON_COLOR,
                         }}
                     />
                 </View>
@@ -89,7 +96,10 @@ const styles = StyleSheet.create({
     },
     header: {
         justifyContent: "space-between",
+        alignItems: "center",
         flexDirection: "row",
+        marginTop: -4,
+        marginBottom: 2,
     },
     headerText: {
         fontSize: 18,
@@ -97,9 +107,9 @@ const styles = StyleSheet.create({
     iconContainer: {
         marginLeft: 20,
         flexDirection: "row",
+        alignItems: "center",
     },
     tagContainer: {
-        marginTop: 4,
         flexDirection: "row",
         flexWrap: "wrap",
     },
