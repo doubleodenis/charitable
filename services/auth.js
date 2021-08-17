@@ -20,8 +20,8 @@ const api = axios.create({
 api.interceptors.response.use(response => response.data,
     (error) => {
         let data = JSON.stringify(error)
-        console.log(error.response.data)
-        return Promise.reject(error.response.data);
+        console.log(error.response)
+        return Promise.reject(error.response);
     });
 
 const login = (data) => {

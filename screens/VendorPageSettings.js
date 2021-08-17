@@ -16,8 +16,8 @@
 
 import React, { useState, useEffect } from "react";
 
-import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View, ScrollView, Alert, Modal, TouchableHighlight } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Tag from "../components/Tag";
 import Input from "../components/PrimaryInput";
@@ -37,7 +37,7 @@ const VendorPage = () => {
     const [descErr, setDescErr] = useState(false);
     
     const [location, setLocation] = useState('12345 Merigold Lane, Miami, FL 44556');
-    const [locationsErr, setLocationsErr] = useState(false);
+    const [locationErr, setLocationErr] = useState(false);
     
     const [missionTags, setMissionTags] = useState(["Women", "Kids"]);
     const [tagsErr, setTagsErr] = useState(false);
@@ -49,8 +49,11 @@ const VendorPage = () => {
     const [contactPhone, setPhone] = useState("");
     const [contactWebsite, setWebsite] = useState("");
     
+    const [organizationExists, setExists] = useState(false);
+    
     const tabBarHeight = useBottomTabBarHeight();
-    console.log(tabBarHeight);
+    
+    const insets = useSafeAreaInsets();
 
     useEffect(() => {
         SecureStorage.getValue('token').then(token => {
@@ -66,6 +69,12 @@ const VendorPage = () => {
                     setEmail(res.contactInfo.email);
                     setPhone(res.contactInfo.phone);
                     setWebsite(res.contactInfo.website);
+                    
+
+                    setExists(true);
+                }
+                else {
+                    setExists(false);
                 }
             })
             .catch(err => {
@@ -86,20 +95,22 @@ const VendorPage = () => {
         
     }, []);
 
-    function displayLocations() {
-        return locations.map((l, idx) => (
-            <Text key={idx} style={styles.description}>
-                {l}
-            </Text>
-        ));
-    }
+
+    // function displayLocations() {
+    //     return locations.map((l, idx) => (
+    //         <Text key={idx} style={styles.description}>
+    //             {l}
+    //         </Text>
+    //     ));
+    // }
 
     function displayTags(list) {
         return list.map((item, idx) => <Tag key={idx}>{item}</Tag>);
     }
 
     return (
-        <ScrollView style={{...styles.container}}>
+        // <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView style={{...styles.container, marginBottom: tabBarHeight }} contentInset={{ bottom: insets.bottom }}>
             <View style={styles.card}>
                 <Text style={styles.sectionHeader}>Charity Name</Text>
                 <Text style={styles.description} numberOfLines={2}>
@@ -121,13 +132,20 @@ const VendorPage = () => {
                     info page.
                 </Text>
                 <View>
-                    <DisplayButton
+                    
+                <Input
+                    value={location}
+                    placeholder="123 NW Charitable Street"
+                    onChangeText={setLocation}
+                    error={locationErr}
+                />
+                    {/* <DisplayButton
                         buttonStyle={styles.displayButton}
                         textStyle={styles.buttonText}
                         onPress={() => console.log("btn click")}
                     >
                         Edit Locations    
-                    </DisplayButton>
+                    </DisplayButton> */}
                 </View>
             </View>
 
@@ -159,7 +177,9 @@ const VendorPage = () => {
                     textStyle={styles.buttonText}
                     text="Add or Remove Accepted Items"
                     onPress={() => console.log("btn click")}
-                />
+                >
+                    Edit Accepted Items
+                </DisplayButton>
             </View>
 
             <View style={styles.card}>
@@ -193,14 +213,20 @@ const VendorPage = () => {
                 />  
             </View>
 
-            <View style={{ height: 75}}>
-                <DisplayButton
-                    buttonStyle={styles.displayButton}
-                    textStyle={styles.buttonText}
-                    text="Delete Charitable Account"
-                />
-            </View>
+            {organizationExists ? 
+                <View style={{ height: 75 }}>
+                    <DisplayButton
+                        buttonStyle={{ ...styles.displayButton, backgroundColor: 'lightred' }}
+                        textStyle={styles.buttonText}
+                        text="Delete Charitable Account"
+                    />
+                </View>
+                :
+                null
+            }
+           <AcceptedItemsModal open={true}/>
         </ScrollView>
+        // {/* </SafeAreaView> */}
     );
 };
 
@@ -209,7 +235,7 @@ const styles = StyleSheet.create({
         flex: 1,
         height: "100%",
         margin: 0,
-        padding: 20 
+        padding: 20,
     },
     card: {
         marginBottom: 10,
@@ -247,8 +273,9 @@ const styles = StyleSheet.create({
     displayButton: {
         backgroundColor: "#D77944",
         marginVertical: 5,
-        // justifyContent: 'center',
-        // textAlign: 'center',
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
         borderRadius: 8,
         paddingVertical: 6,
         paddingHorizontal: 10,
@@ -260,9 +287,81 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "white",
         fontSize: 18,
-        fontWeight: "300",
+        fontWeight: "500",
         textAlign: "center",
     },
 });
 
 export default VendorPage;
+
+const AcceptedItemsModal = ({ open }) => {
+    const [visible, setVisible] = useState(false);
+    useEffect(() => {
+        setVisible(open);
+    }, [open])
+    return (
+        <View style={modalStyles.centeredView}>
+            <Modal
+            animationType="fade"
+            transparent={true}
+            visible={visible}
+            onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+            }}>
+            <View style={modalStyles.centeredView}>
+                <View style={modalStyles.modalView}>
+                <Text style={modalStyles.modalText}>Hello World!</Text>
+    
+                <TouchableHighlight
+                    style={{ ...modalStyles.openButton, backgroundColor: '#2196F3' }}
+                    onPress={() => {
+                    setVisible(!visible);
+                    }}>
+                    <Text style={modalStyles.textStyle}>Hide Modal</Text>
+                </TouchableHighlight>
+                </View>
+            </View>
+            </Modal>
+        </View>
+    )
+}
+
+const modalStyles = StyleSheet.create({
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    //   marginTop: 22,
+      backgroundColor: 'rgba(0,0,0,0.3)'
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    openButton: {
+      backgroundColor: '#F194FF',
+      borderRadius: 20,
+      padding: 10,
+      elevation: 2,
+    },
+    textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+    },
+  });

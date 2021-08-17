@@ -50,7 +50,7 @@ const VendorPage = () => {
     //     website: 'https://wcharity.com'
     // });
 
-    const [organization, setOrganization] = useState(null);
+    const [organization, setOrganization] = useState({});
 
     useEffect(() => {
         OrganizationService.getCurrentOrganization().then(res => {

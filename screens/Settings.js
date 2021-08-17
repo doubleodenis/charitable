@@ -52,6 +52,7 @@ const Settings = ({ context }) => {
     let navigation = useNavigation();
 
     function getOrganization() {
+        console.log(context.state.userToken)
         OrganizationApi.getCurrentOrganization(context.state.userToken).then(res => {
             console.log('org', res);
             
