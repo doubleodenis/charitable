@@ -31,6 +31,7 @@ const authReducer = (prevState, action) => {
 };
 
 const AuthProvider = ({ children }) => {
+
     const [state, dispatch] = React.useReducer(authReducer, {
         isLoading: true,
         isSignout: false,
@@ -69,6 +70,38 @@ const AuthProvider = ({ children }) => {
         // React.useMemo(() => (
             {
             state: state,
+            checkAuth: async () => new Promise((resolve, reject) => {
+                AuthService.checkAuth().then(res => {
+                    console.log('Auth valid.', res);
+                    resolve();
+                })
+                .catch(err => {
+                    console.log('Auth invalid.')
+                    SecureStorage.getValue("token").then(token => {
+                        if(token !== "" || token !== null) {
+                            SecureStorage.storeValue("token", "").then((res) => {
+                        
+                                dispatch({ type: "SIGN_OUT" });
+                                
+                                reject();
+                            });
+                        }
+                        
+                        reject();
+                    })
+                    .catch(err => {
+                        //No token found
+                        SecureStorage.storeValue("token", "").then((res) => {
+                        
+                            dispatch({ type: "SIGN_OUT" });
+                            
+                            reject();
+                        });
+                    })
+                    
+
+                });
+            }),
             signIn: async (data) => new Promise((resolve, reject) => {
                 // In a production app, we need to send some data (usually username, password) to server and get a token
                 // We will also need to handle errors if sign in failed

@@ -1,14 +1,14 @@
 import React from 'react';
 import axios from 'axios';
-
+import secureStorage from './secureStorage';
 import Constants from "expo-constants";
+
 const { manifest } = Constants;
 
 const host = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
   ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
   : `api.example.com`;
   
-console.log('api', host)
 
 const api = axios.create({
     baseURL: `http://${host}/api/auth`,
@@ -32,7 +32,22 @@ const register = (data) => {
     return api.post('/register', data);
 }
 
+const checkAuth = async () => {
+    try {
+        const token = await secureStorage.getValue('token');
+        return api.get('/check', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
 export default {
     login,
-    register
+    register,
+    checkAuth
 }

@@ -8,7 +8,6 @@ const host = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpt
   ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
   : `api.example.com`;
   
-console.log('api', host)
 // let domain = "192.168.1.136"; //localhost
 let domain = "192.168.100.121"; //marcels
 

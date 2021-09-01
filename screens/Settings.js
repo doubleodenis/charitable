@@ -29,7 +29,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import SecureStorage from "../services/secureStorage";
 import DisplayButton from "../components/DisplayButton";
 import ConfirmButton from "../components/ConfirmButton";
-
+import TextButton from "../components/TextButton";
 import root from "../styles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import logo from "../assets/Charitable_Logo.png"
@@ -37,10 +37,11 @@ import OrganizationApi from "../services/organization";
 import Accordion from "../components/Accordion";
 
 import { showMessage, hideMessage } from "react-native-flash-message";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Settings = ({ context }) => {
     const [organization, setOrganization] = useState(null);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(null);
     const [isEnabled, setIsEnabled] = useState(false);
     
     //Toggles
@@ -51,45 +52,105 @@ const Settings = ({ context }) => {
 
     let navigation = useNavigation();
 
+    function changeHeaderAction() {
+        console.log('changing header button');
+        navigation.setOptions({
+            headerRight: () => (
+                <ConfirmButton navigateTo="VendorPageSettings">
+                    Setup Profile
+                </ConfirmButton>
+            )
+        });
+    }
+
     function getOrganization() {
-        console.log(context.state.userToken)
         OrganizationApi.getCurrentOrganization(context.state.userToken).then(res => {
             console.log('org', res);
-            
-            setOrganization(res.data)
+            if(res) 
+                setOrganization(res)
+            else {
+                changeHeaderAction();
+            }
         })
         .catch(err => {
             console.log(err);
         })
     }
 
+    useEffect(() => {
+        context.checkAuth().then(res => {
+            console.log('checking', res)
+            _checkLoginState();
+
+            getOrganization();
+        })
+        .catch(err => {
+            _checkLoginState();
+        })
+    }, [])
+
     useFocusEffect(
         React.useCallback(() => {
-            console.log(context.state)
-              if(context?.state.userToken && !loggedIn) {
-                setLoggedIn(true);
+            console.log('focusing')
+            context.checkAuth().then(res => {
+                
+                _checkLoginState();
 
                 getOrganization();
-            }
-            else {
-                setLoggedIn(false);
-            }
+            })
+            .catch(err => {
+                // navigation.refresh(true);
+            })
           return undefined;
         }, [])
       );
 
-    //Listens to changes to the auth context 
-    useEffect(() => {
+    function _checkLoginState() {
         if(context?.state.userToken && !loggedIn) {
             setLoggedIn(true);
-
-            getOrganization();
         }
-        else {
+        else if(!context?.state.userToken) {
             setLoggedIn(false);
         }
+    }
+    //Listens to changes to the auth context 
+    useEffect(() => {
+        console.log('context', context.state.userToken)
+        
     }, [context])
 
+    useEffect(() => {
+        if(loggedIn == false) {
+            navigation.setOptions({
+                headerLeft: null,
+                headerRight: () => (
+                    <ConfirmButton navigateTo={["Auth", "Sign In"]}>
+                        Sign In
+                    </ConfirmButton>
+                ),
+            });
+        }
+        else {
+            navigation.setOptions({
+                headerLeft: () => (
+                    <TextButton
+                        style={{ paddingLeft: 15, paddingVertical: 5 }}
+                        onPress={() => {
+                            //TODO: Signing out... loading circle
+                            //FUTURE: Modal = Are you sure you want to logout?
+                            context.signOut().then((res) => {
+                                
+                                setLoggedIn(false);
+
+                            });
+                        }}
+                    >
+                            Logout
+                    </TextButton>
+                )
+            });
+        }
+    }, [loggedIn])
     return (
         <View style={styles.container}>
             {/* Brand logo here */}
@@ -97,11 +158,11 @@ const Settings = ({ context }) => {
             {loggedIn && organization && (
                 <View>
                     <View style={{}}>
-                        <Image style={{ width: 50, height: 50 }} source={logo} style={styles.image}/>
+                        <Image style={{ ...styles.image, width: 50, height: 50 }} source={logo}/>
                     </View>
                     <View style={{ width: "80%" }}>
-                        <View style={styles.orgHeader}><Text>West Charity</Text></View>
-                        <View><Text>Description</Text></View>
+                        <View style={styles.orgHeader}><Text>{organization.name}</Text></View>
+                        <View><Text>{organization.description}</Text></View>
                     </View>
                 </View>
             )}
@@ -191,7 +252,7 @@ const SettingsButton = ({ useIcon = false, navigateTo, children }) => {
 const RegisterSection = ({ navigation }) => {
     
     function goToSignUp() {
-        console.log('going')
+        console.log('Going to sign up screen...')
         navigation.navigate('Auth', { screen: 'Sign Up' });
     }
     return (

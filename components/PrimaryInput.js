@@ -44,7 +44,7 @@ const PrimaryInput = ({onChangeText, value, label=null, placeholder='', style, e
 const styles = StyleSheet.create({
     textInput: {
         height: 40,
-        borderWidth: 2,
+        borderWidth: 1,
         borderRadius: 10,
         paddingVertical: 5,
         paddingHorizontal: 12,
