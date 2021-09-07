@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
-        
     },
     separator: {
         height: 1,

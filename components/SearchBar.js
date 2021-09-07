@@ -58,7 +58,7 @@ const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery}) => {
                 value={searchQuery}
                 autoCorrect={false}
             />
-            {searchQuery.trim().length > 0 &&
+            {searchQuery.length > 0 &&
                 <IconButton 
                     style={styles.clearButton} 
                     iconStyle={styles.clearIcon}

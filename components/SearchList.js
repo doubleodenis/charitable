@@ -4,7 +4,6 @@ import IconButton from './IconButton'
 import DisplayButton from './DisplayButton'
 import AddTagsModal from './AddTagsModal';
 import { ScrollView } from 'react-native-gesture-handler';
-import {items, centers} from '../mock_data/tagslist'
 import {searchItem} from '../services/item.js'
 import {searchMission} from '../services/mission.js'
 
@@ -16,21 +15,24 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
     const [searchType, setSearchType] = useState('items')
     const [itemSearch, setItemSearch] = useState([])
     const [missionSearch, setMissionSearch] = useState([])
+    const [searching, setSearching] = useState(false)
     const keyboardDismissProp = Platform.OS === "ios" ? { keyboardDismissMode: "on-drag" } : { onScrollBeginDrag: Keyboard.dismiss };
 
 
     useEffect(() => {
         let searchCopy = searchQuery.trim() + ''
-        let tempTags = []
         if(searchCopy.trim().length > 1)
         {
+            setSearching(true)
             if(searchType==='items') {
                 searchItem(searchCopy)
                 .then((data) => {
                     setItemSearch(data.items)
+                    setSearching(false)
                 })
                 .catch((err) => {
                     console.log(err)
+                    setSearching(false)
                 })
                 // tempTags = items.filter(item => item.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()) || item.keywords.filter(k => k.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase())).length > 0)
                 // setItemSearch(tempTags)
@@ -39,9 +41,11 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                 searchMission(searchCopy)
                 .then((data) => {
                     setMissionSearch(data.missions)
+                    setSearching(false)
                 })
                 .catch((err) => {
                     console.log(err)
+                    setSearching(false)
                 })
             }
         }
@@ -100,83 +104,89 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                 >
-                <View style={styles.list}>
-                {(searchQuery+'').trim().length === 0 ?
-                    <View style={{width: '100%', height: 210, justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{color: '#AEAEAE', marginTop: 20, marginBottom: 10 ,fontSize: 20, textAlign: 'center', fontWeight: '500'}}>Try searching for</Text>
-                        {(searchType==='items'? suggestedSearches : suggestedMissions).map((item,i) => {
-                            return(
-                                <View key={`${i}-${item}-suggest`}>
-                                    <DisplayButton
-                                        buttonStyle={{height: 40, justifyContent: 'center'}}
-                                        textStyle={{color: '#8BC178', fontSize: 20}}
-                                        onPress={() => setSearchQuery(item)}
-                                    >
-                                        {item}
-                                    </DisplayButton>
-                                </View>
-                            )
-                        })}
-                    </View>
-                :
-                    (
-                        (searchType==='items'? itemSearch : missionSearch).length === 0 ?
-                            <View style={{justifyContent: 'center', alignItems: 'center', height: 150}}>
-                                <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>No results for {searchQuery}</Text>
-                                <View style={{alignItems: 'center', justifyContent: 'center' , flexDirection: 'row'}}>
-                                    <Text style={{fontSize: 16}}>Check your input or </Text>
-                                    <DisplayButton textStyle={styles.inlineNote} buttonStyle={{}} onPress={() => setModalVisible(true)}>
-                                        manually add tag
-                                    </DisplayButton>
-                                    </View>
+                    <View style={styles.list}>
+                        {(searchQuery+'').trim().length === 0 ?
+                            <View style={{width: '100%', height: 210, justifyContent: 'center', alignItems: 'center'}}>
+                                <Text style={{color: '#AEAEAE', marginTop: 20, marginBottom: 10 ,fontSize: 20, textAlign: 'center', fontWeight: '500'}}>Try searching for</Text>
+                                {(searchType==='items'? suggestedSearches : suggestedMissions).map((item,i) => {
+                                    return(
+                                        <View key={`${i}-${item}-suggest`}>
+                                            <DisplayButton
+                                                buttonStyle={{height: 40, justifyContent: 'center'}}
+                                                textStyle={{color: '#8BC178', fontSize: 20}}
+                                                onPress={() => setSearchQuery(item)}
+                                            >
+                                                {item}
+                                            </DisplayButton>
+                                        </View>
+                                    )
+                                })}
                             </View>
                         :
-                        (searchType==='items'? itemSearch : missionSearch).map((itemObject, i) => {
-                            let item = itemObject.tag
-                            return(
-                                <View style={styles.listItem} key={`searchitem-${item}${i}`}>
-                                    <Text style={styles.listItemText}>
-                                        {item}
-                                    </Text>
-                                    {(searchType==='items'? itemList : missionList).find(element => element === item )?
-                                        <IconButton 
-                                            style={styles.deleteButton} 
-                                            iconStyle={styles.checkIcon}
-                                            onPress={() => removeTag(item)}
-                                            icon='check'
-                                        />
+                        
+                            (searching
+                                ?  
+                                    <View style={{justifyContent: 'center', alignItems: 'center', height: 150}}>
+                                        <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>Searching...</Text>
+                                    </View>
+                                : (
+                                    (searchType==='items'? itemSearch : missionSearch).length === 0 ?
+                                    <View style={{justifyContent: 'center', alignItems: 'center', height: 150}}>
+                                        <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>No results for {searchQuery}</Text>
+                                        <View style={{alignItems: 'center', justifyContent: 'center' , flexDirection: 'row'}}>
+                                            <Text style={{fontSize: 16}}>Check your input or </Text>
+                                            <DisplayButton textStyle={styles.inlineNote} buttonStyle={{}} onPress={() => setModalVisible(true)}>
+                                                manually add tag
+                                            </DisplayButton>
+                                            </View>
+                                    </View>
                                     :
-                                        <IconButton 
-                                            style={styles.deleteButton} 
-                                            iconStyle={styles.deleteIcon}
-                                            onPress={() => addTag(item)}
-                                            icon='plus'
-                                        />
-                                    }
-                                </View>
+                                    (searchType==='items'? itemSearch : missionSearch).map((itemObject, i) => {
+                                        let item = itemObject.tag
+                                        return(
+                                            <View style={styles.listItem} key={`searchitem-${item}${i}`}>
+                                                <Text style={styles.listItemText}>
+                                                    {item}
+                                                </Text>
+                                                {(searchType==='items'? itemList : missionList).find(element => element === item )?
+                                                    <IconButton 
+                                                        style={styles.deleteButton} 
+                                                        iconStyle={styles.checkIcon}
+                                                        onPress={() => removeTag(item)}
+                                                        icon='check'
+                                                    />
+                                                :
+                                                    <IconButton 
+                                                        style={styles.deleteButton} 
+                                                        iconStyle={styles.deleteIcon}
+                                                        onPress={() => addTag(item)}
+                                                        icon='plus'
+                                                    />
+                                                }
+                                            </View>
+                                        )
+                                    })
+                                )
                             )
-                        })
-                    )
-                }
-                </View>
-                {((searchQuery+'').trim().length > 0 && (searchType==='items'? itemSearch : missionSearch).length !== 0) &&
-                    <View style={{width: '100%', alignItems: 'center', marginBottom: 40}}>
-                        <DisplayButton textStyle={styles.note}  onPress={() => setModalVisible(true)}>
-                            Not what you're looking for? Manually add tag...
-                        </DisplayButton>
+                        }
                     </View>
-                }
-                
-                <AddTagsModal 
-                    isUser={isUser}
-                    modalVisible={modalVisible} 
-                    setModalVisible={setModalVisible}
-                    itemList={itemList}
-                    setItemList={setItemList}
-                    missionList={missionList}
-                    setMissionList={setMissionList}
-                    searchType={searchType}
-                />
+                    {((searchQuery+'').trim().length > 0 && (searchType==='items'? itemSearch : missionSearch).length !== 0) &&
+                        <View style={{width: '100%', alignItems: 'center', marginBottom: 40}}>
+                            <DisplayButton textStyle={styles.note}  onPress={() => setModalVisible(true)}>
+                                Not what you're looking for? Manually add tag...
+                            </DisplayButton>
+                        </View>
+                    }
+                    <AddTagsModal 
+                        isUser={isUser}
+                        modalVisible={modalVisible} 
+                        setModalVisible={setModalVisible}
+                        itemList={itemList}
+                        setItemList={setItemList}
+                        missionList={missionList}
+                        setMissionList={setMissionList}
+                        searchType={searchType}
+                    />
                 </ScrollView>
             </View>
     );
