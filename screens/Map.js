@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -83,7 +83,7 @@ const Map = () => {
                 <MapView
                     style={{ flex: 1 }}
                     initialRegion={location}
-                    showsUserLocation={true} // TODO
+                    showsUserLocation={true}
                     rotateEnabled={false}
                     showsCompass={false}
                     showsMyLocationButton={false}
@@ -111,26 +111,17 @@ const Map = () => {
                             );
                         })}
                 </MapView>
-                <View style={styles.mapOverlay}>
-                    <View
-                        style={[
-                            styles.header,
-                            showList ? styles.listActiveHeader : "",
-                        ]}
-                    >
-                        <DisplayButton
-                            buttonStyle={
-                                showList
-                                    ? styles.listActiveButton
-                                    : styles.button
-                            }
-                            textStyle={styles.buttonText}
-                            onPress={handleShowList}
-                        >
-                            {showList ? "Hide List" : "View List"}
-                        </DisplayButton>
-                        <View style={{ flexDirection: "row" }}>
-                            {showList ? (
+                {showList ? (
+                    <View style={styles.mapOverlay}>
+                        <View style={[styles.header]}>
+                            <DisplayButton
+                                buttonStyle={styles.listActiveButton}
+                                textStyle={styles.buttonText}
+                                onPress={handleShowList}
+                            >
+                                Hide List
+                            </DisplayButton>
+                            <View style={{ flexDirection: "row" }}>
                                 <DisplayButton
                                     buttonStyle={
                                         showList
@@ -142,22 +133,8 @@ const Map = () => {
                                 >
                                     Sort
                                 </DisplayButton>
-                            ) : (
-                                <DisplayButton
-                                    buttonStyle={[
-                                        showList
-                                            ? styles.listActiveButton
-                                            : styles.button,
-                                    ]}
-                                    textStyle={styles.buttonText}
-                                    onPress={centerMap}
-                                >
-                                    Center
-                                </DisplayButton>
-                            )}
+                            </View>
                         </View>
-                    </View>
-                    {showList && (
                         <FlatList
                             contentContainerStyle={{
                                 paddingBottom: tabBarHeight,
@@ -169,8 +146,31 @@ const Map = () => {
                             ItemSeparatorComponent={listSpacing}
                             ListFooterComponent={listSpacing}
                         />
-                    )}
-                </View>
+                    </View>
+                ) : (
+                    <Fragment>
+                        <DisplayButton
+                            buttonStyle={[
+                                { position: "absolute", top: 8, left: 8 },
+                                styles.button,
+                            ]}
+                            textStyle={styles.buttonText}
+                            onPress={handleShowList}
+                        >
+                            Hide List
+                        </DisplayButton>
+                        <DisplayButton
+                            buttonStyle={[
+                                { position: "absolute", top: 8, right: 8 },
+                                styles.button,
+                            ]}
+                            textStyle={styles.buttonText}
+                            onPress={centerMap}
+                        >
+                            Center
+                        </DisplayButton>
+                    </Fragment>
+                )}
             </View>
         </SafeAreaView>
     );
@@ -188,8 +188,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         paddingVertical: 8,
         paddingHorizontal: HORIZONTAL_MARGIN,
-    },
-    listActiveHeader: {
         backgroundColor: "#ffffff",
         shadowColor: "black",
         shadowOpacity: 0.15,

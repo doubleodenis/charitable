@@ -4,20 +4,24 @@ import { Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const ConfirmButton = ({ children, navigateTo }) => {
+const ConfirmButton = ({ children, navigateTo, onPress }) => {
     let navigation = useNavigation();
 
-    function onPress() {
-        if (typeof navigateTo === "string") navigation.navigate(navigateTo);
-        else {
-            //This option is if you need the advanced option of moving to a different stack
-            // https://stackoverflow.com/questions/49826920/how-to-navigate-between-different-nested-stacks-in-react-navigation
-            navigation.navigate(navigateTo[0], { screen: navigateTo[1] })
+    function press() {
+        if(onPress) onPress();
+
+        if(navigateTo) {
+            if (typeof navigateTo === "string") navigation.navigate(navigateTo);
+            else {
+                //This option is if you need the advanced option of moving to a different stack
+                // https://stackoverflow.com/questions/49826920/how-to-navigate-between-different-nested-stacks-in-react-navigation
+                navigation.navigate(navigateTo[0], { screen: navigateTo[1] })
+            }
         }
     }
 
     return (
-        <TouchableOpacity style={styles.button} onPress={onPress}>
+        <TouchableOpacity style={styles.button} onPress={press}>
             <Text style={styles.text}>{children}</Text>
         </TouchableOpacity>
     );

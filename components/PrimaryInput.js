@@ -8,6 +8,7 @@ const PrimaryInput = ({onChangeText, value, label=null, placeholder='', style, e
         original: '#D77944',
         error: 'red'
     }
+
     function onFocus(e) {
         setBorderColor(colors.focused);
     }
@@ -42,11 +43,11 @@ const PrimaryInput = ({onChangeText, value, label=null, placeholder='', style, e
 
 const styles = StyleSheet.create({
     textInput: {
-        height: 35,
+        height: 40,
         borderWidth: 1,
         borderRadius: 10,
         paddingVertical: 5,
-        paddingHorizontal: 8,
+        paddingHorizontal: 12,
         fontSize: 18,
         color: '#676767',
         fontWeight: '400',
