@@ -10,29 +10,43 @@ import {searchMission} from '../services/mission.js'
 const suggestedSearches=['Clothes', 'Furniture', 'Toys']
 const suggestedMissions=['Homeless Shelters', 'Orphanages', 'Wellness Centers']
 
-const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList, searchQuery, setSearchQuery}) => {
+const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList, searchQuery, setSearchQuery, searchPressed, setSearchPressed}) => {
     const [modalVisible, setModalVisible] = useState(false)
     const [searchType, setSearchType] = useState('items')
     const [itemSearch, setItemSearch] = useState([])
     const [missionSearch, setMissionSearch] = useState([])
     const [searching, setSearching] = useState(false)
+    const [searched, setSearched] = useState(false)
     const keyboardDismissProp = Platform.OS === "ios" ? { keyboardDismissMode: "on-drag" } : { onScrollBeginDrag: Keyboard.dismiss };
 
 
     useEffect(() => {
+        
+        if(searchPressed){
+            search()
+            setSearchPressed(false)
+        }
+    }, [searchPressed]);
+
+    useEffect(() => {
+        setSearched(false)
+    }, [searchQuery]);
+
+    const search = () => {
         let searchCopy = searchQuery.trim() + ''
         if(searchCopy.trim().length > 1)
         {
             setSearching(true)
+            setSearched(true)
             if(searchType==='items') {
                 searchItem(searchCopy)
                 .then((data) => {
                     setItemSearch(data.items)
-                    setSearching(false)
+                    setTimeout(()=>setSearching(false), 0.5*1000);
                 })
                 .catch((err) => {
                     console.log(err)
-                    setSearching(false)
+                    setTimeout(()=>setSearching(false), 0.5*1000);
                 })
                 // tempTags = items.filter(item => item.name.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase()) || item.keywords.filter(k => k.toLocaleUpperCase().includes(searchCopy.toLocaleUpperCase())).length > 0)
                 // setItemSearch(tempTags)
@@ -41,15 +55,18 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                 searchMission(searchCopy)
                 .then((data) => {
                     setMissionSearch(data.missions)
-                    setSearching(false)
+                    setTimeout(()=>setSearching(false), 0.5*1000);
                 })
                 .catch((err) => {
                     console.log(err)
-                    setSearching(false)
+                    setTimeout(()=>setSearching(false), 0.5*1000);
                 })
             }
         }
-    }, [searchQuery]);
+        else{
+            alert("Search must be more than one character")
+        }
+    }
 
     const addTag = (tag) => {
         let listCopy;
@@ -105,7 +122,7 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                     showsHorizontalScrollIndicator={false}
                 >
                     <View style={styles.list}>
-                        {(searchQuery+'').trim().length === 0 ?
+                        {!searched?
                             <View style={{width: '100%', height: 210, justifyContent: 'center', alignItems: 'center'}}>
                                 <Text style={{color: '#AEAEAE', marginTop: 20, marginBottom: 10 ,fontSize: 20, textAlign: 'center', fontWeight: '500'}}>Try searching for</Text>
                                 {(searchType==='items'? suggestedSearches : suggestedMissions).map((item,i) => {
@@ -124,13 +141,12 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                             </View>
                         :
                         
-                            (searching
-                                ?  
-                                    <View style={{justifyContent: 'center', alignItems: 'center', height: 150}}>
-                                        <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>Searching...</Text>
-                                    </View>
-                                : (
-                                    (searchType==='items'? itemSearch : missionSearch).length === 0 ?
+                            (searching ?  
+                                <View style={{justifyContent: 'center', alignItems: 'center', height: 150}}>
+                                    <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>Searching...</Text>
+                                </View>
+                            :(
+                                searched && (searchType==='items'? itemSearch : missionSearch).length === 0 ?
                                     <View style={{justifyContent: 'center', alignItems: 'center', height: 150}}>
                                         <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>No results for {searchQuery}</Text>
                                         <View style={{alignItems: 'center', justifyContent: 'center' , flexDirection: 'row'}}>
@@ -140,37 +156,36 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                                             </DisplayButton>
                                             </View>
                                     </View>
-                                    :
-                                    (searchType==='items'? itemSearch : missionSearch).map((itemObject, i) => {
-                                        let item = itemObject.tag
-                                        return(
-                                            <View style={styles.listItem} key={`searchitem-${item}${i}`}>
-                                                <Text style={styles.listItemText}>
-                                                    {item}
-                                                </Text>
-                                                {(searchType==='items'? itemList : missionList).find(element => element === item )?
-                                                    <IconButton 
-                                                        style={styles.deleteButton} 
-                                                        iconStyle={styles.checkIcon}
-                                                        onPress={() => removeTag(item)}
-                                                        icon='check'
-                                                    />
-                                                :
-                                                    <IconButton 
-                                                        style={styles.deleteButton} 
-                                                        iconStyle={styles.deleteIcon}
-                                                        onPress={() => addTag(item)}
-                                                        icon='plus'
-                                                    />
-                                                }
-                                            </View>
-                                        )
-                                    })
-                                )
-                            )
+                                :
+                                (searchType==='items'? itemSearch : missionSearch).map((itemObject, i) => {
+                                    let item = itemObject.tag
+                                    return(
+                                        <View style={styles.listItem} key={`searchitem-${item}${i}`}>
+                                            <Text style={styles.listItemText}>
+                                                {item}
+                                            </Text>
+                                            {(searchType==='items'? itemList : missionList).find(element => element === item )?
+                                                <IconButton 
+                                                    style={styles.deleteButton} 
+                                                    iconStyle={styles.checkIcon}
+                                                    onPress={() => removeTag(item)}
+                                                    icon='check'
+                                                />
+                                            :
+                                                <IconButton 
+                                                    style={styles.deleteButton} 
+                                                    iconStyle={styles.deleteIcon}
+                                                    onPress={() => addTag(item)}
+                                                    icon='plus'
+                                                />
+                                            }
+                                        </View>
+                                    )
+                                })
+                            ))
                         }
                     </View>
-                    {((searchQuery+'').trim().length > 0 && (searchType==='items'? itemSearch : missionSearch).length !== 0) &&
+                    {(searched && !searching && (searchType==='items'? itemSearch : missionSearch).length !== 0) &&
                         <View style={{width: '100%', alignItems: 'center', marginBottom: 40}}>
                             <DisplayButton textStyle={styles.note}  onPress={() => setModalVisible(true)}>
                                 Not what you're looking for? Manually add tag...
