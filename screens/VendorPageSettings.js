@@ -203,6 +203,8 @@ const VendorPage = () => {
             <ScrollView 
                 style={{...styles.container, marginBottom: tabBarHeight }}
                 contentInset={{ bottom: insets.bottom }}
+                keyboardDismissMode='on-drag'
+                keyboardShouldPersistTaps={"handled"}
             >
                 <View style={styles.card}>
                     <Text style={styles.sectionHeader}>Charity Name</Text>
@@ -392,7 +394,7 @@ export default VendorPage;
 const ItemSearch = ({ items, missions, setItems, setMissions }) => {
     const [searching, setSearching] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-
+    const [searchPressed, setSearchPressed] = useState(false);
 
     const dummyData = [];
     const dummyMissions = [];
@@ -404,6 +406,7 @@ const ItemSearch = ({ items, missions, setItems, setMissions }) => {
                 setSearching={setSearching}
                 searchQuery={searchQuery.trim()}
                 setSearchQuery={setSearchQuery}
+                setSearchPressed={setSearchPressed}
             />
             {searching ? (
                 <SearchList
@@ -414,6 +417,8 @@ const ItemSearch = ({ items, missions, setItems, setMissions }) => {
                     setMissionList={setMissions}
                     searchQuery={searchQuery.trim()}
                     setSearchQuery={setSearchQuery}
+                    searchPressed={searchPressed}
+                    setSearchPressed={setSearchPressed}
                 />
             ) : (
                 <>

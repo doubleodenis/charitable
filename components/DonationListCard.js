@@ -19,7 +19,6 @@ const DonationListCard = ({isUser, searching, setSearching}) => {
                     setSearching={setSearching} 
                     searchQuery={searchQuery} 
                     setSearchQuery={setSearchQuery} 
-                    searchPressed={searchPressed}
                     setSearchPressed={setSearchPressed}
                 />
                 {searching ?
