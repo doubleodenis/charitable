@@ -6,8 +6,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DonationListCard from "../components/DonationListCard";
 import { ScrollView } from "react-native-gesture-handler";
 
-const dummyData = []
-const dummyMissions = []
 
 const Donate = ({navigation}) => {
     const [searching, setSearching] = useState(false)
@@ -21,7 +19,7 @@ const Donate = ({navigation}) => {
                 contentContainerStyle={{height: (searching? '100%' : 'auto')}}
             >
                 <View style={{alignItems: 'center', paddingTop: 20}}>
-                    <DonationListCard isUser={true} items={dummyData} missions={dummyMissions} searching={searching} setSearching={setSearching}/>
+                    <DonationListCard isUser={true} searching={searching} setSearching={setSearching}/>
                 </View>
             </ScrollView>
         </View>

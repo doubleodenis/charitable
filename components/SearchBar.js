@@ -4,7 +4,7 @@ import DisplayButton from './DisplayButton'
 import IconButton from './IconButton'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery}) => {
+const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery, setSearchPressed}) => {
     const shrinkAnim = useRef(new Animated.Value(100)).current
     const fadeAnim = useRef(new Animated.Value(0)).current
 
@@ -53,12 +53,12 @@ const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery}) => {
                 placeholder={searching? 'Search' : 'Search for items or missions'}
                 onFocus={() => {setSearching(true);}}
                 returnKeyType='search'
-                onSubmitEditing = {()=>Keyboard.dismiss()}
+                onSubmitEditing = {()=>{setSearchPressed(true); Keyboard.dismiss();}}
                 onChangeText={(text) => setSearchQuery(text)}
                 value={searchQuery}
                 autoCorrect={false}
             />
-            {searchQuery.trim().length > 0 &&
+            {searchQuery.length > 0 &&
                 <IconButton 
                     style={styles.clearButton} 
                     iconStyle={styles.clearIcon}
