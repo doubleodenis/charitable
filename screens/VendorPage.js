@@ -91,13 +91,6 @@ const VendorPage = () => {
             });
     }, []);
 
-    function displayLocations() {
-        return locations.map((l, idx) => (
-            <Text key={idx} style={styles.description}>
-                {l}
-            </Text>
-        ));
-    }
 
     function displayTags(list) {
         return list.map((item, idx) => <Tag key={idx}>{item}</Tag>);

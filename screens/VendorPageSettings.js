@@ -80,6 +80,7 @@ const VendorPage = () => {
     useEffect(() => {
         console.log(charityName);
     }, [charityName])
+
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
@@ -120,13 +121,6 @@ const VendorPage = () => {
             
     }, []);
 
-    // function displayLocations() {
-    //     return locations.map((l, idx) => (
-    //         <Text key={idx} style={styles.description}>
-    //             {l}
-    //         </Text>
-    //     ));
-    // }
 
     function submitOrganization() {
         //! TODO: Add form validations

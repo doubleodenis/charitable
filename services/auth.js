@@ -21,7 +21,7 @@ api.interceptors.response.use(response => response.data,
     (error) => {
         let data = JSON.stringify(error)
         console.log(error.response)
-        return Promise.reject(error.response);
+        return Promise.reject(error.response.data);
     });
 
 const login = (data) => {

@@ -66,15 +66,18 @@ const SignIn = () => {
                 type: "danger",
                 duration: 5000
             });
-
-            err.data.forEach(e => {
-                if(e.param == "email") {
-                    setEmailErr(true);
-                }
-                else if(e.param == "password") {
-                    setPasswordErr(true);
-                }
-            })
+            
+            if(err.data?.length > 0) {
+                err.data.forEach(e => {
+                    if(e.param == "email") {
+                        setEmailErr(true);
+                    }
+                    else if(e.param == "password") {
+                        setPasswordErr(true);
+                    }
+                })
+            }
+            
             //TODO: set the fields error field
         })
     }

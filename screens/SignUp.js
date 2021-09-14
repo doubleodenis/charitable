@@ -24,13 +24,13 @@ import { showMessage, hideMessage } from "react-native-flash-message";
 
 const SignUp = () => {
     const [email, setEmail] = useState("");
-    const [emailErr, setEmailErr] = useState(false);
+    const [emailErr, setEmailErr] = useState(null);
 
     const [password, setPassword] = useState("");
-    const [passwordErr, setPasswordErr] = useState(false);
+    const [passwordErr, setPasswordErr] = useState(null);
     
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [confirmPasswordErr, setConfirmPasswordErr] = useState(false);
+    const [confirmPasswordErr, setConfirmPasswordErr] = useState(null);
     
     let navigation = useNavigation();
     let ctx = React.useContext(AuthContext);
@@ -45,7 +45,8 @@ const SignUp = () => {
         })
     }, []);
 
-     function signUp() {
+
+    function signUp() {
         const data = {
             email,
             password,
@@ -64,6 +65,7 @@ const SignUp = () => {
         }
 
         ctx.signUp(data).then(res => {
+            console.log('sign up success', res)
             showMessage({
                 message: "Successfully signed up",
                 type: "success",
@@ -82,13 +84,19 @@ const SignUp = () => {
 
             err.data.forEach(e => {
                 if(e.param == "email") {
-                    setEmailErr(true);
+                    setEmailErr(e.msg);
                 }
                 else if(e.param == "password") {
-                    setPasswordErr(true);
+                    setPasswordErr(e.msg);
+                    setConfirmPasswordErr(e.msg);
                 }
             })
         })
+    }
+    
+    function setFormField(setter, value, errSetter) {
+        setter(value);
+        errSetter(false);
     }
     
     return (
@@ -104,42 +112,55 @@ const SignUp = () => {
                 >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <View style={styles.form}>
-                        <PrimaryInput
-                            type="email"
-                            placeholder="Email"
-                            onChangeText={(text) => setEmail(text)}
-                            value={email}
-                            keyboardType="email-address"
-                            textContentType="emailAddress"
-                            error={emailErr}
-                        />
+                        <View style={styles.formField}>
+                            <PrimaryInput
+                                type="email"
+                                placeholder="Email"
+                                onChangeText={(text) => setFormField(setEmail, text, setEmailErr)}
+                                value={email}
+                                keyboardType="email-address"
+                                textContentType="emailAddress"
+                                error={emailErr}
+                            />
+                            <Text style={styles.formFieldErr}>{emailErr}</Text>
+                        </View>
 
-                        <PrimaryInput
-                            placeholder="Password"
-                            onChangeText={(text) => setPassword(text)}
-                            value={password}
-                            textContentType="password"
-                            autoCompleteType="password"
-                            secureTextEntry
-                            error={passwordErr}
-                        />
-                        <PrimaryInput
-                            placeholder="Confirm Password"
-                            onChangeText={(text) => setConfirmPassword(text)}
-                            value={confirmPassword}
-                            textContentType="password"
-                            autoCompleteType="password"
-                            secureTextEntry
-                            error={confirmPasswordErr}
-                        />
+                        <View style={styles.formField}>
+                            <PrimaryInput
+                                placeholder="Password"
+                                onChangeText={(text) => setFormField(setPassword, text, setPasswordErr)}
+                                value={password}
+                                textContentType="password"
+                                autoCompleteType="password"
+                                secureTextEntry
+                                error={passwordErr}
+                            />
+                            <Text style={styles.formFieldErr}>{passwordErr}</Text>
+                        </View>
+                        
+                        <View style={styles.formField}>
+                            <PrimaryInput
+                                placeholder="Confirm Password"
+                                onChangeText={(text) => setFormField(setConfirmPassword, text, setConfirmPasswordErr)}
+                                value={confirmPassword}
+                                textContentType="password"
+                                autoCompleteType="password"
+                                secureTextEntry
+                                error={confirmPasswordErr}
+                            />
+                            <Text style={styles.formFieldErr}>{confirmPasswordErr}</Text>
+                        </View>
 
-                        <DisplayButton
-                            onPress={signUp}
-                            buttonStyle={styles.displayButton}
-                            textStyle={styles.buttonText}
-                        >
-                            Sign Up
-                        </DisplayButton>
+                        <View style={styles.formField}>
+                            <DisplayButton
+                                onPress={signUp}
+                                buttonStyle={styles.displayButton}
+                                textStyle={styles.buttonText}
+                            >
+                                Sign Up
+                            </DisplayButton>
+                        </View>
+                        
                         <Link style={{textAlign: 'center', alignItems: 'center'}} navigateTo={'Sign In'}>Or sign in here</Link>
                     </View>
                 </TouchableWithoutFeedback>
@@ -171,6 +192,14 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         textAlign: 'center',
         height: 250,
+    },
+    formField: {
+        marginBottom: 12
+    },  
+    formFieldErr: {
+        fontSize: 12,
+        color: 'red',
+        paddingVertical: 4
     },
     displayButton: {
         backgroundColor: "#D77944",
