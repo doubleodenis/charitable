@@ -16,13 +16,11 @@
 
 import React, { useState, useEffect } from "react";
 
+import { StyleSheet, Text, View, Image } from "react-native";
 import {
-    StyleSheet,
-    Text,
-    View,
-    Image
-} from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+    SafeAreaView,
+    useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 import Tag from "../components/Tag";
 import logo from "../assets/Charitable_Logo.png";
@@ -39,7 +37,8 @@ import { ScrollView } from "react-native-gesture-handler";
 
 const VendorPage = () => {
     let navigation = useNavigation();
-    
+    const { organizationId } = route.params;
+
     const tabBarHeight = useBottomTabBarHeight();
 
     const insets = useSafeAreaInsets();
@@ -47,132 +46,122 @@ const VendorPage = () => {
 
     const [organization, setOrganization] = useState(null);
 
-    function _init() {
-        OrganizationService.getCurrentOrganization()
-            .then((res) => {
-                console.log("org", res);
-                if (res) {
-                    setOrganization(res);
-                } else {
-                    navigation.navigate("Settings");
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                console.log(err.response);
-
-                //Show error message
-                showMessage({
-                    message: err.data.message,
-                    type: "danger",
-                });
-            });
-    }
-
     useEffect(() => {
-        _init();
-    }, []);
+        if (organizationId) {
+            OrganizationService.getOrganizationById(organizationId)
+                .then((res) => {
+                    console.log("org", res);
+                    if (res) {
+                        setOrganization(res);
+                    } else {
+                        navigation.navigate("Map");
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    console.log(err.response);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            _init();
-          return undefined;
-        }, [])
-      );
+                    // Show error message
+                    showMessage({
+                        message: err.message,
+                        type: "danger",
+                    });
+
+                    navigation.navigate("Map");
+                });
+        } else {
+            navigation.navigate("Map");
+        }
+    }, []);
 
     function displayTags(list) {
         return list.map((item, idx) => <Tag key={idx}>{item}</Tag>);
     }
 
     return (
-            <ScrollView
-                style={{ ...styles.container, marginBottom: tabBarHeight }}
-                contentInset={{ bottom: insets.bottom }}
-            >
-                <View style={styles.container}>
-                    <View style={styles.imageContainer}>
-                        <Image source={logo} style={styles.image} />
+        // <View
+        //     style={{
+        //         justifyContent: "center",
+        //         alignItems: "center",
+        //         height: "100%",
+        //         margin: 0,
+        //         padding: 20,
+        //     }}
+        // >
+        <ScrollView
+            style={{ ...styles.container, marginBottom: tabBarHeight }}
+            contentInset={{ bottom: insets.bottom }}
+        >
+            <View style={styles.container}>
+                <View style={styles.imageContainer}>
+                    <Image source={logo} style={styles.image} />
+                </View>
+
+                <View style={styles.contentContainer}>
+                    <Text style={styles.orgHeader}>{organization?.name}</Text>
+
+                    <View nativeID="locations-section" style={styles.section}>
+                        <View style={{ flexDirection: "row" }}>
+                            <Text style={styles.sectionHeader}>Locations</Text>
+                        </View>
+                        <View
+                            style={{
+                                width: "75%",
+                                flexWrap: "wrap",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <Text style={styles.description}>
+                                {organization?.location}
+                            </Text>
+                            {/* {organization?.locations.length > 0 ? displayLocations() : <Text>None</Text>} */}
+                        </View>
                     </View>
 
-                    <View style={styles.contentContainer}>
-                        <Text style={styles.orgHeader}>
-                            {organization?.name}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionHeader}>Who We Are</Text>
+                        <Text style={styles.description} numberOfLines={5}>
+                            {organization?.description}
                         </Text>
+                    </View>
 
-                        <View
-                            nativeID="locations-section"
-                            style={styles.section}
-                        >
-                            <View style={{ flexDirection: "row" }}>
-                                <Text style={styles.sectionHeader}>
-                                    Location
-                                </Text>
-                            </View>
-                            <View
-                                style={{
-                                    width: "75%",
-                                    flexWrap: "wrap",
-                                    flexDirection: "row",
-                                }}
-                            >
+                    <View style={styles.section}>
+                        <Text style={styles.sectionHeader}>Mission Tags</Text>
+                        <View style={{ flexDirection: "row" }}>
+                            {organization?.missionCategories
+                                ? displayTags(organization.missionCategories)
+                                : null}
+                        </View>
+                    </View>
+
+                    <View style={styles.section}>
+                        <Text style={styles.sectionHeader}>What We Need</Text>
+                        <View style={{ flexDirection: "row" }}>
+                            {organization?.acceptedItems
+                                ? displayTags(organization.acceptedItems)
+                                : null}
+                        </View>
+                    </View>
+
+                    <View style={styles.section}>
+                        <Text style={styles.sectionHeader}>
+                            How To Reach Us
+                        </Text>
+                        <View>
+                            {organization?.contactInfo ? (
                                 <Text style={styles.description}>
-                                    {organization?.location.address}
+                                    Email: {organization.contactInfo.email}
+                                    {"\n"}
+                                    Phone: {organization.contactInfo.phone}
+                                    {"\n"}
+                                    Website: {organization.contactInfo.website}
                                 </Text>
-                                {/* {organization?.locations.length > 0 ? displayLocations() : <Text>None</Text>} */}
-                            </View>
-                        </View>
-
-                        <View style={styles.section}>
-                            <Text style={styles.sectionHeader}>Who We Are</Text>
-                            <Text style={styles.description} numberOfLines={5}>
-                                {organization?.description}
-                            </Text>
-                        </View>
-
-                        <View style={styles.section}>
-                            <Text style={styles.sectionHeader}>
-                                Mission Tags
-                            </Text>
-                            <View style={{ flexDirection: "row" }}>
-                                {organization?.missionCategories
-                                    ? displayTags(
-                                          organization.missionCategories
-                                      )
-                                    : null}
-                            </View>
-                        </View>
-
-                        <View style={styles.section}>
-                            <Text style={styles.sectionHeader}>
-                                What We Need
-                            </Text>
-                            <View style={{ flexDirection: "row" }}>
-                                {organization?.acceptedItems
-                                    ? displayTags(organization.acceptedItems)
-                                    : null}
-                            </View>
-                        </View>
-
-                        <View style={styles.section}>
-                            <Text style={styles.sectionHeader}>
-                                How To Reach Us
-                            </Text>
-                            <View>
-                                {organization?.contactInfo ? (
-                                    <Text style={styles.description}>
-                                        Email: {organization.contactInfo.email}
-                                        {"\n"}
-                                        Phone: {organization.contactInfo.phone}
-                                        {"\n"}
-                                        Website:{" "}
-                                        {organization.contactInfo.website}
-                                    </Text>
-                                ) : null}
-                            </View>
+                            ) : null}
                         </View>
                     </View>
                 </View>
-            </ScrollView>
+            </View>
+        </ScrollView>
         // </View>
     );
 };

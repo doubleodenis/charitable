@@ -84,103 +84,123 @@ const MapStackScreen = () => (
     </NotificationsStack.Navigator>
 );
 
+const VendorPageScreen = () => (
+    <NotificationsStack.Navigator headerMode="none">
+        <NotificationsStack.Screen name="VendorPage" component={VendorPage} />
+    </NotificationsStack.Navigator>
+);
+
 const SettingsStack = createStackNavigator();
 
 const SettingsStackScreen = () => {
-    
     let context = React.useContext(AuthContext);
 
     return (
-            <SettingsStack.Navigator headerMode="screen">
-                    <SettingsStack.Screen
-                        name="Settings"
-                        listeners={({ navigation }) => ({
-                            focus: (e) => {
-                                SecureStorage.getValue("token")
-                                    .then((res) => {
-                                        //If there is a token, change the header navigation options
-                                        navigation.setOptions({
-                                            headerRight: () => (
-                                                <ConfirmButton navigateTo="OrganizationPage">
-                                                    View Profile
-                                                </ConfirmButton>
-                                            ),
-                                            headerLeft: () => (
-                                                <TextButton
-                                                    style={{ paddingLeft: 15, paddingVertical: 5 }}
-                                                    onPress={() => {
-                                                        //TODO: Signing out... loading circle
-                                                        //FUTURE: Modal = Are you sure you want to logout?
-                                                        context.signOut().then((res) => {
-                                                            
-                                                            navigation.setOptions({
-                                                                headerLeft: null,
-                                                                headerRight: () => (
-                                                                    <ConfirmButton navigateTo={["Auth", "Sign In"]}>
-                                                                        Sign In
-                                                                    </ConfirmButton>
-                                                                ),
-                                                            });
-
+        <SettingsStack.Navigator headerMode="screen">
+            <SettingsStack.Screen
+                name="Settings"
+                listeners={({ navigation }) => ({
+                    focus: (e) => {
+                        SecureStorage.getValue("token")
+                            .then((res) => {
+                                //If there is a token, change the header navigation options
+                                navigation.setOptions({
+                                    headerRight: () => (
+                                        <ConfirmButton navigateTo="OrganizationPage">
+                                            View Profile
+                                        </ConfirmButton>
+                                    ),
+                                    headerLeft: () => (
+                                        <TextButton
+                                            style={{
+                                                paddingLeft: 15,
+                                                paddingVertical: 5,
+                                            }}
+                                            onPress={() => {
+                                                //TODO: Signing out... loading circle
+                                                //FUTURE: Modal = Are you sure you want to logout?
+                                                context
+                                                    .signOut()
+                                                    .then((res) => {
+                                                        navigation.setOptions({
+                                                            headerLeft: null,
+                                                            headerRight: () => (
+                                                                <ConfirmButton
+                                                                    navigateTo={[
+                                                                        "Auth",
+                                                                        "Sign In",
+                                                                    ]}
+                                                                >
+                                                                    Sign In
+                                                                </ConfirmButton>
+                                                            ),
                                                         });
-                                                    }}
-                                                >
-                                                        Logout
-                                                </TextButton>
-                                            )
-                                        });
-                                    })
-                                    .catch((err) => {
-                                        //If no token, change the header navigation options
-                                        navigation.setOptions({
-                                            headerRight: () => (
-                                                <ConfirmButton navigateTo={["Auth", "Sign In"]}>
-                                                    Sign In
-                                                </ConfirmButton>
-                                            ),
-                                            headerLeft: null
-                                        });
+                                                    });
+                                            }}
+                                        >
+                                            Logout
+                                        </TextButton>
+                                    ),
                                 });
-                            },
-                        })}
-                        options={{
-                            headerTitle: null
-                        }}
-                    >
-                        {(props) => (
-                            <AuthConsumer>
-                                {ctx => <Settings context={ctx} {...props} /> }
-                            </AuthConsumer>
-                        )}
-                    </SettingsStack.Screen>
-                    <SettingsStack.Screen name="OrganizationPage" component={OrganizationPage} 
-                    options={{
-                        headerTitle: null,
-                        headerLeft: () => <BackButton />,
-                        headerRight: () => <HeaderSettingsButton />
-                        }}
-                        />
-                <SettingsStack.Screen name="VendorPageSettings" component={VendorPageSettings} 
-                    options={({ navigation }) => ({
-                        headerTitle: null,
-                        headerLeft: () => (
-                            <TextButton
-                                style={{ paddingLeft: 15, paddingVertical: 5 }}
-                                onPress={() => {
-                                    console.log('back')
-                                    navigation.goBack();
-                                }}
-                            >
+                            })
+                            .catch((err) => {
+                                //If no token, change the header navigation options
+                                navigation.setOptions({
+                                    headerRight: () => (
+                                        <ConfirmButton
+                                            navigateTo={["Auth", "Sign In"]}
+                                        >
+                                            Sign In
+                                        </ConfirmButton>
+                                    ),
+                                    headerLeft: null,
+                                });
+                            });
+                    },
+                })}
+                options={{
+                    headerTitle: null,
+                }}
+            >
+                {(props) => (
+                    <AuthConsumer>
+                        {(ctx) => <Settings context={ctx} {...props} />}
+                    </AuthConsumer>
+                )}
+            </SettingsStack.Screen>
+            <SettingsStack.Screen
+                name="OrganizationPage"
+                component={OrganizationPage}
+                options={{
+                    headerTitle: null,
+                    headerLeft: () => <BackButton />,
+                    headerRight: () => <HeaderSettingsButton />,
+                }}
+            />
+            <SettingsStack.Screen
+                name="VendorPageSettings"
+                component={VendorPageSettings}
+                options={({ navigation }) => ({
+                    headerTitle: null,
+                    headerLeft: () => (
+                        <TextButton
+                            style={{ paddingLeft: 15, paddingVertical: 5 }}
+                            onPress={() => {
+                                console.log("back");
+                                navigation.goBack();
+                            }}
+                        >
                             Cancel
                         </TextButton>
-                        ),
-                        headerRight: () => (
-                            <ConfirmButton navigateTo="OrganizationPage">
-                                Looks Good
-                            </ConfirmButton>
-                        )
-                        })}/>
-                </SettingsStack.Navigator>
+                    ),
+                    headerRight: () => (
+                        <ConfirmButton navigateTo="OrganizationPage">
+                            Looks Good
+                        </ConfirmButton>
+                    ),
+                })}
+            />
+        </SettingsStack.Navigator>
     );
 };
 
@@ -198,4 +218,5 @@ export {
     DonatePlaceholder,
     MapStackScreen,
     SettingsStackScreen,
+    VendorPageScreen,
 };

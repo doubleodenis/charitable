@@ -6,7 +6,8 @@ import * as Location from "expo-location";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
-import locations from "../mock_data/locations";
+// import locations from "../mock_data/locations";
+import OrganizationService from "../services/organization";
 
 const HORIZONTAL_MARGIN = 8;
 const LAT_DELTA = 0.0922; // Not sure what this dictates but I believe it's the initial map zoom
@@ -15,8 +16,10 @@ const MARKER_VERIFIED_COLOR = "#258fe6"; // Neutral colors don't work
 const MARKER_UNVERIFIED_COLOR = "#f52f4c"; // Neutral colors don't work
 
 const Map = () => {
+    const [organizations, setOrganizations] = useState([]);
     const [location, setLocation] = useState(null);
     const [showList, setShowList] = useState(false);
+    const [selectedOrg, setSelectedOrg] = useState(null);
 
     const tabBarHeight = useBottomTabBarHeight();
 
@@ -37,20 +40,46 @@ const Map = () => {
                 longitudeDelta: LNG_DELTA,
             });
         })();
+
+        OrganizationService.getOrganizations()
+            .then((res) => {
+                setOrganizations(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }, []);
 
     // TESTING
     useEffect(() => {
-        if (location) {
-            console.log("Location: ", location);
-            console.log("Latitude: ", location.latitude);
+        if (selectedOrg) {
+            console.log(selectedOrg.acceptedItems);
+        } else {
+            console.log("null");
         }
-    }, [location]);
+    }, [selectedOrg]);
 
     const centerMap = () => {
-        console.log("Map Centered!");
+        (async () => {
+            // Center button should only be available if the user granted the app location permission, that's why permission is not rechecked
+            let currentPosition = await Location.getCurrentPositionAsync({});
 
-        setLocation({ ...location });
+            console.log(
+                "Current Position: Lat = ",
+                currentPosition.coords.latitude,
+                ", Long = ",
+                currentPosition.coords.longitude
+            );
+
+            setLocation({
+                latitude: currentPosition.coords.latitude,
+                longitude: currentPosition.coords.longitude,
+                latitudeDelta: location.latitudeDelta,
+                longitudeDelta: location.longitudeDelta,
+            });
+
+            console.log("Map Centered!");
+        })();
     };
 
     const sortLocations = () => {
@@ -66,8 +95,9 @@ const Map = () => {
             <View style={styles.cardContainer}>
                 <LocationCard
                     name={item.name}
-                    tags={item.needed}
+                    tags={item.acceptedItems}
                     verified={item.verified}
+                    id={item._id}
                 />
             </View>
         );
@@ -82,16 +112,24 @@ const Map = () => {
             <View style={{ flex: 1, position: "relative" }}>
                 <MapView
                     style={{ flex: 1 }}
-                    initialRegion={location}
+                    region={location}
+                    onRegionChangeComplete={(region) => setLocation(region)}
                     showsUserLocation={true}
                     rotateEnabled={false}
                     showsCompass={false}
                     showsMyLocationButton={false}
                     provider={PROVIDER_GOOGLE}
                     customMapStyle={mapStyle}
+                    onPress={() => {
+                        console.log("Map Pressed");
+
+                        if (selectedOrg) {
+                            setSelectedOrg(null);
+                        }
+                    }}
                 >
-                    {locations &&
-                        locations.map((place, i) => {
+                    {organizations &&
+                        organizations.map((place, i) => {
                             return (
                                 place.location && (
                                     <Marker
@@ -106,6 +144,16 @@ const Map = () => {
                                                 ? MARKER_VERIFIED_COLOR
                                                 : MARKER_UNVERIFIED_COLOR
                                         }
+                                        onPress={() => {
+                                            console.log("Pin Pressed");
+                                            setSelectedOrg({
+                                                name: place.name,
+                                                acceptedItems:
+                                                    place.acceptedItems,
+                                                verified: place.verified,
+                                                _id: place._id,
+                                            });
+                                        }}
                                     />
                                 )
                             );
@@ -139,9 +187,9 @@ const Map = () => {
                             contentContainerStyle={{
                                 paddingBottom: tabBarHeight,
                             }}
-                            data={locations}
+                            data={organizations}
                             renderItem={renderItem}
-                            keyExtractor={(item) => item.id}
+                            keyExtractor={(item) => item._id}
                             ListHeaderComponent={listSpacing}
                             ItemSeparatorComponent={listSpacing}
                             ListFooterComponent={listSpacing}
@@ -157,7 +205,7 @@ const Map = () => {
                             textStyle={styles.buttonText}
                             onPress={handleShowList}
                         >
-                            Hide List
+                            View List
                         </DisplayButton>
                         <DisplayButton
                             buttonStyle={[
@@ -169,6 +217,25 @@ const Map = () => {
                         >
                             Center
                         </DisplayButton>
+                        {selectedOrg && (
+                            <View
+                                style={{
+                                    position: "absolute",
+                                    width:
+                                        Dimensions.get("window").width -
+                                        HORIZONTAL_MARGIN * 2,
+                                    bottom: tabBarHeight + 8,
+                                    marginHorizontal: HORIZONTAL_MARGIN,
+                                }}
+                            >
+                                <LocationCard
+                                    name={selectedOrg.name}
+                                    tags={selectedOrg.acceptedItems}
+                                    verified={selectedOrg.verified}
+                                    id={selectedOrg._id}
+                                />
+                            </View>
+                        )}
                     </Fragment>
                 )}
             </View>
