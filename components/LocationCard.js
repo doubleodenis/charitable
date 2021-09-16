@@ -1,12 +1,15 @@
 import React, { Fragment } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import FoundationIcon from "react-native-vector-icons/Foundation";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import { useNavigation } from "@react-navigation/native";
 
 const INTER_TAG_MARGIN = 6;
 const DEFUALT_ICON_COLOR = "#696969";
 
-const LocationCard = ({ name, tags, verified }) => {
+const LocationCard = ({ name, tags, verified, id }) => {
+    let navigation = useNavigation();
+
     return (
         <View
             style={[
@@ -50,13 +53,21 @@ const LocationCard = ({ name, tags, verified }) => {
                             marginRight: 8,
                         }}
                     />
-                    <FoundationIcon
-                        name="info"
-                        style={{
-                            fontSize: 32,
-                            color: DEFUALT_ICON_COLOR,
-                        }}
-                    />
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate("VendorPage", {
+                                organizationId: id,
+                            })
+                        }
+                    >
+                        <FoundationIcon
+                            name="info"
+                            style={{
+                                fontSize: 32,
+                                color: DEFUALT_ICON_COLOR,
+                            }}
+                        />
+                    </TouchableOpacity>
                 </View>
             </View>
             {tags ? (
