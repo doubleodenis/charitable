@@ -35,9 +35,11 @@ import OrganizationService from "../services/organization";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { ScrollView } from "react-native-gesture-handler";
 
-const VendorPage = () => {
+const VendorPage = ({ route }) => {
     let navigation = useNavigation();
-    const { organizationId } = route.params;
+    // let params;
+    // if(route)
+    //     params = route.params;
 
     const tabBarHeight = useBottomTabBarHeight();
 
@@ -47,8 +49,15 @@ const VendorPage = () => {
     const [organization, setOrganization] = useState(null);
 
     useEffect(() => {
-        if (organizationId) {
-            OrganizationService.getOrganizationById(organizationId)
+        let params = {};
+        if(route && route.params) {
+            params = route.params;
+            console.log(route)
+        }
+            
+        // let { organizationId } = route.params;
+        if (params.organizationId) {
+            OrganizationService.getOrganizationById(params.organizationId)
                 .then((res) => {
                     console.log("org", res);
                     if (res) {
@@ -59,7 +68,7 @@ const VendorPage = () => {
                 })
                 .catch((err) => {
                     console.log(err);
-                    console.log(err.response);
+                    // console.log(err.response);
 
                     // Show error message
                     showMessage({
@@ -70,7 +79,30 @@ const VendorPage = () => {
                     navigation.navigate("Map");
                 });
         } else {
-            navigation.navigate("Map");
+            // navigation.navigate("Map");
+
+            OrganizationService.getCurrentOrganization()
+            .then((res) => {
+                // console.log('current', res);
+                //Fill the organization information out if it exists
+                if (res) {
+                    setOrganization(res);
+                } else {
+                    navigation.navigate("Settings");
+                }
+
+            })
+            .catch((err) => {
+                console.log(err);
+                console.log(err.data);
+
+                //Show error message
+                showMessage({
+                    message: err.data.message,
+                    type: "danger",
+                });
+            });
+            
         }
     }, []);
 
@@ -90,7 +122,7 @@ const VendorPage = () => {
         // >
         <ScrollView
             style={{ ...styles.container, marginBottom: tabBarHeight }}
-            contentInset={{ bottom: insets.bottom }}
+            contentInset={{ bottom: insets.bottom + tabBarHeight }}
         >
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
@@ -112,7 +144,7 @@ const VendorPage = () => {
                             }}
                         >
                             <Text style={styles.description}>
-                                {organization?.location}
+                                {organization?.location.address}
                             </Text>
                             {/* {organization?.locations.length > 0 ? displayLocations() : <Text>None</Text>} */}
                         </View>
@@ -136,7 +168,7 @@ const VendorPage = () => {
 
                     <View style={styles.section}>
                         <Text style={styles.sectionHeader}>What We Need</Text>
-                        <View style={{ flexDirection: "row" }}>
+                        <View style={{ flexDirection: "row", flexWrap: 'wrap',  }}>
                             {organization?.acceptedItems
                                 ? displayTags(organization.acceptedItems)
                                 : null}

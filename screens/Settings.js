@@ -301,13 +301,13 @@ const OrganizationHeader = ({ organization, navigation }) => {
         // navigation.navigate('')
     }
     return (
-            <View style={styles.organization} onPress={goToOrg}>
+            <View style={{ ...styles.organization, maxWidth: '100%' }} onPress={goToOrg}>
                 <View style={styles.orgImgContainer}>
-                    <Image style={{ ...styles.image, width: 50, height: 50 }} source={logo}/>
+                    <Image style={{ ...styles.image, width: 65, height: 65 }} source={logo}/>
                 </View>
-                <View >
+                <View style={{ display: 'flex', flexWrap: 'wrap', width: '80%'}}>
                     <View><Text style={styles.orgHeader}>{organization.name}</Text></View>
-                    <View><Text style={styles.orgDescription}>{organization.description}</Text></View>
+                    <View><Text style={{ ...styles.orgDescription }}>{organization.description}</Text></View>
                 </View>
             </View>   
     )
@@ -350,12 +350,12 @@ const styles = StyleSheet.create({
         marginRight: 12
     },
     orgHeader: {
-        fontSize: 28,
+        fontSize: 24,
         color: "#706052",
         marginBottom: 0
     },
     orgDescription: {
-        fontSize: 16,
+        fontSize: 14,
         color: "#706052",
     },
     settingsButton: {

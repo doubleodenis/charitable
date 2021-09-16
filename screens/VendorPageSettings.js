@@ -106,6 +106,7 @@ const VendorPage = () => {
 
             })
             .catch((err) => {
+                console.log(err);
                 console.log(err.data);
 
                 //Show error message
@@ -226,8 +227,6 @@ const VendorPage = () => {
                 break;
             }
         }
-
-        setTimeout(() => console.log(organization))
     }
     
     return (
