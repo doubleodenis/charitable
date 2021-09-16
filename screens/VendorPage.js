@@ -20,18 +20,14 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity,
-    StatusBar,
-    FlatList,
-    Button,
-    Image,
+    Image
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Tag from "../components/Tag";
 import logo from "../assets/Charitable_Logo.png";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import { showMessage, hideMessage } from "react-native-flash-message";
 
@@ -47,29 +43,11 @@ const VendorPage = () => {
     const tabBarHeight = useBottomTabBarHeight();
 
     const insets = useSafeAreaInsets();
-    // const [name, setName] = useState('West Charity');
-    // const [nameErr, setNameErr] = useState(false);
-
-    // const [desc, setDesc] = useState('A charity for people with big dreams and no toys.');
-    // const [descErr, setDescErr] = useState(false);
-
-    // const [locations, setLocations] = useState(['12345 Merigold Lane, Miami, FL 44556']);
-    // const [locationsErr, setLocationsErr] = useState(false);
-
-    // const [tags, setTags] = useState(['Women', 'Kids']);
-    // const [tagsErr, setTagsErr] = useState(false);
-
-    // const [itemsNeeded, setItemsNeeded] = useState(['Clothes', 'Food', 'Toys']);
-
-    // const [contactInfo, setContactInfo] = useState({
-    //     email: 'wcharity@gmail.com',
-    //     phone: '(305)-752-453',
-    //     website: 'https://wcharity.com'
     // });
 
     const [organization, setOrganization] = useState(null);
 
-    useEffect(() => {
+    function _init() {
         OrganizationService.getCurrentOrganization()
             .then((res) => {
                 console.log("org", res);
@@ -85,27 +63,28 @@ const VendorPage = () => {
 
                 //Show error message
                 showMessage({
-                    message: err.message,
+                    message: err.data.message,
                     type: "danger",
                 });
             });
+    }
+
+    useEffect(() => {
+        _init();
     }, []);
 
+    useFocusEffect(
+        React.useCallback(() => {
+            _init();
+          return undefined;
+        }, [])
+      );
 
     function displayTags(list) {
         return list.map((item, idx) => <Tag key={idx}>{item}</Tag>);
     }
 
     return (
-        // <View
-        //     style={{
-        //         justifyContent: "center",
-        //         alignItems: "center",
-        //         height: "100%",
-        //         margin: 0,
-        //         padding: 20,
-        //     }}
-        // >
             <ScrollView
                 style={{ ...styles.container, marginBottom: tabBarHeight }}
                 contentInset={{ bottom: insets.bottom }}
@@ -126,7 +105,7 @@ const VendorPage = () => {
                         >
                             <View style={{ flexDirection: "row" }}>
                                 <Text style={styles.sectionHeader}>
-                                    Locations
+                                    Location
                                 </Text>
                             </View>
                             <View
@@ -137,7 +116,7 @@ const VendorPage = () => {
                                 }}
                             >
                                 <Text style={styles.description}>
-                                    {organization?.location}
+                                    {organization?.location.address}
                                 </Text>
                                 {/* {organization?.locations.length > 0 ? displayLocations() : <Text>None</Text>} */}
                             </View>

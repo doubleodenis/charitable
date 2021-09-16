@@ -155,17 +155,7 @@ const Settings = ({ context }) => {
         <View style={styles.container}>
             {/* Brand logo here */}
 
-            {loggedIn && organization && (
-                <View>
-                    <View style={{}}>
-                        <Image style={{ ...styles.image, width: 50, height: 50 }} source={logo}/>
-                    </View>
-                    <View style={{ width: "80%" }}>
-                        <View style={styles.orgHeader}><Text>{organization.name}</Text></View>
-                        <View><Text>{organization.description}</Text></View>
-                    </View>
-                </View>
-            )}
+            {loggedIn && organization && <OrganizationHeader organization={organization} />}
 
             <View>
                 {/* <SettingsButton useIcon>General</SettingsButton> */}
@@ -305,6 +295,24 @@ const AddOrganizationSection = ({ navigation }) => {
         </View>
     );
 };
+
+const OrganizationHeader = ({ organization, navigation }) => {
+    function goToOrg() {
+        // navigation.navigate('')
+    }
+    return (
+            <View style={styles.organization} onPress={goToOrg}>
+                <View style={styles.orgImgContainer}>
+                    <Image style={{ ...styles.image, width: 50, height: 50 }} source={logo}/>
+                </View>
+                <View >
+                    <View><Text style={styles.orgHeader}>{organization.name}</Text></View>
+                    <View><Text style={styles.orgDescription}>{organization.description}</Text></View>
+                </View>
+            </View>   
+    )
+}
+
 const styles = StyleSheet.create({
     container: {
         // flex: 1,
@@ -333,11 +341,22 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         height: 150,
     },
+    organization: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginVertical: 12
+    },
+    orgImgContainer: {
+        marginRight: 12
+    },
     orgHeader: {
-        fontSize: 32,
-        textAlign: "center",
-        color: "#8BC178",
-        marginBottom: 10,
+        fontSize: 28,
+        color: "#706052",
+        marginBottom: 0
+    },
+    orgDescription: {
+        fontSize: 16,
+        color: "#706052",
     },
     settingsButton: {
         display: "flex",

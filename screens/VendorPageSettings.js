@@ -14,7 +14,7 @@
     Search through (or search bar) a list of categories and select one. This will then generate the list of charities.
 */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 
 import {
     StyleSheet,
@@ -39,7 +39,6 @@ import OrganizationService from "../services/organization";
 import SecureStorage from "../services/secureStorage";
 
 //Components
-import Tag from "../components/Tag";
 import Input from "../components/PrimaryInput";
 import DisplayButton from "../components/DisplayButton";
 import DonationList from "../components/DonationList";
@@ -50,144 +49,187 @@ import ConfirmButton from "../components/ConfirmButton";
 const VendorPage = () => {
     let navigation = useNavigation();
 
-    const [charityName, setCharityName] = useState("");
-    const [nameErr, setNameErr] = useState(false);
+    const [organization, setOrganization] = useState({
+        _id: null,
+        acceptedItems: [],
+        contactInfo: {
+          email: "",
+          phone: "",
+          website: "",
+        },
+        description: "",
+        location: {
+          latitude: null,
+          longitude: null,
+          address: ""
+        },
+        missionCategories: [],
+        name: "",
+      });
 
-    const [description, setDesc] = useState("");
-    const [descErr, setDescErr] = useState(false);
+    const [nameErr, setNameErr] = useState(null);
+    const [descErr, setDescErr] = useState(null);
+    const [locationErr, setLocationErr] = useState(null);
 
-    const [location, setLocation] = useState("");
-    const [locationErr, setLocationErr] = useState(false);
+    const setMissions = (val) => { setOrganization((org) => ({ ...org, missionCategories: val }))}
+    const [tagsErr, setTagsErr] = useState(null);
 
-    const [missions, setMissions] = useState([]);
-    const [tagsErr, setTagsErr] = useState(false);
+    const setItems = (val) => { setOrganization((org) => ({ ...org, acceptedItems: val }))}
+    const [itemsErr, setItemsErr] = useState(null);
 
-    const [items, setItems] = useState([]);
-    const [itemsErr, setItemsErr] = useState(false);
-
-    const [contactEmail, setEmail] = useState("");
-    const [contactPhone, setPhone] = useState("");
-    const [contactWebsite, setWebsite] = useState("");
-
-    const [orgId, setOrgId] = useState(null);
-
-    const [openModal, setOpen] = useState(false);
-
+    //Styling variables
     const tabBarHeight = useBottomTabBarHeight();
-
     const insets = useSafeAreaInsets();
 
-    useEffect(() => {
-        console.log(charityName);
-    }, [charityName])
+    useLayoutEffect(() => {
 
-    useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <ConfirmButton onPress={() => submitOrganization()}>
+                <ConfirmButton onPress={submitOrganization}>
                     Looks Good
                 </ConfirmButton>
             )
         })
 
+      }, [organization]);
+
+    useEffect(() => {
+        
+
         OrganizationService.getCurrentOrganization()
             .then((res) => {
-                console.log('current', res);
+                // console.log('current', res);
                 //Fill the organization information out if it exists
                 if (res) {
-                    setCharityName(res.name);
-                    setDesc(res.description);
-                    setLocation(res.location);
-                    setMissions(res.missionCategories);
-                    setItems(res.acceptedItems);
-                    setEmail(res.contactInfo.email);
-                    setPhone(res.contactInfo.phone);
-                    setWebsite(res.contactInfo.website);
-
-                    setOrgId(res._id);
+                    setOrganization((org) => ({ ...org, ...res}));
                 } 
 
             })
             .catch((err) => {
-                console.log(err);
-                console.log(err.response);
+                console.log(err.data);
 
                 //Show error message
                 showMessage({
-                    message: err.message,
+                    message: err.data.message,
                     type: "danger",
                 });
             });
             
     }, []);
 
-
-    function submitOrganization() {
-        //! TODO: Add form validations
-
-        let data = {
-            name: charityName,
-            description: description,
-            location: location,
-            acceptedItems: items,
-            missionCategories: missions,
-            contactInfo: {
-                phone: contactPhone,
-                email: contactEmail,
-                website: contactWebsite
-            }
-        }
-        console.log(orgId, data)
-        if(orgId !== null) {
-            //Not working just yet
-            OrganizationService.updateOrganization(orgId, data)
-            .then((res) => {
-                //Navigate back to vendor page
-                navigation.navigate('OrganizationPage')
-
-                //Show error message
-                showMessage({
-                    message: "Organization profile updated successfully",
-                    type: "success",
-                });
-            })
-            .catch((err) => {
-                console.log(err);
-                console.log(err.response);
-
-                //Show error message
-                showMessage({
-                    message: err.message,
-                    type: "danger",
-                });
-            });
-        }
-        else {
-            OrganizationService.createOrganization(data)
+    let submitOrganization = () => {
+        
+            console.log('submitting', organization)
+            if(organization._id != null) {
+                //Not working just yet
+                OrganizationService.updateOrganization(organization._id, organization)
                 .then((res) => {
                     //Navigate back to vendor page
                     navigation.navigate('OrganizationPage')
-
+    
                     //Show error message
                     showMessage({
-                        message: "Organization profile created successfully",
+                        message: "Organization profile updated successfully",
                         type: "success",
                     });
                 })
                 .catch((err) => {
                     console.log(err);
                     console.log(err.response);
-
+    
                     //Show error message
                     showMessage({
-                        message: err.message,
+                        message: err.data.message,
                         type: "danger",
                     });
+    
+                    if (err.data?.length > 0) {
+                        err.data.forEach((e) => {
+                            switch(e.param) {
+                                case 'name':
+                                    setNameErr(e.msg);
+                                break;
+                                case 'description':
+                                    setDescErr(e.msg);
+                                break;
+                                case 'location':
+                                    setLocationErr(e.msg);
+                                break;
+                                case 'acceptedItems':
+                                    setItemsErr(e.msg);
+                                break;
+                                case 'missionCategories':
+                                    setMissionsErr(e.msg);
+                                break;
+                                case 'contactInfo.email':
+    
+                                break;
+                                case 'contactInfo.phone':
+    
+                                break;
+                                case 'contactInfo.website':
+    
+                                break;
+                            }
+                        });
+                    }
                 });
-        }
-        
+            }
+            else {
+                OrganizationService.createOrganization(organization)
+                    .then((res) => {
+                        //Navigate back to vendor page
+                        navigation.navigate('OrganizationPage')
+    
+                        //Show error message
+                        showMessage({
+                            message: "Organization profile created successfully",
+                            type: "success",
+                        });
+                    })
+                    .catch((err) => {
+                        console.log('err', err.data);
+    
+                        //Show error message
+                        showMessage({
+                            message: err.data.message,
+                            type: "danger",
+                        });
+                    });
+            } 
     }
 
+    function inputChange(field, value) {
+        let args = field.split(".");
+        if(args.length == 1) {
+            setOrganization((org) => ({...org, [field]: value}))
+        }
+        else {
+            switch(args[0]) {
+                case 'contactInfo': 
+                    setOrganization((org) => ({
+                        ...org,
+                        contactInfo: {
+                            ...org.contactInfo,
+                            [args[1]]: value
+                        }
+                    }))
+                break;
+                case 'location':
+                    setOrganization((org) => ({
+                        ...org,
+                        location: {
+                            ...org.location,
+                            [args[1]]: value
+                        }
+                    }))
+                break;
+            }
+        }
+
+        setTimeout(() => console.log(organization))
+    }
+    
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -202,14 +244,14 @@ const VendorPage = () => {
             >
                 <View style={styles.card}>
                     <Text style={styles.sectionHeader}>Charity Name</Text>
-                    <Text style={styles.description} numberOfLines={2}>
+                    <Text style={styles.description} multiline={true} numberOfLines={4}>
                         This is the name that will appear on users maps and on
                         your info page.
                     </Text>
                     <Input
-                        value={charityName}
+                        value={organization.name}
                         placeholder="Charitable"
-                        onChangeText={setCharityName}
+                        onChangeText={(e) => inputChange('name', e)}
                         error={nameErr}
                     />
                 </View>
@@ -221,19 +263,28 @@ const VendorPage = () => {
                     </Text>
                     <View>
                         <Input
-                            value={location}
-                            placeholder="123 NW Charitable Street"
-                            onChangeText={setLocation}
+                            value={organization.location.address}
+                            placeholder="Address"
+                            onChangeText={(e) => inputChange('location.address', e)}
                             error={locationErr}
                         />
-                        {/* <DisplayButton
-                        buttonStyle={styles.displayButton}
-                        textStyle={styles.buttonText}
-                        onPress={() => console.log("btn click")}
-                    >
-                        Edit Locations    
-                    </DisplayButton> */}
                     </View>
+                    {/* <View style={{ marginBottom: 12 }}>
+                        <Input
+                            value={organization.location.latitude}
+                            placeholder=""
+                            onChangeText={(e) => inputChange('location.latitude', e)}
+                            error={locationErr}
+                        />
+                    </View>
+                    <View>
+                        <Input
+                            value={organization.location.longitude}
+                            placeholder=""
+                            onChangeText={(e) => inputChange('location.latitude', e)}
+                            error={locationErr}
+                        />
+                    </View> */}
                 </View>
 
                 <View style={styles.card}>
@@ -245,11 +296,11 @@ const VendorPage = () => {
                         your organization page.
                     </Text>
                     <Input
-                        value={description}
+                        value={organization.description}
                         placeholder="A charity for people with big dreams and no toys."
                         multiline={true}
                         numberOfLines={5}
-                        onChangeText={setDesc}
+                        onChangeText={(e) => inputChange('description', e)}
                         style={{ height: 60 }}
                         error={descErr}
                     />
@@ -260,15 +311,7 @@ const VendorPage = () => {
                     <Text style={styles.description} numberOfLines={2}>
                     These are the items that your organization is looking for.
                 </Text>
-                    {/* <DisplayButton
-                    buttonStyle={styles.displayButton}
-                    textStyle={styles.buttonText}
-                    text="Add or Remove Accepted Items"
-                    onPress={() => setOpen(true)}
-                >
-                    Edit Accepted Items
-                </DisplayButton> */}
-                    <ItemSearch items={items} missions={missions} setItems={setItems} setMissions={setMissions}/>
+                    <ItemSearch items={organization.acceptedItems} missions={organization.missionCategories} setItems={setItems} setMissions={setMissions}/>
                 </View>
 
                 <View style={styles.card}>
@@ -280,29 +323,29 @@ const VendorPage = () => {
                     <Input
                         label="Email"
                         placeholder="example@email.com"
-                        value={contactEmail}
+                        value={organization.contactInfo.email}
                         style={{ marginBottom: 10 }}
-                        onChangeText={setEmail}
+                        onChangeText={(e) => inputChange('contactInfo.email', e)}
                     />
 
                     <Input
                         label="Phone"
                         placeholder="XXX-XXX-XXXX"
-                        value={contactPhone}
+                        value={organization.contactInfo.phone}
                         style={{ marginBottom: 10 }}
-                        onChangeText={setPhone}
+                        onChangeText={(e) => inputChange('contactInfo.phone', e)}
                     />
 
                     <Input
                         label="Website"
                         placeholder="www.example.com"
-                        value={contactWebsite}
+                        value={organization.contactInfo.website}
                         style={{ marginBottom: 10 }}
-                        onChangeText={setWebsite}
+                        onChangeText={(e) => inputChange('contactInfo.website', e)}
                     />
                 </View>
 
-                {orgId !== null ? (
+                {organization._id !== null ? (
                     <View style={{ height: 75 }}>
                         <DisplayButton
                             buttonStyle={{
@@ -314,7 +357,6 @@ const VendorPage = () => {
                         />
                     </View>
                 ) : null}
-                {/* <AcceptedItemsModal open={openModal} setItems={setItemsNeeded} /> */}
             </ScrollView>
         </KeyboardAvoidingView>
         // {/* </SafeAreaView> */}
@@ -425,121 +467,6 @@ const ItemSearch = ({ items, missions, setItems, setMissions }) => {
                     />
                 </>
             )}
-
-            {/* <DonationListCard isUser={false} items={dummyData} missions={dummyMissions} searching={searching} setSearching={setSearching}/> */}
-            {/* <DonationList 
-                    isUser={true}
-                    itemList={dummyData} 
-                    missionList={dummyMissions}
-                    setItemList={setItems}
-                    setMissionList={setMissions}
-                />  */}
         </View>
     );
 };
-
-const AcceptedItemsModal = ({ open, setItemsNeeded }) => {
-    const [visible, setVisible] = useState(false);
-
-    const [searching, setSearching] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [items, setItems] = useState([]);
-    const [missions, setMissions] = useState([]);
-
-    useEffect(() => {
-        setVisible(open);
-    }, [open]);
-
-    const dummyData = [];
-    const dummyMissions = [];
-
-    return (
-        <View style={modalStyles.centeredView}>
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={visible}
-                onRequestClose={() => {
-                    Alert.alert("Modal has been closed.");
-                }}
-            >
-                <View style={modalStyles.centeredView}>
-                    <View style={modalStyles.modalView}>
-                        <SearchList
-                            isUser={false}
-                            itemList={items}
-                            setItemList={setItems}
-                            missionList={missions}
-                            setMissionList={setMissions}
-                            searchQuery={searchQuery.trim()}
-                            setSearchQuery={setSearchQuery}
-                        />
-                        {/* <DonationListCard isUser={false} items={dummyData} missions={dummyMissions} searching={searching} setSearching={setSearching}/> */}
-                        {/* <DonationList 
-                        isUser={true}
-                        itemList={dummyData} 
-                        missionList={dummyMissions}
-                        setItemList={setItems}
-                        setMissionList={setMissions}
-                    />  */}
-                        <TouchableHighlight
-                            style={{
-                                ...modalStyles.openButton,
-                                backgroundColor: "#2196F3",
-                            }}
-                            onPress={() => {
-                                setVisible(!visible);
-                            }}
-                        >
-                            <Text style={modalStyles.textStyle}>
-                                Hide Modal
-                            </Text>
-                        </TouchableHighlight>
-                    </View>
-                </View>
-            </Modal>
-        </View>
-    );
-};
-
-const modalStyles = StyleSheet.create({
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        //   marginTop: 22,
-        backgroundColor: "rgba(0,0,0,0.3)",
-        width: "100%",
-        height: "100%",
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    openButton: {
-        backgroundColor: "#F194FF",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-    },
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center",
-    },
-});
