@@ -254,6 +254,7 @@ const VendorPage = () => {
                         onChangeText={(e) => inputChange('name', e)}
                         error={nameErr}
                     />
+                    <Text style={styles.formFieldErr}>{nameErr}</Text>
                 </View>
 
                 <View style={styles.card}>
@@ -268,6 +269,8 @@ const VendorPage = () => {
                             onChangeText={(e) => inputChange('location.address', e)}
                             error={locationErr}
                         />
+                        
+                        <Text style={styles.formFieldErr}>{locationErr}</Text>
                     </View>
                     {/* <View style={{ marginBottom: 12 }}>
                         <Input
@@ -291,19 +294,20 @@ const VendorPage = () => {
                     <Text style={styles.sectionHeader}>
                         Charity Description
                     </Text>
-                    <Text style={styles.description} numberOfLines={2}>
+                    <Text style={styles.description} numberOfLines={4}>
                         This is the description that will appear to users on
                         your organization page.
                     </Text>
                     <Input
                         value={organization.description}
-                        placeholder="A charity for people with big dreams and no toys."
+                        placeholder="Your description for your charity goes here."
                         multiline={true}
                         numberOfLines={5}
                         onChangeText={(e) => inputChange('description', e)}
                         style={{ height: 60 }}
                         error={descErr}
                     />
+                    <Text style={styles.formFieldErr}>{descErr}</Text>
                 </View>
 
                 <View style={styles.card}>
