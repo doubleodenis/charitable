@@ -14,7 +14,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import HeaderConfirmButton from "../components/HeaderConfirmButton";
 import HeaderSettingsButton from "../components/HeaderSettingsButton";
 import CancelTextButton from "../components/CancelTextButton";
-import OrganizationPage from "../screens/OrganizationPage";
 import Settings from "../screens/Settings";
 
 import SecureStorage from "../services/secureStorage";
@@ -79,9 +78,20 @@ const DonatePlaceholder = () => (
 const NotificationsStack = createStackNavigator();
 
 const MapStackScreen = () => (
-    <NotificationsStack.Navigator headerMode="none">
-        <NotificationsStack.Screen name="Map" component={Map} />
-        <NotificationsStack.Screen name="VendorPage" component={VendorPage} />
+    <NotificationsStack.Navigator headerMode="screen">
+        <NotificationsStack.Screen
+            name="Map"
+            component={Map}
+            options={{ headerShown: false }}
+        />
+        <NotificationsStack.Screen
+            name="VendorPage"
+            component={VendorPage}
+            options={{
+                headerTitle: null,
+                headerLeft: () => <BackButton />,
+            }}
+        />
     </NotificationsStack.Navigator>
 );
 
@@ -101,7 +111,7 @@ const SettingsStackScreen = () => {
                                 //If there is a token, change the header navigation options
                                 navigation.setOptions({
                                     headerRight: () => (
-                                        <ConfirmButton navigateTo="OrganizationPage">
+                                        <ConfirmButton navigateTo="VendorPage">
                                             View Profile
                                         </ConfirmButton>
                                     ),
@@ -164,8 +174,8 @@ const SettingsStackScreen = () => {
                 )}
             </SettingsStack.Screen>
             <SettingsStack.Screen
-                name="OrganizationPage"
-                component={OrganizationPage}
+                name="VendorPage"
+                component={VendorPage}
                 options={{
                     headerTitle: null,
                     headerLeft: () => <BackButton />,
@@ -189,7 +199,7 @@ const SettingsStackScreen = () => {
                         </TextButton>
                     ),
                     headerRight: () => (
-                        <ConfirmButton navigateTo="OrganizationPage">
+                        <ConfirmButton navigateTo="VendorPage">
                             Looks Good
                         </ConfirmButton>
                     ),
