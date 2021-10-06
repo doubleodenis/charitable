@@ -36,6 +36,8 @@ import OrganizationService from "../services/organization";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { ScrollView } from "react-native-gesture-handler";
 
+import Lightbox from 'react-native-lightbox';
+
 const VendorPage = ({ route }) => {
     let navigation = useNavigation();
     // let params;
@@ -124,14 +126,14 @@ const VendorPage = ({ route }) => {
             contentInset={{ bottom: insets.bottom + tabBarHeight }}
         >
             <View style={styles.imageContainer}>
-                {/* <Image source={logo} style={styles.image} /> */}
-                <View
-                    style={{
-                        backgroundColor: "black",
-                        width: "100%",
-                        height: 200,
-                    }}
-                />
+                <Lightbox underlayColor="white" backgroundColor="white" springConfig={{tension: 15, friction: 7}}  activeProps={{ style: { resizeMode: 'contain', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}}>
+                    {/* <Image
+                    style={{ height: 300, width: '100%' }}
+                    source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
+                    /> */}
+                    
+                    <Image source={logo} style={styles.image} />
+                </Lightbox>
             </View>
 
             <View style={{ padding: 20 }}>
@@ -300,8 +302,8 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     image: {
-        height: 145,
-        width: 120,
+        height: 200,
+        // width: '100%0',
         resizeMode: "cover",
     },
     orgHeader: {
@@ -333,3 +335,32 @@ const styles = StyleSheet.create({
 });
 
 export default VendorPage;
+
+const renderScene = (route, navigator) => {
+    const Component = route.component;
+  
+    return (
+      <Component navigator={navigator} route={route} {...route.passProps} />
+    );
+  };
+
+  
+const LightboxView = ({ navigator }) => (
+    <Lightbox navigator={navigator}>
+      <Image
+        style={{ height: 300 }}
+        source={{ uri: 'http://knittingisawesome.com/wp-content/uploads/2012/12/cat-wearing-a-reindeer-hat1.jpg' }}
+      />
+    </Lightbox>
+);
+
+  const LightboxNav = () => (
+    <Navigator
+      ref="navigator"
+      style={{ flex: 1 }}
+      renderScene={renderScene}
+      initialRoute={{
+        component: LightboxView,
+      }}
+    />
+  );
