@@ -110,6 +110,7 @@ const SignIn = () => {
                                 value={email}
                                 keyboardType="email-address"
                                 textContentType="emailAddress"
+                                returnKeyType='next'
                                 error={emailErr}
                             />
                             <Text style={styles.formFieldErr}>{emailErr}</Text>
@@ -128,8 +129,12 @@ const SignIn = () => {
                                 value={password}
                                 textContentType="password"
                                 autoCompleteType="password"
+                                returnKeyType='done'
                                 secureTextEntry
                                 error={passwordErr}
+                                onSubmitEditing={(event) => {
+                                    login();
+                                }}
                             />
                             <Text style={styles.formFieldErr}>
                                 {passwordErr}
