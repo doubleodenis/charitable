@@ -62,7 +62,7 @@ const SearchBar = ({searching, setSearching, searchQuery, setSearchQuery, setSea
                 <IconButton 
                     style={styles.clearButton} 
                     iconStyle={styles.clearIcon}
-                    onPress={() => setSearchQuery('')}
+                    onPress={() => {setSearchQuery(''); setSearchPressed(true)}}
                     icon='times-circle'
                 />
             }
