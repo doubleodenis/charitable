@@ -8,7 +8,7 @@ import {searchItem} from '../services/item.js'
 import {searchMission} from '../services/mission.js'
 
 const suggestedSearches=['Clothes', 'Furniture', 'Toys']
-const suggestedMissions=['Homeless Shelters', 'Orphanages', 'Wellness Centers']
+const suggestedMissions=['Homelessness', 'Foster Care', 'Mental Health']
 
 const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList, searchQuery, setSearchQuery, searchPressed, setSearchPressed}) => {
     const [modalVisible, setModalVisible] = useState(false)
