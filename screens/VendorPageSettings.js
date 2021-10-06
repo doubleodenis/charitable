@@ -53,28 +53,32 @@ const VendorPage = () => {
         _id: null,
         acceptedItems: [],
         contactInfo: {
-          email: "",
-          phone: "",
-          website: "",
+            email: "",
+            phone: "",
+            website: "",
         },
         description: "",
         location: {
-          latitude: null,
-          longitude: null,
-          address: ""
+            latitude: null,
+            longitude: null,
+            address: "",
         },
         missionCategories: [],
         name: "",
-      });
+    });
 
     const [nameErr, setNameErr] = useState(null);
     const [descErr, setDescErr] = useState(null);
     const [locationErr, setLocationErr] = useState(null);
 
-    const setMissions = (val) => { setOrganization((org) => ({ ...org, missionCategories: val }))}
+    const setMissions = (val) => {
+        setOrganization((org) => ({ ...org, missionCategories: val }));
+    };
     const [tagsErr, setTagsErr] = useState(null);
 
-    const setItems = (val) => { setOrganization((org) => ({ ...org, acceptedItems: val }))}
+    const setItems = (val) => {
+        setOrganization((org) => ({ ...org, acceptedItems: val }));
+    };
     const [itemsErr, setItemsErr] = useState(null);
 
     //Styling variables
@@ -82,28 +86,23 @@ const VendorPage = () => {
     const insets = useSafeAreaInsets();
 
     useLayoutEffect(() => {
-
         navigation.setOptions({
             headerRight: () => (
                 <ConfirmButton onPress={submitOrganization}>
                     Looks Good
                 </ConfirmButton>
-            )
-        })
-
-      }, [organization]);
+            ),
+        });
+    }, [organization]);
 
     useEffect(() => {
-        
-
         OrganizationService.getCurrentOrganization()
             .then((res) => {
                 // console.log('current', res);
                 //Fill the organization information out if it exists
                 if (res) {
-                    setOrganization((org) => ({ ...org, ...res}));
-                } 
-
+                    setOrganization((org) => ({ ...org, ...res }));
+                }
             })
             .catch((err) => {
                 console.log(err);
@@ -115,19 +114,20 @@ const VendorPage = () => {
                     type: "danger",
                 });
             });
-            
     }, []);
 
     let submitOrganization = () => {
-        
-            console.log('submitting', organization)
-            if(organization._id != null) {
-                //Not working just yet
-                OrganizationService.updateOrganization(organization._id, organization)
+        console.log("submitting", organization);
+        if (organization._id != null) {
+            //Not working just yet
+            OrganizationService.updateOrganization(
+                organization._id,
+                organization
+            )
                 .then((res) => {
                     //Navigate back to vendor page
-                    navigation.navigate('OrganizationPage')
-    
+                    navigation.navigate("VendorPage");
+
                     //Show error message
                     showMessage({
                         message: "Organization profile updated successfully",
@@ -137,120 +137,119 @@ const VendorPage = () => {
                 .catch((err) => {
                     console.log(err);
                     console.log(err.response);
-    
+
                     //Show error message
                     showMessage({
                         message: err.data.message,
                         type: "danger",
                     });
-    
+
                     if (err.data?.length > 0) {
                         err.data.forEach((e) => {
-                            switch(e.param) {
-                                case 'name':
+                            switch (e.param) {
+                                case "name":
                                     setNameErr(e.msg);
-                                break;
-                                case 'description':
+                                    break;
+                                case "description":
                                     setDescErr(e.msg);
-                                break;
-                                case 'location':
+                                    break;
+                                case "location":
                                     setLocationErr(e.msg);
-                                break;
-                                case 'acceptedItems':
+                                    break;
+                                case "acceptedItems":
                                     setItemsErr(e.msg);
-                                break;
-                                case 'missionCategories':
+                                    break;
+                                case "missionCategories":
                                     setMissionsErr(e.msg);
-                                break;
-                                case 'contactInfo.email':
-    
-                                break;
-                                case 'contactInfo.phone':
-    
-                                break;
-                                case 'contactInfo.website':
-    
-                                break;
+                                    break;
+                                case "contactInfo.email":
+                                    break;
+                                case "contactInfo.phone":
+                                    break;
+                                case "contactInfo.website":
+                                    break;
                             }
                         });
                     }
                 });
-            }
-            else {
-                OrganizationService.createOrganization(organization)
-                    .then((res) => {
-                        //Navigate back to vendor page
-                        navigation.navigate('OrganizationPage')
-    
-                        //Show error message
-                        showMessage({
-                            message: "Organization profile created successfully",
-                            type: "success",
-                        });
-                    })
-                    .catch((err) => {
-                        console.log('err', err.data);
-    
-                        //Show error message
-                        showMessage({
-                            message: err.data.message,
-                            type: "danger",
-                        });
+        } else {
+            OrganizationService.createOrganization(organization)
+                .then((res) => {
+                    //Navigate back to vendor page
+                    navigation.navigate("VendorPage");
+
+                    //Show error message
+                    showMessage({
+                        message: "Organization profile created successfully",
+                        type: "success",
                     });
-            } 
-    }
+                })
+                .catch((err) => {
+                    console.log("err", err.data);
+
+                    //Show error message
+                    showMessage({
+                        message: err.data.message,
+                        type: "danger",
+                    });
+                });
+        }
+    };
 
     function inputChange(field, value) {
         let args = field.split(".");
-        if(args.length == 1) {
-            setOrganization((org) => ({...org, [field]: value}))
-        }
-        else {
-            switch(args[0]) {
-                case 'contactInfo': 
+        if (args.length == 1) {
+            setOrganization((org) => ({ ...org, [field]: value }));
+        } else {
+            switch (args[0]) {
+                case "contactInfo":
                     setOrganization((org) => ({
                         ...org,
                         contactInfo: {
                             ...org.contactInfo,
-                            [args[1]]: value
-                        }
-                    }))
-                break;
-                case 'location':
+                            [args[1]]: value,
+                        },
+                    }));
+                    break;
+                case "location":
                     setOrganization((org) => ({
                         ...org,
                         location: {
                             ...org.location,
-                            [args[1]]: value
-                        }
-                    }))
-                break;
+                            [args[1]]: value,
+                        },
+                    }));
+                    break;
             }
         }
     }
-    
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
-            style={{  height: '100%', width: '100%'}}
+            style={{ height: "100%", width: "100%" }}
             keyboardVerticalOffset={-10}
         >
-            <ScrollView 
-                style={{...styles.container, marginBottom: tabBarHeight }}
+            <ScrollView
+                style={{ ...styles.container, marginBottom: tabBarHeight }}
                 contentInset={{ bottom: insets.bottom }}
-                keyboardDismissMode='on-drag'
+                keyboardDismissMode="on-drag"
                 keyboardShouldPersistTaps={"handled"}
             >
                 <View style={styles.card}>
                     <Text style={styles.sectionHeader}>Charity Name</Text>
-                    <Text style={styles.description} multiline={true} numberOfLines={4}>
+                    <Text
+                        style={styles.description}
+                        multiline={true}
+                        numberOfLines={4}
+                    >
                         This is the name that will appear on users maps and on
                         your info page.
                     </Text>
                     <Input
                         value={organization.name}
                         placeholder="Charitable"
-                        onChangeText={(e) => inputChange('name', e)}
+                        onChangeText={(e) => inputChange("name", e)}
                         error={nameErr}
                     />
                     <Text style={styles.formFieldErr}>{nameErr}</Text>
@@ -265,10 +264,12 @@ const VendorPage = () => {
                         <Input
                             value={organization.location.address}
                             placeholder="Address"
-                            onChangeText={(e) => inputChange('location.address', e)}
+                            onChangeText={(e) =>
+                                inputChange("location.address", e)
+                            }
                             error={locationErr}
                         />
-                        
+
                         <Text style={styles.formFieldErr}>{locationErr}</Text>
                     </View>
                     {/* <View style={{ marginBottom: 12 }}>
@@ -302,7 +303,7 @@ const VendorPage = () => {
                         placeholder="Your description for your charity goes here."
                         multiline={true}
                         numberOfLines={5}
-                        onChangeText={(e) => inputChange('description', e)}
+                        onChangeText={(e) => inputChange("description", e)}
                         style={{ height: 60 }}
                         error={descErr}
                     />
@@ -312,9 +313,15 @@ const VendorPage = () => {
                 <View style={styles.card}>
                     <Text style={styles.sectionHeader}>What you need</Text>
                     <Text style={styles.description} numberOfLines={2}>
-                    These are the items that your organization is looking for.
-                </Text>
-                    <ItemSearch items={organization.acceptedItems} missions={organization.missionCategories} setItems={setItems} setMissions={setMissions}/>
+                        These are the items that your organization is looking
+                        for.
+                    </Text>
+                    <ItemSearch
+                        items={organization.acceptedItems}
+                        missions={organization.missionCategories}
+                        setItems={setItems}
+                        setMissions={setMissions}
+                    />
                 </View>
 
                 <View style={styles.card}>
@@ -328,7 +335,9 @@ const VendorPage = () => {
                         placeholder="example@email.com"
                         value={organization.contactInfo.email}
                         style={{ marginBottom: 10 }}
-                        onChangeText={(e) => inputChange('contactInfo.email', e)}
+                        onChangeText={(e) =>
+                            inputChange("contactInfo.email", e)
+                        }
                     />
 
                     <Input
@@ -336,7 +345,9 @@ const VendorPage = () => {
                         placeholder="XXX-XXX-XXXX"
                         value={organization.contactInfo.phone}
                         style={{ marginBottom: 10 }}
-                        onChangeText={(e) => inputChange('contactInfo.phone', e)}
+                        onChangeText={(e) =>
+                            inputChange("contactInfo.phone", e)
+                        }
                     />
 
                     <Input
@@ -344,7 +355,9 @@ const VendorPage = () => {
                         placeholder="www.example.com"
                         value={organization.contactInfo.website}
                         style={{ marginBottom: 10 }}
-                        onChangeText={(e) => inputChange('contactInfo.website', e)}
+                        onChangeText={(e) =>
+                            inputChange("contactInfo.website", e)
+                        }
                     />
                 </View>
 
@@ -434,9 +447,6 @@ const ItemSearch = ({ items, missions, setItems, setMissions }) => {
     const [searching, setSearching] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchPressed, setSearchPressed] = useState(false);
-
-    const dummyData = [];
-    const dummyMissions = [];
 
     return (
         <View>

@@ -74,8 +74,8 @@ const Map = () => {
             setLocation({
                 latitude: currentPosition.coords.latitude,
                 longitude: currentPosition.coords.longitude,
-                latitudeDelta: location.latitudeDelta,
-                longitudeDelta: location.longitudeDelta,
+                latitudeDelta: LAT_DELTA,
+                longitudeDelta: LNG_DELTA,
             });
 
             console.log("Map Centered!");

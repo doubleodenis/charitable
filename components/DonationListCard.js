@@ -14,7 +14,6 @@ const DonationListCard = ({isUser, searching, setSearching}) => {
     const [searchPressed, setSearchPressed] = useState(false);
 
     useEffect(() => {
-        
         secureStorage.getValue(isUser?"itemList":"centerItemList").then((value) => {
             setItemList(JSON.parse(value))
         }).catch((err) => {

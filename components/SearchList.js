@@ -17,23 +17,28 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
     const [missionSearch, setMissionSearch] = useState([])
     const [searching, setSearching] = useState(false)
     const [searched, setSearched] = useState(false)
+    const [failedQuery, setFailedQuery] = useState('')
     const keyboardDismissProp = Platform.OS === "ios" ? { keyboardDismissMode: "on-drag" } : { onScrollBeginDrag: Keyboard.dismiss };
 
 
     useEffect(() => {
-        
         if(searchPressed){
-            search()
+            search(searchQuery)
             setSearchPressed(false)
         }
     }, [searchPressed]);
 
     useEffect(() => {
-        setSearched(false)
+        setSearchPressed(true)
+    }, [searchType]);
+
+    useEffect(() => {
+        //setSearched(false)
     }, [searchQuery]);
 
-    const search = () => {
-        let searchCopy = searchQuery.trim() + ''
+
+    const search = (query) => {
+        let searchCopy = query.trim() + ''
         if(searchCopy.trim().length > 1)
         {
             setSearching(true)
@@ -41,6 +46,8 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
             if(searchType==='items') {
                 searchItem(searchCopy)
                 .then((data) => {
+                    if(data.items.length === 0)
+                        setFailedQuery(searchCopy)
                     setItemSearch(data.items)
                     setTimeout(()=>setSearching(false), 0.5*1000);
                 })
@@ -54,6 +61,8 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
             else {
                 searchMission(searchCopy)
                 .then((data) => {
+                    if(data.missions.length === 0)
+                        setFailedQuery(searchCopy)
                     setMissionSearch(data.missions)
                     setTimeout(()=>setSearching(false), 0.5*1000);
                 })
@@ -62,6 +71,9 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                     setTimeout(()=>setSearching(false), 0.5*1000);
                 })
             }
+        }
+        else if(searchCopy.trim().length === 0){
+            setSearched(false)
         }
         else{
             alert("Search must be more than one character")
@@ -131,7 +143,7 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                                             <DisplayButton
                                                 buttonStyle={{height: 40, justifyContent: 'center'}}
                                                 textStyle={{color: '#8BC178', fontSize: 20}}
-                                                onPress={() => setSearchQuery(item)}
+                                                onPress={() => {setSearchQuery(item); search(item); console.log('searching...')}}
                                             >
                                                 {item}
                                             </DisplayButton>
@@ -148,7 +160,7 @@ const SearchList = ({isUser, itemList, setItemList, missionList, setMissionList,
                             :(
                                 searched && (searchType==='items'? itemSearch : missionSearch).length === 0 ?
                                     <View style={{justifyContent: 'center', alignItems: 'center', height: 150}}>
-                                        <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>No results for {searchQuery}</Text>
+                                        <Text style={{fontSize: 20, fontWeight: '500', marginBottom: 30}}>No results for {failedQuery}</Text>
                                         <View style={{alignItems: 'center', justifyContent: 'center' , flexDirection: 'row'}}>
                                             <Text style={{fontSize: 16}}>Check your input or </Text>
                                             <DisplayButton textStyle={styles.inlineNote} buttonStyle={{}} onPress={() => setModalVisible(true)}>
