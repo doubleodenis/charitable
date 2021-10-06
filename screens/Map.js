@@ -131,7 +131,9 @@ const Map = () => {
                     {organizations &&
                         organizations.map((place, i) => {
                             return (
-                                place.location && (
+                                place.location &&
+                                place.location.latitude &&
+                                place.location.longitude && (
                                     <Marker
                                         key={place.name + i}
                                         coordinate={{

@@ -81,11 +81,6 @@ const NotificationsStack = createStackNavigator();
 const MapStackScreen = () => (
     <NotificationsStack.Navigator headerMode="none">
         <NotificationsStack.Screen name="Map" component={Map} />
-    </NotificationsStack.Navigator>
-);
-
-const VendorPageScreen = () => (
-    <NotificationsStack.Navigator headerMode="none">
         <NotificationsStack.Screen name="VendorPage" component={VendorPage} />
     </NotificationsStack.Navigator>
 );
@@ -218,5 +213,4 @@ export {
     DonatePlaceholder,
     MapStackScreen,
     SettingsStackScreen,
-    VendorPageScreen,
 };
