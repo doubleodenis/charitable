@@ -120,6 +120,7 @@ const SignUp = () => {
                                 value={email}
                                 keyboardType="email-address"
                                 textContentType="emailAddress"
+                                returnKeyType='next'
                                 error={emailErr}
                             />
                             <Text style={styles.formFieldErr}>{emailErr}</Text>
@@ -134,6 +135,10 @@ const SignUp = () => {
                                 autoCompleteType="password"
                                 secureTextEntry
                                 error={passwordErr}
+                                returnKeyType='done'
+                                onSubmitEditing={(event) => {
+                                    signUp();
+                                }}
                             />
                             <Text style={styles.formFieldErr}>{passwordErr}</Text>
                         </View>
