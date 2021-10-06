@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Animated, KeyboardAvoidingView } from "react-na
 import DonationList from './DonationList';
 import SearchList from './SearchList'
 import SearchBar from './SearchBar';
+import secureStorage from '../services/secureStorage';
+
 
 const DonationListCard = ({isUser, searching, setSearching}) => {
 
@@ -10,6 +12,39 @@ const DonationListCard = ({isUser, searching, setSearching}) => {
     const [missionList, setMissionList] = useState([])
     const [searchQuery, setSearchQuery] = useState("");
     const [searchPressed, setSearchPressed] = useState(false);
+
+    useEffect(() => {
+        
+        secureStorage.getValue(isUser?"itemList":"centerItemList").then((value) => {
+            setItemList(JSON.parse(value))
+        }).catch((err) => {
+            console.log(err)
+        })
+
+        secureStorage.getValue(isUser?"missionList":"centerMissionList").then((value) => {
+            setMissionList(JSON.parse(value))
+        }).catch((err) => {
+            console.log(err)
+        })
+    }, []);
+
+    useEffect(() => {
+        secureStorage.storeValue((isUser?"itemList":"centerItemList"), JSON.stringify(itemList))
+        .then((res) => {
+            console.log('stored items');
+        }, (err) => {
+            console.log('error');
+        });
+    }, [itemList]);
+
+    useEffect(() => {
+        secureStorage.storeValue((isUser?"missionList":"centerMissionList"), JSON.stringify(missionList))
+        .then((res) => {
+            console.log('stored missions');
+        }, (err) => {
+            console.log('error');
+        });
+    }, [missionList]);
 
     return (
         <View style={[styles.card, {height: (searching? '100%' : 'auto'), borderBottomRightRadius: (searching? 0 : 10), borderBottomLeftRadius: (searching? 0 : 10)}]}> 
