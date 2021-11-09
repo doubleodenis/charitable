@@ -50,6 +50,7 @@ const getCurrentOrganization = async () => {
     }
 };
 
+
 const getOrganizations = () => {
     return api.get("/").then((res) => res.data);
 };
@@ -76,12 +77,25 @@ const updateOrganization = async (id, data) => {
         .then((res) => res.data);
 };
 
+//Test API key
+const geoCodeCoordinates = async (address) => {
+    let parsedAddress = address.split(' ').join('+')
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=AIzaSyCbOjk7IjZccEp_ySbD7MGrS1bpiBljCyY`)
+    .then((response) =>
+        response.data.results[0].geometry.location
+    )
+    // .catch(error => {
+    //     console.log(error);
+    // });
+}
+
 const OrganizationApi = {
     getOrganizationById,
     getOrganizations,
     getCurrentOrganization,
     createOrganization,
     updateOrganization,
+    geoCodeCoordinates
 };
 
 export default OrganizationApi;

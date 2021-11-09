@@ -90,6 +90,17 @@ const Map = () => {
         setShowList(!showList);
     };
 
+    const getCoordinates = (org) => {
+        if(org.location.latitude && org.location.longitude) {
+            return org.location
+        }
+        // else if(org.location.address) {
+        //     let location = OrganizationService.geoCodeCoordinates(org.location.address).geometry.location
+        //     console.log('converted coordinates: '+location)
+        //     return location
+        // }
+    }
+
     const renderItem = ({ item }) => {
         return (
             <View style={styles.cardContainer}>
@@ -130,15 +141,15 @@ const Map = () => {
                 >
                     {organizations &&
                         organizations.map((place, i) => {
+                            let coordinates = getCoordinates(place)
                             return (
-                                place.location &&
                                 place.location.latitude &&
-                                place.location.longitude && (
+                                (
                                     <Marker
                                         key={place.name + i}
                                         coordinate={{
-                                            latitude: place.location.latitude,
-                                            longitude: place.location.longitude,
+                                            latitude: coordinates.latitude,
+                                            longitude: coordinates.longitude,
                                         }}
                                         title={place.name}
                                         pinColor={
