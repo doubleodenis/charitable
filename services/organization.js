@@ -80,7 +80,7 @@ const updateOrganization = async (id, data) => {
 //Test API key
 const geoCodeCoordinates = async (address) => {
     let parsedAddress = address.split(' ').join('+')
-    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=AIzaSyCbOjk7IjZccEp_ySbD7MGrS1bpiBljCyY`)
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=mykey`)
     .then((response) =>
         response.data.results[0].geometry.location
     )
