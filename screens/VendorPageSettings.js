@@ -81,6 +81,7 @@ const VendorPage = () => {
     };
     const [itemsErr, setItemsErr] = useState(null);
 
+    // Currently doesn't work because state change is asynchronous
     const setCoordinates = async () => {
         return OrganizationService.geoCodeCoordinates(organization.location.address)
         .then((res) => {
