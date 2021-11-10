@@ -3,6 +3,7 @@ import React from "react";
 import secureStorage from "./secureStorage";
 import Constants from "expo-constants";
 import axios from "axios";
+import {GEOCODE_KEY} from '@env'
 
 const { manifest } = Constants;
 
@@ -80,13 +81,10 @@ const updateOrganization = async (id, data) => {
 //Test API key
 const geoCodeCoordinates = async (address) => {
     let parsedAddress = address.split(' ').join('+')
-    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=mykey`)
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=${GEOCODE_KEY}`)
     .then((response) =>
         response.data.results[0].geometry.location
     )
-    // .catch(error => {
-    //     console.log(error);
-    // });
 }
 
 const OrganizationApi = {

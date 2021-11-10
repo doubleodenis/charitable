@@ -68,3 +68,4 @@ web-build/
 .expo/settings.json
 yarn.lock
 .expo/settings.json
+.env

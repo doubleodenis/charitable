@@ -81,16 +81,19 @@ const VendorPage = () => {
     };
     const [itemsErr, setItemsErr] = useState(null);
 
-    const setLatLng = (lat, lng) => {
-        setOrganization((org) => ({
-            ...org,
-            location: {
-                latitude: lat,
-                longitude: lng,
-                address: org.location.address
-            },
-        }));
-        console.log(organization)
+    const setCoordinates = async () => {
+        return OrganizationService.geoCodeCoordinates(organization.location.address)
+        .then((res) => {
+            setOrganization((org) => ({
+                ...org,
+                location: {
+                    latitude: res.lat,
+                    longitude: res.lng,
+                    address: org.location.address
+                },
+            }));
+        })
+        .then((res) => res)
     }
 
     //Styling variables
@@ -103,9 +106,6 @@ const VendorPage = () => {
                 <ConfirmButton onPress={submitOrganization}>
                     Looks Good
                 </ConfirmButton>
-            //     <ConfirmButton onPress={()=>{setLatLng(20, 20)}}>
-            //     Looks Good
-            // </ConfirmButton>
             ),
         });
     }, [organization]);
@@ -113,7 +113,6 @@ const VendorPage = () => {
     useEffect(() => {
         OrganizationService.getCurrentOrganization()
             .then((res) => {
-                // console.log('current', res);
                 //Fill the organization information out if it exists
                 if (res) {
                     setOrganization((org) => ({ ...org, ...res }));
@@ -135,74 +134,85 @@ const VendorPage = () => {
         console.log("submitting", organization);
         if (organization._id != null) {
             //Not working just yet
+
             //Dirty code for geocoding the submitted string address before creating the org
             OrganizationService.geoCodeCoordinates(organization.location.address)
             .then((res) => {
-                console.log('geocoding res', res)
-                setLatLng(res.lat, res.lng)
-                console.log('updated org', organization)
+                console.log('new coordinates', res)
                 OrganizationService.updateOrganization(
                     organization._id,
-                    organization
-                )
-                    .then((res) => {
-                        //Navigate back to vendor page
-                        navigation.navigate("VendorPage");
-
-                        //Show error message
-                        showMessage({
-                            message: "Organization profile updated successfully",
-                            type: "success",
-                        });
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        console.log(err.response);
-
-                        //Show error message
-                        showMessage({
-                            message: err.data.message,
-                            type: "danger",
-                        });
-
-                        if (err.data?.length > 0) {
-                            err.data.forEach((e) => {
-                                switch (e.param) {
-                                    case "name":
-                                        setNameErr(e.msg);
-                                        break;
-                                    case "description":
-                                        setDescErr(e.msg);
-                                        break;
-                                    case "location":
-                                        setLocationErr(e.msg);
-                                        break;
-                                    case "acceptedItems":
-                                        setItemsErr(e.msg);
-                                        break;
-                                    case "missionCategories":
-                                        setMissionsErr(e.msg);
-                                        break;
-                                    case "contactInfo.email":
-                                        break;
-                                    case "contactInfo.phone":
-                                        break;
-                                    case "contactInfo.website":
-                                        break;
-                                }
-                            });
+                    {
+                        //manually submitting the lat and long circumvents the need to wait for a state change
+                        ...organization,
+                        location: {
+                            latitude: res.lat,
+                            longitude: res.lng,
+                            address: organization.location.address
                         }
+                    }
+                )
+                .then((res) => {
+                    //Navigate back to vendor page
+                    navigation.navigate("VendorPage");
+
+                    //Show error message
+                    showMessage({
+                        message: "Organization profile updated successfully",
+                        type: "success",
                     });
                 })
-            .catch((err) => console.log(error))
+                .catch((err) => {
+                    console.log(err);
+                    console.log(err.response);
+
+                    //Show error message
+                    showMessage({
+                        message: err.data.message,
+                        type: "danger",
+                    });
+
+                    if (err.data?.length > 0) {
+                        err.data.forEach((e) => {
+                            switch (e.param) {
+                                case "name":
+                                    setNameErr(e.msg);
+                                    break;
+                                case "description":
+                                    setDescErr(e.msg);
+                                    break;
+                                case "location":
+                                    setLocationErr(e.msg);
+                                    break;
+                                case "acceptedItems":
+                                    setItemsErr(e.msg);
+                                    break;
+                                case "missionCategories":
+                                    setMissionsErr(e.msg);
+                                    break;
+                                case "contactInfo.email":
+                                    break;
+                                case "contactInfo.phone":
+                                    break;
+                                case "contactInfo.website":
+                                    break;
+                            }
+                        });
+                    }
+                });
+                })
+            .catch((err) => console.log(err))
         } else {
             //Dirty code for geocoding the submitted string address before creating the org
             OrganizationService.geoCodeCoordinates(organization.location.address)
             .then((res) => {
-                console.log('geocoding res', res)
-                setLatLng(res.lat, res.lng)
-                console.log('updated org', organization)
-                OrganizationService.createOrganization(organization)
+                OrganizationService.createOrganization({
+                    //manually submitting the lat and long circumvents the need to wait for a state change
+                    ...organization,
+                    location: {
+                        latitude: res.lat,
+                        longitude: res.lng,
+                        address: organization.location.address
+                    }})
                 .then((res) => {
                     //Navigate back to vendor page
                     navigation.navigate("VendorPage");
@@ -214,7 +224,7 @@ const VendorPage = () => {
                     });
                 })
                 .catch((err) => {
-                    console.log("err", err.data);
+                    console.log("err", err);
 
                     //Show error message
                     showMessage({
@@ -223,7 +233,7 @@ const VendorPage = () => {
                     });
                 });
             })
-            .catch((err) => console.log(error))
+            .catch((err) => console.log(err))
             
         }
     };
