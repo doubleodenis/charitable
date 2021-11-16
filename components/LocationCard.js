@@ -6,8 +6,17 @@ import { useNavigation } from "@react-navigation/native";
 
 const INTER_TAG_MARGIN = 6;
 const DEFUALT_ICON_COLOR = "#696969";
+const VERIFIED = "#258fe6";
+const FAVORITED = "red";
 
-const LocationCard = ({ name, tags, verified, id }) => {
+const LocationCard = ({
+    name,
+    tags,
+    verified,
+    favorited,
+    id,
+    updateFavorites,
+}) => {
     let navigation = useNavigation();
 
     return (
@@ -38,21 +47,30 @@ const LocationCard = ({ name, tags, verified, id }) => {
                             name="check-circle"
                             style={{
                                 fontSize: 26,
-                                color: DEFUALT_ICON_COLOR,
+                                color: VERIFIED,
                                 marginLeft: 8,
                             }}
                         />
                     )}
                 </View>
                 <View style={styles.iconContainer}>
-                    <FontAwesomeIcon
-                        name="heart"
-                        style={{
-                            fontSize: 26,
-                            color: DEFUALT_ICON_COLOR,
-                            marginRight: 8,
+                    <TouchableOpacity
+                        onPress={() => {
+                            console.log("Favorited " + name + "!");
+                            updateFavorites();
                         }}
-                    />
+                    >
+                        <FontAwesomeIcon
+                            name="heart"
+                            style={{
+                                fontSize: 26,
+                                color: favorited
+                                    ? FAVORITED
+                                    : DEFUALT_ICON_COLOR,
+                                marginRight: 8,
+                            }}
+                        />
+                    </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() =>
                             navigation.navigate("VendorPage", {

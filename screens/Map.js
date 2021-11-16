@@ -6,14 +6,14 @@ import * as Location from "expo-location";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import LocationCard from "../components/LocationCard";
 import DisplayButton from "../components/DisplayButton";
-// import locations from "../mock_data/locations";
 import OrganizationService from "../services/organization";
+import mapStyle from "../styles/mapStyles";
 
 const HORIZONTAL_MARGIN = 8;
 const LAT_DELTA = 0.0922; // Not sure what this dictates but I believe it's the initial map zoom
 const LNG_DELTA = 0.0421;
-const MARKER_VERIFIED_COLOR = "#258fe6"; // Neutral colors don't work
-const MARKER_UNVERIFIED_COLOR = "#f52f4c"; // Neutral colors don't work
+const MARKER_VERIFIED_COLOR = "#8bc178"; // Neutral colors don't work
+const MARKER_UNVERIFIED_COLOR = "#d77944"; // Neutral colors don't work
 
 const Map = () => {
     const [organizations, setOrganizations] = useState([]);
@@ -66,8 +66,6 @@ const Map = () => {
                 latitudeDelta: LAT_DELTA,
                 longitudeDelta: LNG_DELTA,
             });
-
-            console.log("Map Center Pressed!");
         })();
     };
 
@@ -79,16 +77,44 @@ const Map = () => {
         setShowList(!showList);
     };
 
+    const updateFavorites = (orgId) => {
+        const orgIndex = organizations.findIndex((id) => id === orgId);
+
+        OrganizationService.updateOrganization(orgId, {
+            ...organizations[orgIndex],
+            favorited: !organizations[orgIndex].favorited,
+        })
+            .then((res) => {
+                let updatedOrgs = organizations;
+
+                updatedOrgs[orgIndex] = {
+                    ...organizations[orgIndex],
+                    favorited: !organizations[orgIndex].favorited,
+                };
+
+                setOrganizations(updatedOrgs);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const renderLocationCard = (data) => {
+        return (
+            <LocationCard
+                name={data.name}
+                tags={data.acceptedItems}
+                verified={data.verified}
+                favorited={data.favorited}
+                id={data._id}
+                updateFavorites={() => updateFavorites(data._id)}
+            />
+        );
+    };
+
     const renderItem = ({ item }) => {
         return (
-            <View style={styles.cardContainer}>
-                <LocationCard
-                    name={item.name}
-                    tags={item.acceptedItems}
-                    verified={item.verified}
-                    id={item._id}
-                />
-            </View>
+            <View style={styles.cardContainer}>{renderLocationCard(item)}</View>
         );
     };
 
@@ -150,6 +176,7 @@ const Map = () => {
                                                         place.acceptedItems,
                                                     verified: place.verified,
                                                     _id: place._id,
+                                                    favorited: place.favorited,
                                                 });
                                             }}
                                         />
@@ -226,12 +253,7 @@ const Map = () => {
                                         marginHorizontal: HORIZONTAL_MARGIN,
                                     }}
                                 >
-                                    <LocationCard
-                                        name={selectedOrg.name}
-                                        tags={selectedOrg.acceptedItems}
-                                        verified={selectedOrg.verified}
-                                        id={selectedOrg._id}
-                                    />
+                                    {renderLocationCard(selectedOrg)}
                                 </View>
                             )}
                         </Fragment>
@@ -300,42 +322,5 @@ const styles = StyleSheet.create({
         marginHorizontal: HORIZONTAL_MARGIN,
     },
 });
-
-const mapStyle = [
-    {
-        featureType: "administrative",
-        elementType: "geometry",
-        stylers: [
-            {
-                visibility: "off",
-            },
-        ],
-    },
-    {
-        featureType: "poi",
-        stylers: [
-            {
-                visibility: "off",
-            },
-        ],
-    },
-    {
-        featureType: "road",
-        elementType: "labels.icon",
-        stylers: [
-            {
-                visibility: "off",
-            },
-        ],
-    },
-    {
-        featureType: "transit",
-        stylers: [
-            {
-                visibility: "off",
-            },
-        ],
-    },
-];
 
 export default Map;
