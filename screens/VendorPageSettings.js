@@ -81,22 +81,6 @@ const VendorPage = () => {
     };
     const [itemsErr, setItemsErr] = useState(null);
 
-    // Currently doesn't work because state change is asynchronous
-    const setCoordinates = async () => {
-        return OrganizationService.geoCodeCoordinates(organization.location.address)
-        .then((res) => {
-            setOrganization((org) => ({
-                ...org,
-                location: {
-                    latitude: res.lat,
-                    longitude: res.lng,
-                    address: org.location.address
-                },
-            }));
-        })
-        .then((res) => res)
-    }
-
     //Styling variables
     const tabBarHeight = useBottomTabBarHeight();
     const insets = useSafeAreaInsets();
@@ -139,100 +123,114 @@ const VendorPage = () => {
             //Dirty code for geocoding the submitted string address before creating the org
             OrganizationService.geoCodeCoordinates(organization.location.address)
             .then((res) => {
-                console.log('new coordinates', res)
-                OrganizationService.updateOrganization(
-                    organization._id,
-                    {
+                if(res.status === "OK"){
+                    OrganizationService.updateOrganization(
+                        organization._id,
+                        {
+                            //manually submitting the lat and long circumvents the need to wait for a state change
+                            ...organization,
+                            location: {
+                                latitude: res.results[0].geometry.location.lat,
+                                longitude: res.results[0].geometry.location.lng,
+                                address: organization.location.address
+                            }
+                        }
+                    )
+                    .then((res) => {
+                        //Navigate back to vendor page
+                        navigation.navigate("VendorPage");
+
+                        //Show error message
+                        showMessage({
+                            message: "Organization profile updated successfully",
+                            type: "success",
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        console.log(err.response);
+
+                        //Show error message
+                        showMessage({
+                            message: err.data.message,
+                            type: "danger",
+                        });
+
+                        if (err.data?.length > 0) {
+                            err.data.forEach((e) => {
+                                switch (e.param) {
+                                    case "name":
+                                        setNameErr(e.msg);
+                                        break;
+                                    case "description":
+                                        setDescErr(e.msg);
+                                        break;
+                                    case "location":
+                                        setLocationErr(e.msg);
+                                        break;
+                                    case "acceptedItems":
+                                        setItemsErr(e.msg);
+                                        break;
+                                    case "missionCategories":
+                                        setMissionsErr(e.msg);
+                                        break;
+                                    case "contactInfo.email":
+                                        break;
+                                    case "contactInfo.phone":
+                                        break;
+                                    case "contactInfo.website":
+                                        break;
+                                }
+                            });
+                        }
+                    });
+                }
+                else if(res.status === "ZERO_RESULTS"){
+                    showMessage({
+                        message: 'Zero results found for address',
+                        type: "danger",
+                    });
+                }
+            })
+            .catch((err) => console.log(err))
+        } else {
+            OrganizationService.geoCodeCoordinates(organization.location.address)
+            .then((res) => {
+                if(res.status === "OK"){
+                    OrganizationService.createOrganization({
                         //manually submitting the lat and long circumvents the need to wait for a state change
                         ...organization,
                         location: {
-                            latitude: res.lat,
-                            longitude: res.lng,
+                            latitude: res.results[0].geometry.location.lat,
+                            longitude: res.results[0].geometry.location.lng,
                             address: organization.location.address
-                        }
-                    }
-                )
-                .then((res) => {
-                    //Navigate back to vendor page
-                    navigation.navigate("VendorPage");
-
-                    //Show error message
-                    showMessage({
-                        message: "Organization profile updated successfully",
-                        type: "success",
-                    });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    console.log(err.response);
-
-                    //Show error message
-                    showMessage({
-                        message: err.data.message,
-                        type: "danger",
-                    });
-
-                    if (err.data?.length > 0) {
-                        err.data.forEach((e) => {
-                            switch (e.param) {
-                                case "name":
-                                    setNameErr(e.msg);
-                                    break;
-                                case "description":
-                                    setDescErr(e.msg);
-                                    break;
-                                case "location":
-                                    setLocationErr(e.msg);
-                                    break;
-                                case "acceptedItems":
-                                    setItemsErr(e.msg);
-                                    break;
-                                case "missionCategories":
-                                    setMissionsErr(e.msg);
-                                    break;
-                                case "contactInfo.email":
-                                    break;
-                                case "contactInfo.phone":
-                                    break;
-                                case "contactInfo.website":
-                                    break;
-                            }
+                        }})
+                    .then((res) => {
+                        //Navigate back to vendor page
+                        navigation.navigate("VendorPage");
+    
+                        //Show error message
+                        showMessage({
+                            message: "Organization profile created successfully",
+                            type: "success",
                         });
-                    }
-                });
-                })
-            .catch((err) => console.log(err))
-        } else {
-            //Dirty code for geocoding the submitted string address before creating the org
-            OrganizationService.geoCodeCoordinates(organization.location.address)
-            .then((res) => {
-                OrganizationService.createOrganization({
-                    //manually submitting the lat and long circumvents the need to wait for a state change
-                    ...organization,
-                    location: {
-                        latitude: res.lat,
-                        longitude: res.lng,
-                        address: organization.location.address
-                    }})
-                .then((res) => {
-                    //Navigate back to vendor page
-                    navigation.navigate("VendorPage");
-
-                    //Show error message
-                    showMessage({
-                        message: "Organization profile created successfully",
-                        type: "success",
+                    })
+                    .catch((err) => {
+                        console.log("err", err);
+    
+                        //Show error message
+                        showMessage({
+                            message: err.data.message,
+                            type: "danger",
+                        });
                     });
-                })
-                .catch((err) => {
-                    console.log("err", err);
-
-                    //Show error message
+                }
+                else if(res.status === "ZERO_RESULTS"){
                     showMessage({
-                        message: err.data.message,
+                        message: 'Zero results found for address',
                         type: "danger",
                     });
-                });
+                }
             })
             .catch((err) => console.log(err))
             

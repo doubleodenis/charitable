@@ -83,7 +83,7 @@ const geoCodeCoordinates = async (address) => {
     let parsedAddress = address.split(' ').join('+')
     return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=${GEOCODE_KEY}`)
     .then((response) =>
-        response.data.results[0].geometry.location
+        response.data
     )
 }
 
