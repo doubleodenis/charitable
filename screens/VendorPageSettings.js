@@ -120,7 +120,6 @@ const VendorPage = () => {
         if (organization._id != null) {
             //Not working just yet
 
-            //Dirty code for geocoding the submitted string address before creating the org
             OrganizationService.geoCodeCoordinates(organization.location.address)
             .then((res) => {
                 if(res.status === "OK"){

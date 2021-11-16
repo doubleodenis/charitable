@@ -78,7 +78,6 @@ const updateOrganization = async (id, data) => {
         .then((res) => res.data);
 };
 
-//Test API key
 const geoCodeCoordinates = async (address) => {
     let parsedAddress = address.split(' ').join('+')
     return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=${GEOCODE_KEY}`)
