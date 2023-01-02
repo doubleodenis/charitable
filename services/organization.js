@@ -76,12 +76,39 @@ const updateOrganization = async (id, data) => {
         .then((res) => res.data);
 };
 
+const uploadImages = async (organizationId, data) => {
+    const token = await secureStorage.getValue("token");
+    return api
+        .post(`/${organizationId}/images`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+        .then((res) => res.data);
+};
+
+const downloadImage = async (id, data) => {
+    const token = await secureStorage.getValue("token");
+    return api
+        .delete(`/${id}/images`, {
+            data: data,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        .then((res) => res.data);
+};
+
+
 const OrganizationApi = {
     getOrganizationById,
     getOrganizations,
     getCurrentOrganization,
     createOrganization,
     updateOrganization,
+    uploadImages,
+    downloadImage
 };
 
 export default OrganizationApi;

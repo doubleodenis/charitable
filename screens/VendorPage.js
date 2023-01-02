@@ -34,7 +34,7 @@ import SecureStorage from "../services/secureStorage";
 
 import OrganizationService from "../services/organization";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 
 import Lightbox from 'react-native-lightbox';
 
@@ -125,17 +125,22 @@ const VendorPage = ({ route }) => {
             style={{ ...styles.container, marginBottom: tabBarHeight }}
             contentInset={{ bottom: insets.bottom + tabBarHeight }}
         >
-            <View style={styles.imageContainer}>
-                <Lightbox underlayColor="white" backgroundColor="white" springConfig={{tension: 15, friction: 7}}  activeProps={{ style: { resizeMode: 'contain', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}}>
-                    {/* <Image
-                    style={{ height: 300, width: '100%' }}
-                    source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
-                    /> */}
-                    
-                    <Image source={logo} style={styles.image} />
-                </Lightbox>
-            </View>
-
+            <TouchableOpacity onPress={() => {
+                navigation.navigate('ImageGallery', { organization });
+            }}>
+                <View style={styles.imageContainer}>
+                
+                    <Image source={{ uri: organization?.images[0].fileLink }} style={styles.image} />
+                
+                    {/* <Lightbox underlayColor="white" backgroundColor="white" springConfig={{tension: 15, friction: 7}}  activeProps={{ style: { resizeMode: 'contain', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}}> */}
+                        {/* <Image
+                        style={{ height: 300, width: '100%' }}
+                        source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
+                        /> */}
+                        
+                    {/* </Lightbox> */}
+                </View>
+            </TouchableOpacity>
             <View style={{ padding: 20 }}>
 
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>

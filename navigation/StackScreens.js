@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import AuthConsumer, { AuthContext } from "../contexts/AuthContext";
 import BackButton from "../components/BackButton";
+import ImageGallery from "../screens/ImageGallery";
 
 const HomeStack = createStackNavigator();
 
@@ -205,9 +206,20 @@ const SettingsStackScreen = () => {
                     ),
                 })}
             />
+            <SettingsStack.Screen
+                name="ImageGallery"
+                component={ImageGallery}
+                options={{
+                    headerTitle: null,
+                    headerLeft: () => <BackButton />,
+                    
+                }}
+            />
         </SettingsStack.Navigator>
     );
 };
+
+
 
 const styles = StyleSheet.create({
     searchHeading: {
