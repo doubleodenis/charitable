@@ -16,7 +16,8 @@
 
 import React, { useState, useEffect } from "react";
 
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image,  Linking } from "react-native";
+import DisplayButton from "../components/DisplayButton";
 import {
     SafeAreaView,
     useSafeAreaInsets,
@@ -231,16 +232,20 @@ const VendorPage = ({ route }) => {
                                 {organization?.contactInfo ? (
                                     <View>
                                         <View>
-                                            <Text style={{ ...styles.sectionHeader, fontSize: 16 }}>Email</Text> 
-                                            <Text style={{ ...styles.description, marginBottom: 5 }}>{organization.contactInfo.email}</Text>
+                                            <Text style={{ ...styles.sectionHeader, fontSize: 16 }}>Email</Text>
+                                            <DisplayButton textStyle={{ ...styles.description, marginBottom: 5, textDecorationLine: 'underline' }} onPress={() => Linking.openURL(`mailto:${organization.contactInfo.email}`) }
+                                            >{organization.contactInfo.email}</DisplayButton>
                                         </View>
                                         <View>
                                             <Text style={{ ...styles.sectionHeader, fontSize: 16 }}>Phone</Text>
-                                            <Text style={{ ...styles.description, marginBottom: 5 }}>{organization.contactInfo.phone}</Text>
+                                            {/* Add the actual phone number later */}
+                                            <DisplayButton textStyle={{ ...styles.description, marginBottom: 5, textDecorationLine: 'underline' }} onPress={() => Linking.openURL(`tel:3053088103`) }
+                                            >{organization.contactInfo.phone}</DisplayButton>
                                         </View>
                                         <View>
                                             <Text style={{ ...styles.sectionHeader, fontSize: 16 }}>Website</Text>
-                                            <Text style={{ ...styles.description, marginBottom: 5 }}>{organization.contactInfo.website}</Text>
+                                            <DisplayButton textStyle={{ ...styles.description, marginBottom: 5, textDecorationLine: 'underline' }} onPress={() => Linking.openURL(`${organization.contactInfo.website}`) }
+                                            >{organization.contactInfo.website}</DisplayButton>
                                         </View>
                                         
                                     </View>
@@ -330,6 +335,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#706052",
         lineHeight: 20,
+        textAlign: 'left'
     },
     icon: {
         fontSize: 18,

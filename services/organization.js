@@ -3,6 +3,7 @@ import React from "react";
 import secureStorage from "./secureStorage";
 import Constants from "expo-constants";
 import axios from "axios";
+import {GEOCODE_KEY} from '@env'
 
 const { manifest } = Constants;
 
@@ -49,6 +50,7 @@ const getCurrentOrganization = async () => {
         throw err;
     }
 };
+
 
 const getOrganizations = () => {
     return api.get("/").then((res) => res.data);
@@ -100,6 +102,13 @@ const downloadImage = async (id, data) => {
         .then((res) => res.data);
 };
 
+const geoCodeCoordinates = async (address) => {
+    let parsedAddress = address.split(' ').join('+')
+    return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${parsedAddress}&key=${GEOCODE_KEY}`)
+    .then((response) =>
+        response.data
+    )
+}
 
 const OrganizationApi = {
     getOrganizationById,
@@ -108,7 +117,8 @@ const OrganizationApi = {
     createOrganization,
     updateOrganization,
     uploadImages,
-    downloadImage
+    downloadImage,
+    geoCodeCoordinates
 };
 
 export default OrganizationApi;

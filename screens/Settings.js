@@ -22,7 +22,7 @@ import {
     View,
     TouchableOpacity,
     Image,
-    Switch
+    Switch,
 } from "react-native";
 
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -30,9 +30,9 @@ import SecureStorage from "../services/secureStorage";
 import DisplayButton from "../components/DisplayButton";
 import ConfirmButton from "../components/ConfirmButton";
 import TextButton from "../components/TextButton";
-import root from "../styles";
+import root from "../styles/globalStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
-import logo from "../assets/Charitable_Logo.png"
+import logo from "../assets/Charitable_Logo.png";
 import OrganizationApi from "../services/organization";
 import Accordion from "../components/Accordion";
 
@@ -43,84 +43,85 @@ const Settings = ({ context }) => {
     const [organization, setOrganization] = useState(null);
     const [loggedIn, setLoggedIn] = useState(null);
     const [isEnabled, setIsEnabled] = useState(false);
-    
+
     //Toggles
     const [darkMode, setDarkMode] = useState(false);
     const [pushNotifs, setPushNotifs] = useState(false);
-    
-    const toggleSwitch = (setter) => setter(previousState => !previousState);
+
+    const toggleSwitch = (setter) => setter((previousState) => !previousState);
 
     let navigation = useNavigation();
 
     function changeHeaderAction() {
-        console.log('changing header button');
+        console.log("changing header button");
         navigation.setOptions({
             headerRight: () => (
                 <ConfirmButton navigateTo="VendorPageSettings">
                     Setup Profile
                 </ConfirmButton>
-            )
+            ),
         });
     }
 
     function getOrganization() {
-        OrganizationApi.getCurrentOrganization(context.state.userToken).then(res => {
-            console.log('org', res);
-            if(res) 
-                setOrganization(res)
-            else {
-                changeHeaderAction();
-            }
-        })
-        .catch(err => {
-            console.log(err);
-        })
+        OrganizationApi.getCurrentOrganization(context.state.userToken)
+            .then((res) => {
+                console.log("org", res);
+                if (res) setOrganization(res);
+                else {
+                    changeHeaderAction();
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     useEffect(() => {
-        context.checkAuth().then(res => {
-            console.log('checking', res)
-            _checkLoginState();
-
-            getOrganization();
-        })
-        .catch(err => {
-            _checkLoginState();
-        })
-    }, [])
-
-    useFocusEffect(
-        React.useCallback(() => {
-            console.log('focusing')
-            context.checkAuth().then(res => {
-                
+        context
+            .checkAuth()
+            .then((res) => {
+                console.log("checking", res);
                 _checkLoginState();
 
                 getOrganization();
             })
-            .catch(err => {
-                // navigation.refresh(true);
-            })
-          return undefined;
+            .catch((err) => {
+                _checkLoginState();
+            });
+    }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            console.log("focusing");
+            context
+                .checkAuth()
+                .then((res) => {
+                    _checkLoginState();
+
+                    getOrganization();
+                })
+                .catch((err) => {
+                    // navigation.refresh(true);
+                });
+            return undefined;
         }, [])
-      );
+    );
 
     function _checkLoginState() {
-        if(context?.state.userToken && !loggedIn) {
+        if (context?.state.userToken && !loggedIn) {
             setLoggedIn(true);
-        }
-        else if(!context?.state.userToken) {
+        } else if (!context?.state.userToken) {
             setLoggedIn(false);
         }
     }
-    //Listens to changes to the auth context 
+    //Listens to changes to the auth context
     useEffect(() => {
-        console.log('context', context.state.userToken)
-        
-    }, [context])
+        console.log("context", context.state.userToken);
+    }, [context]);
 
     useEffect(() => {
-        if(loggedIn == false) {
+        if (loggedIn == false) {
             navigation.setOptions({
                 headerLeft: null,
                 headerRight: () => (
@@ -129,8 +130,7 @@ const Settings = ({ context }) => {
                     </ConfirmButton>
                 ),
             });
-        }
-        else {
+        } else {
             navigation.setOptions({
                 headerLeft: () => (
                     <TextButton
@@ -139,32 +139,46 @@ const Settings = ({ context }) => {
                             //TODO: Signing out... loading circle
                             //FUTURE: Modal = Are you sure you want to logout?
                             context.signOut().then((res) => {
-                                
                                 setLoggedIn(false);
-
                             });
                         }}
                     >
-                            Logout
+                        Logout
                     </TextButton>
-                )
+                ),
             });
         }
-    }, [loggedIn])
+    }, [loggedIn]);
     return (
         <View style={styles.container}>
             {/* Brand logo here */}
 
-            {loggedIn && organization && <OrganizationHeader organization={organization} />}
+            {loggedIn && organization && (
+                <OrganizationHeader organization={organization} />
+            )}
 
             <View>
                 {/* <SettingsButton useIcon>General</SettingsButton> */}
                 <Accordion title="General">
-                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Text style={{  ...styles.boldStandardText, fontSize: 16 }}>Dark Mode</Text>
+                    <View
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text
+                            style={{ ...styles.boldStandardText, fontSize: 16 }}
+                        >
+                            Dark Mode
+                        </Text>
                         <Switch
-                            trackColor={{ false: '#efefef', true: 'lightgreen' }}
-                            thumbColor={'white'}
+                            trackColor={{
+                                false: "#efefef",
+                                true: "lightgreen",
+                            }}
+                            thumbColor={"white"}
                             ios_backgroundColor="#efefef"
                             onValueChange={() => toggleSwitch(setDarkMode)}
                             value={darkMode}
@@ -173,20 +187,36 @@ const Settings = ({ context }) => {
                 </Accordion>
 
                 <Accordion title="Notifications">
-                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={{  ...styles.boldStandardText, fontSize: 16 }}>Push Notifications</Text>
-                            <Switch
-                                trackColor={{ false: '#efefef', true: 'lightgreen' }}
-                                thumbColor={'white'}
-                                ios_backgroundColor="#efefef"
-                                onValueChange={() => toggleSwitch(setPushNotifs)}
-                                value={pushNotifs}
-                            />
+                    <View
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text
+                            style={{ ...styles.boldStandardText, fontSize: 16 }}
+                        >
+                            Push Notifications
+                        </Text>
+                        <Switch
+                            trackColor={{
+                                false: "#efefef",
+                                true: "lightgreen",
+                            }}
+                            thumbColor={"white"}
+                            ios_backgroundColor="#efefef"
+                            onValueChange={() => toggleSwitch(setPushNotifs)}
+                            value={pushNotifs}
+                        />
                     </View>
                 </Accordion>
 
                 <Accordion title="Help">
-                    <View><Text>Test</Text></View>
+                    <View>
+                        <Text>Test</Text>
+                    </View>
                 </Accordion>
 
                 {/* <SettingsButton>Tell a Friend</SettingsButton> */}
@@ -194,36 +224,31 @@ const Settings = ({ context }) => {
                 <SettingsButton>Rate us on the App Store</SettingsButton>
             </View>
 
-            {
-                !loggedIn ? (
-                    <View
+            {!loggedIn ? (
+                <View
                     style={{
                         marginTop: 25,
                         borderTopWidth: 1,
                         borderTopColor: "lightgray",
                         paddingVertical: 25,
                     }}
-                    >
-                        <RegisterSection navigation={navigation} />
-                    </View>
-                ) : null
-            }
+                >
+                    <RegisterSection navigation={navigation} />
+                </View>
+            ) : null}
 
-            {
-                loggedIn && !organization ? (
-                    <View
+            {loggedIn && !organization ? (
+                <View
                     style={{
                         marginTop: 25,
                         borderTopWidth: 1,
                         borderTopColor: "lightgray",
                         paddingVertical: 25,
                     }}
-                    >
-                        <AddOrganizationSection navigation={navigation} />
-                    </View>
-                ) : null
-            }       
-           
+                >
+                    <AddOrganizationSection navigation={navigation} />
+                </View>
+            ) : null}
         </View>
     );
 };
@@ -240,10 +265,9 @@ const SettingsButton = ({ useIcon = false, navigateTo, children }) => {
 };
 
 const RegisterSection = ({ navigation }) => {
-    
     function goToSignUp() {
-        console.log('Going to sign up screen...')
-        navigation.navigate('Auth', { screen: 'Sign Up' });
+        console.log("Going to sign up screen...");
+        navigation.navigate("Auth", { screen: "Sign Up" });
     }
     return (
         <View style={styles.registerSection}>
@@ -269,9 +293,8 @@ const RegisterSection = ({ navigation }) => {
 };
 
 const AddOrganizationSection = ({ navigation }) => {
-    
     function goToCreateOrg() {
-        navigation.navigate('VendorPageSettings');
+        navigation.navigate("VendorPageSettings");
     }
 
     return (
@@ -301,17 +324,29 @@ const OrganizationHeader = ({ organization, navigation }) => {
         // navigation.navigate('')
     }
     return (
-            <View style={{ ...styles.organization, maxWidth: '100%' }} onPress={goToOrg}>
-                <View style={styles.orgImgContainer}>
-                    <Image style={{ ...styles.image, width: 65, height: 65 }} source={logo}/>
+        <View
+            style={{ ...styles.organization, maxWidth: "100%" }}
+            onPress={goToOrg}
+        >
+            <View style={styles.orgImgContainer}>
+                <Image
+                    style={{ ...styles.image, width: 65, height: 65 }}
+                    source={logo}
+                />
+            </View>
+            <View style={{ display: "flex", flexWrap: "wrap", width: "80%" }}>
+                <View>
+                    <Text style={styles.orgHeader}>{organization.name}</Text>
                 </View>
-                <View style={{ display: 'flex', flexWrap: 'wrap', width: '80%'}}>
-                    <View><Text style={styles.orgHeader}>{organization.name}</Text></View>
-                    <View><Text style={{ ...styles.orgDescription }}>{organization.description}</Text></View>
+                <View>
+                    <Text style={{ ...styles.orgDescription }}>
+                        {organization.description}
+                    </Text>
                 </View>
-            </View>   
-    )
-}
+            </View>
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -342,17 +377,17 @@ const styles = StyleSheet.create({
         height: 150,
     },
     organization: {
-        display: 'flex',
-        flexDirection: 'row',
-        marginVertical: 12
+        display: "flex",
+        flexDirection: "row",
+        marginVertical: 12,
     },
     orgImgContainer: {
-        marginRight: 12
+        marginRight: 12,
     },
     orgHeader: {
         fontSize: 24,
         color: "#706052",
-        marginBottom: 0
+        marginBottom: 0,
     },
     orgDescription: {
         fontSize: 14,
